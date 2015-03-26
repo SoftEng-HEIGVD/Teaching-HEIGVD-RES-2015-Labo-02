@@ -13,30 +13,30 @@ import java.io.IOException;
  */
 public class JsonObjectMapper {
 
-  private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-  /**
-   * Converts a json string into a POJO of the specified class
-   *
-   * @param <T> the class that we want to instantiate
-   * @param json the json representation of the object
-   * @param type the class to instantiate
-   * @return an instance of T, which value corresponds to the json string
-   * @throws IOException
-   */
-  public static <T> T parseJson(String json, Class<T> type) throws IOException {
-    return objectMapper.readValue(json, type);
-  }
+    /**
+     * Converts a json string into a POJO of the specified class
+     *
+     * @param <T> the class that we want to instantiate
+     * @param json the json representation of the object
+     * @param type the class to instantiate
+     * @return an instance of T, which value corresponds to the json string
+     * @throws IOException
+     */
+    public static <T> T parseJson(String json, Class<T> type) throws IOException {
+        return objectMapper.readValue(json, type);
+    }
 
-  /**
-   * Converts a POJO into its json representation
-   *
-   * @param o the object to serialize
-   * @return the json representation of o
-   * @throws JsonProcessingException
-   */
-  public static String toJson(Object o) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(o);
-  }
+    /**
+     * Converts a POJO into its json representation
+     *
+     * @param o the object to serialize
+     * @return the json representation of o
+     * @throws JsonProcessingException
+     */
+    public static String toJson(Object o) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(o);
+    }
 
 }

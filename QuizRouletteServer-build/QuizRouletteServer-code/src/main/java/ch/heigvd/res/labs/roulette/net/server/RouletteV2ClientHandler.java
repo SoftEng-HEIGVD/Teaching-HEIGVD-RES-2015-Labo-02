@@ -12,13 +12,13 @@ import java.io.OutputStream;
  */
 public class RouletteV2ClientHandler implements IClientHandler {
 
-  public RouletteV2ClientHandler(IStudentsStore store) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of gen  
-  }
+    public RouletteV2ClientHandler(IStudentsStore store) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of gen  
+    }
 
-  @Override
-  public void handleClientConnection(InputStream is, OutputStream os) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public void handleClientConnection(InputStream is, OutputStream os) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }
