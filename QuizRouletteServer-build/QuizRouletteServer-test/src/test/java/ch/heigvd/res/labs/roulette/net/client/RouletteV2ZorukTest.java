@@ -50,4 +50,14 @@ public class RouletteV2ZorukTest {
         ((RouletteV2ClientImpl)roulettePair.getClient()).clearDataStore();
         assertEquals(roulettePair.getClient().getNumberOfStudents(), 1);
     }
+    
+    @Test
+    @TestAuthor(githubId = "Zoruk")
+    public void weShoudGetAllStudentsAtOntTime() throws IOException {
+        for (int i = 0; i < 10; ++i)
+             roulettePair.getClient().loadStudent("Super student : "  + i);
+        List<Student> students = ((IRouletteV2Client)roulettePair.getClient()).listStudents();
+        
+        assertEquals(students.size(), 10);
+    }
 }

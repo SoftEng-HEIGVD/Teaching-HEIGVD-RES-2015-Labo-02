@@ -26,18 +26,22 @@ public class RouletteV1WasadigiTest {
   @Test
   @TestAuthor(githubId = "wasadigi")
   public void theTestRouletteServerShouldRunDuringTests() throws IOException {
+    System.out.println("Test isRunn Beg");
     assertTrue(roulettePair.getServer().isRunning());
+    System.out.println("Test isRunn");
   }
 
   @Test
   @TestAuthor(githubId = "wasadigi")
   public void theTestRouletteClientShouldBeConnectedWhenATestStarts() throws IOException {
+      System.out.println("0");
     assertTrue(roulettePair.getClient().isConnected());
   }
 
   @Test
   @TestAuthor(githubId = "wasadigi")
   public void itShouldBePossibleForARouletteClientToConnectToARouletteServer() throws Exception {
+      System.out.println("1");
     int port = roulettePair.getServer().getPort();
     IRouletteV1Client client = new RouletteV1ClientImpl();
     assertFalse(client.isConnected());
@@ -48,12 +52,14 @@ public class RouletteV1WasadigiTest {
   @Test
   @TestAuthor(githubId = "wasadigi")
   public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
+      System.out.println("2");
     assertEquals(RouletteV1Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
   }
 
   @Test
   @TestAuthor(githubId = "wasadigi")
   public void theServerShouldHaveZeroStudentsAtStart() throws IOException {
+      System.out.println("3");
     int port = roulettePair.getServer().getPort();
     IRouletteV1Client client = new RouletteV1ClientImpl();
     client.connect("localhost", port);

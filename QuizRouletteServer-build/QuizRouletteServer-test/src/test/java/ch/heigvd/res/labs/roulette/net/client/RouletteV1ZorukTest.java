@@ -57,19 +57,15 @@ public class RouletteV1ZorukTest {
     
     @Test
     @TestAuthor(githubId = "Zoruk")
-    public void weShouldBeAbleTopickRandomStudent() throws IOException {
+    public void weShouldBeAbleTopickRandomStudent() throws IOException, EmptyStoreException {
         weShouldBeAbleToLoadMultipleStudents(); // Add some students
-        try {
-            Student student = roulettePair.getClient().pickRandomStudent();
-        } catch (EmptyStoreException ex) {
-            Logger.getLogger(RouletteV1ZorukTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Student student = roulettePair.getClient().pickRandomStudent();
     }
     
     @Test
     @TestAuthor(githubId = "Zoruk")
     public void thePickRandomFunctionSouldThrowEmptyStoreException() throws IOException, EmptyStoreException {
-        exception.expect(EmptyStackException.class);
+        exception.expect(EmptyStoreException.class);
         roulettePair.getClient().pickRandomStudent();
     }
     
@@ -94,4 +90,24 @@ public class RouletteV1ZorukTest {
         
         assertEquals(roulettePair.getClient().getNumberOfStudents(), 5);
     }
+
+    @Test
+    @TestAuthor(githubId = "Zoruk")
+    public void theServerShoudHandleMultipleClientAtSameTime() throws IOException {
+        List<IRouletteV1Client> clients = new LinkedList<>();
+        for (int i = 0; i < 50; ++i) {
+           IRouletteV1Client c = new RouletteV1ClientImpl();
+           c.connect("localhost", roulettePair.getServer().getPort());
+           clients.add(c);
+           c.loadStudent("Client " + i);
+           c.getNumberOfStudents();
+        }
+        
+        assertEquals(roulettePair.getClient().getNumberOfStudents(), 50);
+        
+        for (IRouletteV1Client client : clients) {
+            client.disconnect();
+        }
+    }
+    
 }
