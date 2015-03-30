@@ -8,7 +8,7 @@ import org.junit.rules.ExpectedException;
  * This class contains automated tests to validate the client and the server
  * implementation of the Roulette Protocol (version 1)
  *
- * @author Olivier Liechti
+ * @author Paul Ntawuruhunga and Karim Gohzlani
  */
 public class RouletteV2WasadigiTest {
 
@@ -19,5 +19,4 @@ public class RouletteV2WasadigiTest {
   public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
 
 
-  
 }
