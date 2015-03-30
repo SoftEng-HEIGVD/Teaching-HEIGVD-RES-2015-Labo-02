@@ -77,7 +77,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       list.add(new Student(fullname));
       loadStudents(list);
   }
-  
+
+  private void endLoad () throws IOException {
+      myReadLine();
+  }
+
   @Override
   public void loadStudents(List<Student> students) throws IOException {
       pw.write("LOAD\n");
@@ -95,8 +99,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       pw.write("ENDOFDATA\n");
       pw.flush();
 
-      myReadLine();
-      // V1: DATA LOADED or V2: {"status":"success","numberOfNewStudents":3}
+      endLoad();
+       // V1: DATA LOADED or V2: {"status":"success","numberOfNewStudents":3}
   }
 
   @Override
