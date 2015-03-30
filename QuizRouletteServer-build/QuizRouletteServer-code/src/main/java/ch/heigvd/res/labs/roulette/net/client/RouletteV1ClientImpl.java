@@ -32,12 +32,12 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   // input from server
   private BufferedReader br = null;
   // output to server (dont forget to flush before expecting response!)
-  private PrintWriter pw = null;
+  protected PrintWriter pw = null;
   // welcome message to avoid...
   private final String welcome = "Hello. Online HELP is available. Will you find it?";
   
   
-  private String myReadLine() throws IOException {
+  protected String myReadLine() throws IOException {
       String line;
       do {
           line = br.readLine();
@@ -55,6 +55,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public void disconnect() throws IOException {
+      pw.write("BYE\n");
+      pw.flush();
       pw.close();
       br.close();
       mysocket.close();
@@ -75,7 +77,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       list.add(new Student(fullname));
       loadStudents(list);
   }
-
+  
   @Override
   public void loadStudents(List<Student> students) throws IOException {
       pw.write("LOAD\n");
@@ -93,10 +95,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       pw.write("ENDOFDATA\n");
       pw.flush();
 
-      String waitEnd = "DATA LOADED";
-      if (!myReadLine().equalsIgnoreCase(waitEnd)) {
-          throw new IOException("server response not correct....");
-      } // git trick for braces
+      myReadLine();
+      // V1: DATA LOADED or V2: {"status":"success","numberOfNewStudents":3}
   }
 
   @Override
