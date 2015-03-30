@@ -35,13 +35,14 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   protected PrintWriter pw = null;
   // welcome message to avoid...
   private final String welcome = "Hello. Online HELP is available. Will you find it?";
+  private final String notUnderstood = "Huh? please use HELP if you don't know what commands are available.";
   
   
   protected String myReadLine() throws IOException {
       String line;
       do {
           line = br.readLine();
-      } while (line.equalsIgnoreCase(welcome));
+      } while (line.equalsIgnoreCase(welcome) || line.equalsIgnoreCase(notUnderstood));
       return line;
   }
   
