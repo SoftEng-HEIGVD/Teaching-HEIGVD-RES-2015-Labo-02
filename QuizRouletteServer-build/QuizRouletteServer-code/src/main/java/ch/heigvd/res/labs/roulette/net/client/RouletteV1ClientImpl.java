@@ -36,8 +36,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   // welcome message to avoid...
   private final String welcome = "Hello. Online HELP is available. Will you find it?";
   private final String notUnderstood = "Huh? please use HELP if you don't know what commands are available.";
-  
-  
+
+
   protected String myReadLine() throws IOException {
       String line;
       do {
@@ -56,7 +56,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public void disconnect() throws IOException {
-      pw.write("BYE\n");
+      pw.println(RouletteV1Protocol.CMD_BYE);
       pw.flush();
       pw.close();
       br.close();
@@ -85,19 +85,18 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-      pw.write("LOAD\n");
+      pw.println(RouletteV1Protocol.CMD_LOAD);
       pw.flush();
 
-      String waitStart = "Send your data [end with ENDOFDATA]";
-      if (!myReadLine().equalsIgnoreCase(waitStart)) {
+      if (!myReadLine().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START)) {
           throw new IOException("server response not correct....");
       } // git trick for braces
 
       for (Student student : students) {
-          pw.write(student.getFullname()+"\n");
+          pw.println(student.getFullname());
       } // git trick for braces
 
-      pw.write("ENDOFDATA\n");
+      pw.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
       pw.flush();
 
       endLoad();
@@ -106,7 +105,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-      pw.write("RANDOM\n");
+      pw.println(RouletteV1Protocol.CMD_RANDOM);
       pw.flush();
 
       RandomCommandResponse rcr = JsonObjectMapper.parseJson(myReadLine(), RandomCommandResponse.class);
@@ -118,7 +117,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public int getNumberOfStudents() throws IOException {
-      pw.write("INFO\n");
+      pw.println(RouletteV1Protocol.CMD_INFO);
       pw.flush();
 
       InfoCommandResponse icr = JsonObjectMapper.parseJson(myReadLine(), InfoCommandResponse.class);
@@ -127,7 +126,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public String getProtocolVersion() throws IOException {
-      pw.write("INFO\n");
+      pw.println(RouletteV1Protocol.CMD_INFO);
       pw.flush();
 
       InfoCommandResponse icr = JsonObjectMapper.parseJson(myReadLine(), InfoCommandResponse.class);

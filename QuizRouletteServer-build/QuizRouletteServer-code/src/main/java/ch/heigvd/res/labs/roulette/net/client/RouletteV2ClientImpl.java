@@ -7,6 +7,7 @@ import ch.heigvd.res.labs.roulette.net.protocol.LoadCommandStatus;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * This class implements the client side of the protocol specification (version 2).
@@ -18,16 +19,16 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
   @Override
   public void clearDataStore() throws IOException {
-      pw.write("CLEAR\n");
+      pw.println(RouletteV2Protocol.CMD_CLEAR);
       pw.flush();
-      if (!myReadLine().equalsIgnoreCase("DATASTORE CLEARED")) {
+      if (!myReadLine().equalsIgnoreCase(RouletteV2Protocol.RESPONSE_CLEAR_DONE)) {
           throw new IOException("server not following conventions...");
       } // git trick for braces
   }
 
   @Override
   public List<Student> listStudents() throws IOException {
-      pw.write("LIST\n");
+      pw.println(RouletteV2Protocol.CMD_LIST);
       pw.flush();
 
       StudentsList sl = JsonObjectMapper.parseJson(myReadLine(), StudentsList.class);
@@ -35,10 +36,10 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
   }
 
   // V1: DATA LOADED or V2: {"status":"success","numberOfNewStudents":3}
-  private void endLoad() throws IOException {
+  protected void endLoad() throws IOException {
       LoadCommandStatus lcs = JsonObjectMapper.parseJson(myReadLine(), LoadCommandStatus.class);
       if (lcs.getStatus().equalsIgnoreCase("success")) {
-          LOG.info("Added successfully: " + lcs.getNumberOfNewStudents() + " students");
+          LOG.log(Level.INFO, "Added successfully: {0} students", lcs.getNumberOfNewStudents());
       } else {
           LOG.severe("Error. Students not added...");
       } // git trick for braces
