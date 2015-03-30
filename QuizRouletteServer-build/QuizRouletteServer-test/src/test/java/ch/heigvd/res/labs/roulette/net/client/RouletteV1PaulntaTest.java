@@ -31,7 +31,7 @@ public class RouletteV1PaulntaTest {
 
 
     @Test
-    @TestAuthor(githubId = {"wasadigi", "SoftEng-HEIGVD"})
+    @TestAuthor(githubId = {"gweezer7", "paulnta"})
     public void theServerShouldManageTwoCLients() throws IOException {
         int port = roulettePair.getServer().getPort();
         IRouletteV1Client client1 = new RouletteV1ClientImpl();
@@ -43,7 +43,7 @@ public class RouletteV1PaulntaTest {
     }
 
     @Test
-    @TestAuthor(githubId = {"wasadigi", "SoftEng-HEIGVD"})
+    @TestAuthor(githubId = {"gweezer7", "paulnta"})
     public void weShouldLoadAListOfStudents() throws IOException {
         List<Student> students  = new LinkedList<Student>();
         students.add(new Student("Paul"));
@@ -54,5 +54,46 @@ public class RouletteV1PaulntaTest {
         IRouletteV1Client client = roulettePair.getClient();
         client.loadStudents(students);
         assertEquals(4, client.getNumberOfStudents());
+    }
+    
+    @Test
+    @TestAuthor(githubId = {"gweezer7", "paulnta"})
+    public void theClientsShouldShareInformation() throws IOException {
+        IRouletteV1Client client1 = new RouletteV1ClientImpl();
+        int port = roulettePair.getServer().getPort();
+        client1.connect("localhost", port);
+        IRouletteV1Client client2 = new RouletteV1ClientImpl();
+        client2.connect("localhost", port);
+        client1.loadStudent("Paul");
+        assertEquals(1, client2.getNumberOfStudents());
+        client2.loadStudent("Paulette");
+        assertEquals(1, client1.getNumberOfStudents());
+    }
+
+    @Test
+    @TestAuthor(githubId = {"gweezer7", "paulnta"})
+    public void theClientShouldBeDisconnectedWhenATestStarts() throws IOException {
+        IRouletteV1Client client = new RouletteV1ClientImpl();
+        assertTrue(!client.isConnected());
+    }
+
+    @Test
+    @TestAuthor(githubId = {"gweezer7", "paulnta"})
+    public void thereShouldBeTheOnlyLoadedStudentWhenRandomIsCalledWithOneStudent() throws IOException, EmptyStoreException {
+        IRouletteV1Client client = roulettePair.getClient();
+        client.loadStudent("Karim");
+        assertEquals(client.pickRandomStudent().getFullname(), "Karim");
+    }
+
+    @Test
+    @TestAuthor(githubId = {"gweezer7", "paulnta"})
+    public void thereShouldBeNoExceptionWhenRandomIsCalled() throws IOException {
+        try {
+            IRouletteV1Client client = roulettePair.getClient();
+            client.loadStudent("Karim");
+            client.pickRandomStudent();
+        } catch (EmptyStoreException e) {
+            fail("Expected that EmptyStoreException would not be thrown");
+        }
     }
 }
