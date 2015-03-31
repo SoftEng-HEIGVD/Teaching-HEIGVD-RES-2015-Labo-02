@@ -44,7 +44,7 @@ public class RouletteV1JPBWTest
     {
         IRouletteV1Client client = roulettePair.getClient();
         
-        if (!client.getProtocolVersion().equals("V1"))
+        if (!client.getProtocolVersion().equals(RouletteV1Protocol.VERSION))
         {
             fail("The reported version of the protocol should be V1.");
         }
@@ -121,7 +121,7 @@ public class RouletteV1JPBWTest
     public void theServerShouldBeAbleToHandleManySimultaneousConnections () throws IOException
     {
         int port = roulettePair.getServer().getPort();
-        int NB_CLIENTS = 10000;
+        int NB_CLIENTS = 1000;
         
         IRouletteV1Client clients[] = new IRouletteV1Client[NB_CLIENTS];
         
