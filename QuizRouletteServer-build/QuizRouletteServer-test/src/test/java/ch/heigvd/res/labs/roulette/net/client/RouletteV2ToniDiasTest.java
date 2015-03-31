@@ -51,7 +51,7 @@ public class RouletteV2ToniDiasTest {
   @Test
   @TestAuthor(githubId = {"ToniDias", "Brybry16"})
   public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
-    assertEquals(RouletteV1Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
+    assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
   }
 
   @Test
@@ -73,7 +73,7 @@ public class RouletteV2ToniDiasTest {
   @Test
   @TestAuthor(githubId = {"ToniDias", "Brybry16"})
   public void theServerShouldCountStudents() throws IOException {
-    IRouletteV2Client client = new RouletteV2ClientImpl();
+    IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     assertEquals(0, client.getNumberOfStudents());
     client.loadStudent("sacha");
     assertEquals(1, client.getNumberOfStudents());
@@ -86,7 +86,7 @@ public class RouletteV2ToniDiasTest {
   @Test
   @TestAuthor(githubId = {"ToniDias", "Brybry16"})
   public void theServerShouldSendAnErrorResponseWhenRandomIsCalledAndThereIsNoStudent() throws IOException, EmptyStoreException {
-    IRouletteV2Client client = new RouletteV2ClientImpl();
+    IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     exception.expect(EmptyStoreException.class);
     client.pickRandomStudent();
   }
