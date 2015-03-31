@@ -1,5 +1,6 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
 import org.junit.Rule;
@@ -7,7 +8,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -39,12 +42,17 @@ public class RouletteV2PaulntaTest {
 
     @Test
     @TestAuthor(githubId = {"wasadigi", "SoftEng-HEIGVD"})
-    public void test2() throws IOException {
+    public void theServerShouldKeepStudentsAfterADisconnection() throws IOException {
         IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
-        
+        client.loadStudent("Paul Walker");
+        client.loadStudent("Paul McCartney");
+        client.loadStudent("Paul Nta");
+        client.disconnect();
+
+        IRouletteV2Client client2 = new RouletteV2ClientImpl();
+        client2.connect("localhost", roulettePair.getServer().getPort());
+        assertEquals(3, client2.getNumberOfStudents());
     }
-
-
 
 
 
