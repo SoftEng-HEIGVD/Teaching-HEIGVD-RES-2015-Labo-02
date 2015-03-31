@@ -16,6 +16,7 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
 /**
+ *
  * This class contains automated tests to validate the client and the server
  * implementation of the Roulette Protocol (version 1)
  *

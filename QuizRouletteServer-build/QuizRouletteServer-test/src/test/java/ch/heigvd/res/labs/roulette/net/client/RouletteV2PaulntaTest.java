@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
+ *
  * This class contains automated tests to validate the client and the server
  * implementation of the Roulette Protocol (version 2)
  *
