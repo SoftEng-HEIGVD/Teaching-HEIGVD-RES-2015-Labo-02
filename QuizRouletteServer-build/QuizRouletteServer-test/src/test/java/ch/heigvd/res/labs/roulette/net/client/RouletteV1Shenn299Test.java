@@ -11,8 +11,6 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class contains automated tests (other than those proposed by wasadigi)
