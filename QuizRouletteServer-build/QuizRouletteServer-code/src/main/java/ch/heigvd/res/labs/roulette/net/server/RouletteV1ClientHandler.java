@@ -33,7 +33,7 @@ public class RouletteV1ClientHandler implements IClientHandler {
   }
 
   @Override
-  public void handleClientConnection(InputStream is, OutputStream os) throws IOException {
+  public void handleClientConnection(InputStream is, OutputStream os) throws IOException{
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
     PrintWriter writer = new PrintWriter(new OutputStreamWriter(os));
 
@@ -57,6 +57,7 @@ public class RouletteV1ClientHandler implements IClientHandler {
           break;
         case RouletteV1Protocol.CMD_HELP:
           writer.println("Commands: " + Arrays.toString(RouletteV1Protocol.SUPPORTED_COMMANDS));
+          writer.flush();
           break;
         case RouletteV1Protocol.CMD_INFO:
           InfoCommandResponse response = new InfoCommandResponse(RouletteV1Protocol.VERSION, store.getNumberOfStudents());
