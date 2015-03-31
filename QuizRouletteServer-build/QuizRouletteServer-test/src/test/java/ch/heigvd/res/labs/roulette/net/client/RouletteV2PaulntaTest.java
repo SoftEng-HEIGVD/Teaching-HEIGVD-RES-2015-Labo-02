@@ -30,7 +30,7 @@ public class RouletteV2PaulntaTest {
 
 
     @Test
-    @TestAuthor(githubId = {"wasadigi", "SoftEng-HEIGVD"})
+    @TestAuthor(githubId = {"gweezer7", "paulnta"})
     public void theServerShouldClearDataCorrectly() throws IOException {
         IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
         client.loadStudent("Paul");
@@ -41,7 +41,7 @@ public class RouletteV2PaulntaTest {
     }
 
     @Test
-    @TestAuthor(githubId = {"wasadigi", "SoftEng-HEIGVD"})
+    @TestAuthor(githubId = {"gweezer7", "paulnta"})
     public void theServerShouldKeepStudentsAfterADisconnection() throws IOException {
         IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
         client.loadStudent("Paul Walker");
@@ -54,18 +54,6 @@ public class RouletteV2PaulntaTest {
         assertEquals(3, client2.getNumberOfStudents());
     }
 
-
-    @Test
-    @TestAuthor(githubId = {"wasadigi", "SoftEng-HEIGVD"})
-    public void theServerShouldManageTwoCLients() throws IOException {
-        int port = roulettePair.getServer().getPort();
-        IRouletteV1Client client1 = new RouletteV1ClientImpl();
-        IRouletteV1Client client2 = new RouletteV1ClientImpl();
-        client1.connect("localhost",port);
-        client2.connect("localhost",port);
-        assertTrue(client1.isConnected());
-        assertTrue(client2.isConnected());
-    }
 
     @Test
     @TestAuthor(githubId = {"gweezer7", "paulnta"})
