@@ -1,5 +1,7 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.Student;
+import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
 import org.junit.Rule;
@@ -7,6 +9,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 
 import static org.junit.Assert.assertTrue;
 
@@ -37,4 +40,35 @@ public class RouletteV2PaulntaTest {
         assertTrue(client2.isConnected());
     }
 
+  @Test
+  @TestAuthor(githubId = {"gweezer7", "paulnta"})
+  public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
+    assertEquals(RouletteV1Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
+  }
+  @Test
+  @TestAuthor(githubId = {"gweezer7", "paulnta"})
+  public void theServerShouldFetchAStudentInTheList() throws IOException {
+      IRouletteV2Client client =(IRouletteV2Client) roulettePair.getClient();
+      Student jack = new Student("Jacques");
+      client.loadStudent(jack.getFullname());
+      assertTrue(client.listStudents().contains(jack));
+  }
+    
+  @Test
+  @TestAuthor(githubId = {"gweezer7", "paulnta"})
+  public void theSizeOfTheListMustBeEqualToTheNumberOfClint() throws IOException {
+      IRouletteV2Client client =(IRouletteV2Client) roulettePair.getClient();      
+      assertTrue(client.listStudents().isEmpty());
+  }
+
+  
+  @Test
+  @TestAuthor(githubId = {"gweezer7", "paulnta"})
+  public void theSizeOfTheListMustBequalToTheNumberOfClient() throws IOException {
+      IRouletteV2Client client =(IRouletteV2Client) roulettePair.getClient();      
+      client.loadStudent("Jacques");
+      assertTrue(client.listStudents().size() == 1);
+      client.loadStudent("Josiane");
+      assertTrue(client.listStudents().size() == 2);
+  }
 }
