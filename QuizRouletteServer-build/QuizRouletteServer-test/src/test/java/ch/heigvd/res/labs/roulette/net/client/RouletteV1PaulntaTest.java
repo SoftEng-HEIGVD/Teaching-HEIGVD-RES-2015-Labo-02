@@ -59,15 +59,18 @@ public class RouletteV1PaulntaTest {
     @Test
     @TestAuthor(githubId = {"gweezer7", "paulnta"})
     public void theClientsShouldShareInformation() throws IOException {
-        IRouletteV1Client client1 = new RouletteV1ClientImpl();
+
         int port = roulettePair.getServer().getPort();
-        client1.connect("localhost", port);
+        IRouletteV1Client client1 = new RouletteV1ClientImpl();
         IRouletteV1Client client2 = new RouletteV1ClientImpl();
+
+        client1.connect("localhost", port);
         client2.connect("localhost", port);
+
         client1.loadStudent("Paul");
         assertEquals(1, client2.getNumberOfStudents());
         client2.loadStudent("Paulette");
-        assertEquals(1, client1.getNumberOfStudents());
+        assertEquals(2, client1.getNumberOfStudents());
     }
 
     @Test
