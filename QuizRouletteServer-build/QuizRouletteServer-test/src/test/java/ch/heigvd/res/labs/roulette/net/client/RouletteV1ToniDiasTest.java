@@ -179,7 +179,7 @@ public class RouletteV1ToniDiasTest {
   @TestAuthor(githubId = {"ToniDias", "Brybry16"})
   public void SpecialCharsCanBeSend() throws IOException, EmptyStoreException{
         IRouletteV1Client client = roulettePair.getClient();
-        String name = "Bryan Dias \n Toni Perroud";
+        String name = "Bryan Dias \t Toni Perroud";
         client.loadStudent(name);
         Student student = client.pickRandomStudent();
         
