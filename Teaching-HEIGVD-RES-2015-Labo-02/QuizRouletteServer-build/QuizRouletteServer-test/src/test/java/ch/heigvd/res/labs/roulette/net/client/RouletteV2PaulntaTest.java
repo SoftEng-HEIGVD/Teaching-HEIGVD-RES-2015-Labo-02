@@ -55,6 +55,50 @@ public class RouletteV2PaulntaTest {
     }
 
 
+    @Test
+    @TestAuthor(githubId = {"wasadigi", "SoftEng-HEIGVD"})
+    public void theServerShouldManageTwoCLients() throws IOException {
+        int port = roulettePair.getServer().getPort();
+        IRouletteV1Client client1 = new RouletteV1ClientImpl();
+        IRouletteV1Client client2 = new RouletteV1ClientImpl();
+        client1.connect("localhost",port);
+        client2.connect("localhost",port);
+        assertTrue(client1.isConnected());
+        assertTrue(client2.isConnected());
+    }
+
+    @Test
+    @TestAuthor(githubId = {"gweezer7", "paulnta"})
+    public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
+        assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
+    }
+    @Test
+    @TestAuthor(githubId = {"gweezer7", "paulnta"})
+    public void theServerShouldFetchAStudentInTheList() throws IOException {
+        IRouletteV2Client client =(IRouletteV2Client) roulettePair.getClient();
+        Student jack = new Student("Jacques");
+        client.loadStudent(jack.getFullname());
+        assertTrue(client.listStudents().contains(jack));
+    }
+
+    @Test
+    @TestAuthor(githubId = {"gweezer7", "paulnta"})
+    public void theSizeOfTheListMustBeEqualToTheNumberOfClint() throws IOException {
+        IRouletteV2Client client =(IRouletteV2Client) roulettePair.getClient();
+        assertTrue(client.listStudents().isEmpty());
+    }
+
+
+    @Test
+    @TestAuthor(githubId = {"gweezer7", "paulnta"})
+    public void theSizeOfTheListMustBequalToTheNumberOfClient() throws IOException {
+        IRouletteV2Client client =(IRouletteV2Client) roulettePair.getClient();
+        client.loadStudent("Jacques");
+        assertTrue(client.listStudents().size() == 1);
+        client.loadStudent("Josiane");
+        assertTrue(client.listStudents().size() == 2);
+    }
+
 
 
 }
