@@ -11,8 +11,6 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class contains automated tests (other than those proposed by wasadigi)
@@ -103,6 +101,7 @@ public class RouletteV1Shenn299Test {
    @TestAuthor(githubId = "Shenn299")
    public void theClientShouldNotBeAbleToConnectToTheServerWithWrongPort() throws IOException {
       // Nécessaire de modifier la "rule"
+      // On s'attend à ce que la méthode lève une IOException
       exception.expect(IOException.class);
       
       // Création avec certitude d'un faux numéro de port
