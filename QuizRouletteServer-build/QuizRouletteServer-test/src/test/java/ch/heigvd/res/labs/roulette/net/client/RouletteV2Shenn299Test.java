@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * to validate the client and the server implementation of the Roulette Protocol
  * (version 2)
  *
- * @author Olivier Liechti
+ * @author Sébastien Henneberger
  */
 public class RouletteV2Shenn299Test {
 
