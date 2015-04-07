@@ -88,6 +88,7 @@ public class RouletteV1ond9IIIIIIIIIIIIITest {
 
         String expectedResponse = "{\"protocolVersion\":\"1.0\",\"numberOfStudents\":" + numberOfStudent.toString() + "}";
         assertEquals(expectedResponse, response);
+
     }
 
     @Test
