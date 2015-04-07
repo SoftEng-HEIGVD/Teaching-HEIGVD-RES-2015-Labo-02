@@ -25,34 +25,77 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
+  // The client's socket
+  private Socket clientSocket = null;
+  
+  // The writer and reader from the socket
+  private OutputStreamWriter out;
+  private InputStreamReader in;
+  
   @Override
   public void connect(String server, int port) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      // Connect to the port
+      clientSocket = new Socket(server, port);
+      
+      // Prepare the writer and reader
+      out = new OutputStreamWriter(clientSocket.getOutputStream());
+      in = new InputStreamReader(clientSocket.getInputStream());
   }
 
   @Override
   public void disconnect() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      // Close the socket
+      clientSocket.close();
   }
 
   @Override
   public boolean isConnected() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      // The server is connected if the socket is not closed
+      return !clientSocket.isClosed();
   }
 
   @Override
   public void loadStudent(String fullname) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      // Send load command
+      out.write("LOAD");
+      
+      // Write name
+      out.write(fullname);
+      
+      // Send end of data marker
+      out.write("ENDOFDATA");
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      // Send load command
+      out.write("LOAD");
+      
+      // Write all students
+      for (Student s : students) {
+          out.write(s.getFullname());
+      }
+      
+      // Send end of data marker
+      out.write("ENDOFDATA");
+      
+      // Flush stream
+      out.flush();
   }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      // Send RANDOM comamand
+      out.write("RANDOM");
+      
+      // Wait for response
+      while(!in.ready());
+      
+      // Read
+      char[] buffer = new char[100];
+      in.read(buffer, 0, 100);
+      
+      return new Student(new String(buffer));
   }
 
   @Override
@@ -64,7 +107,4 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   public String getProtocolVersion() throws IOException {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
-
-
-
 }
