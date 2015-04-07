@@ -22,6 +22,8 @@ import java.util.LinkedList;
  * This class implements the client side of the protocol specification (version 1).
  * 
  * @author Olivier Liechti
+ * @author Jan Purro
+ * @author Benoist Wolleb
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
     
