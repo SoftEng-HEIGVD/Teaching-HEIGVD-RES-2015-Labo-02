@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -59,14 +60,20 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   public void disconnect() throws IOException {
     writer.println(RouletteV1Protocol.CMD_BYE);
     writer.flush();
-    socket.close();
     writer.close();
     reader.close();
+    socket.close();
   }
 
   @Override
   public boolean isConnected() {
-    return socket.isConnected();
+      if(socket.isClosed()){
+          return false;
+      }
+      if(socket.isConnected()){
+          return true;
+      }
+      return false;
   }
 
   @Override
@@ -80,14 +87,17 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   @Override
   public void loadStudents(List<Student> students) throws IOException {
       writer.println(RouletteV1Protocol.CMD_LOAD);
+      writer.flush();
       String line;
       line=lineReader();
       if(!line.equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START)){
           throw new IOException("server response not correct....");
       }
       System.out.println(line);
-      for(Student s : students){
-      writer.println(s.getFullname());
+      Iterator<Student> s = students.iterator();
+      while(s.hasNext()){
+          writer.println(s.next().getFullname());
+          writer.flush();
       }
       writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
       writer.flush();
@@ -119,7 +129,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       writer.println(RouletteV1Protocol.CMD_INFO);
       writer.flush();
       line=lineReader();
-      return JsonObjectMapper.parseJson(line, InfoCommandResponse.class).getNumberOfStudents();
+      int nombStudents = JsonObjectMapper.parseJson(line, InfoCommandResponse.class).getNumberOfStudents();
+      return nombStudents;
   }
 
   @Override
