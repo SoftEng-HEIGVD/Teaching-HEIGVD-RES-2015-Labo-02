@@ -55,10 +55,10 @@ public class RouletteV2BinaryBrainTest {
 
     }
 
-    @Test
+    @Test(expected = EmptyStoreException.class)
     @TestAuthor(githubId = {"BinaryBrain", "D34D10CK"})
-    public void shouldReturnNullWhenPickingARandomStudentFromEmptyList() throws IOException, EmptyStoreException {
-        assertNull(((RouletteV2ClientImpl) roulettePair.getClient()).pickRandomStudent());
+    public void shouldThrowAnExceptionWhenPickingAStudentFromEmptyList() throws IOException, EmptyStoreException {
+        ((RouletteV2ClientImpl) roulettePair.getClient()).pickRandomStudent();
     }
 
     @Test
