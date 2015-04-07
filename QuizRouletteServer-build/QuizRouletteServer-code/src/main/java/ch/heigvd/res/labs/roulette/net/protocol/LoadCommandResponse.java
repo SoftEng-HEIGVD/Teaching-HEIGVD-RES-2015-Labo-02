@@ -5,11 +5,7 @@ package ch.heigvd.res.labs.roulette.net.protocol;
  * when processing the "LOAD" command defined in the protocol specification. The
  * JsonObjectMapper utility class can use this class.
  *
- * There is one subtelty: depending on the outcome, the payload will EITHER
- * contain an "error" attribute, OR a "fullname" attribute. The @JsonInclude
- * annotation is used to handle this issue.
- *
- * @author Olivier Liechti
+ * @author Olivier Liechti, Sébastien Henneberger
  */
 public class LoadCommandResponse {
 

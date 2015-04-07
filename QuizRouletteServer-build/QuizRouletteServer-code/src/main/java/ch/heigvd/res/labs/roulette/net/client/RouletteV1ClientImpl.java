@@ -13,14 +13,13 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * This class implements the client side of the protocol specification (version
  * 1).
  *
- * @author Olivier Liechti
+ * @author Olivier Liechti, Sébastien Henneberger
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
