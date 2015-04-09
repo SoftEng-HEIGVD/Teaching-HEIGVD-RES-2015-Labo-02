@@ -25,8 +25,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
   private Socket connection;
-  private PrintWriter writer;
-  private BufferedReader reader;
+  protected PrintWriter writer;
+  protected BufferedReader reader;
 
   @Override
   public void connect(String server, int port) throws IOException {
@@ -35,12 +35,13 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
      reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
      
      //lit le message de bienvenue
-     readLine();
+     reader.readLine();
   }
 
   @Override
   public void disconnect() throws IOException {
-     write(RouletteV1Protocol.CMD_BYE);
+     writer.println(RouletteV1Protocol.CMD_BYE);
+     writer.flush();
      writer.close();   
      reader.close();
      
@@ -55,39 +56,45 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public void loadStudent(String fullname) throws IOException {
-     write(RouletteV1Protocol.CMD_LOAD);
+     writer.println(RouletteV1Protocol.CMD_LOAD);
+     writer.flush();
      
      //lit le message de début
-     readLine();
+     reader.readLine();
      
-     write(fullname);
-     write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+     writer.println(fullname);
+     writer.flush();
+     writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+     writer.flush();
      
      //lit le message de fin
-     readLine();
+     endOfLoad();
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-     write(RouletteV1Protocol.CMD_LOAD);
+     writer.println(RouletteV1Protocol.CMD_LOAD);
+     writer.flush();
      
      //lit le message de début
-     readLine();
+     reader.readLine();
      
      for(Student student : students){
-        write(student.getFullname());
+        writer.println(student.getFullname());
+        writer.flush();
      }
-     write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+     writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+     writer.flush();
      
      //lit le message de fin
-     readLine();
+     endOfLoad();
   }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-      write(RouletteV1Protocol.CMD_RANDOM);
-      
-      RandomCommandResponse student = JsonObjectMapper.parseJson(readLine(), RandomCommandResponse.class);
+      writer.println(RouletteV1Protocol.CMD_RANDOM);
+      writer.flush();
+      RandomCommandResponse student = JsonObjectMapper.parseJson(reader.readLine(), RandomCommandResponse.class);
       
       //vérifie s'il y a une erreur (base vide)
       if(student.getError() != null){
@@ -98,30 +105,25 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public int getNumberOfStudents() throws IOException {
-      write(RouletteV1Protocol.CMD_INFO);
+      writer.println(RouletteV1Protocol.CMD_INFO);
+      writer.flush();
       
-      InfoCommandResponse info = JsonObjectMapper.parseJson(readLine(), InfoCommandResponse.class);
+      InfoCommandResponse info = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
       
       return info.getNumberOfStudents();
   }
 
   @Override
   public String getProtocolVersion() throws IOException {
-      write(RouletteV1Protocol.CMD_INFO);
+      writer.println(RouletteV1Protocol.CMD_INFO);
+      writer.flush();
       
-      InfoCommandResponse info = JsonObjectMapper.parseJson(readLine(), InfoCommandResponse.class);
+      InfoCommandResponse info = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
       
       return info.getProtocolVersion();
   }
   
-  // ces fonctions servirons pour ceux qui hériteront de cette classe
-  
-  public void write(String msg) throws IOException {
-     writer.println(msg);
-     writer.flush();
-  }
-  
-  public String readLine() throws IOException  {
-     return reader.readLine();
+  protected void endOfLoad()throws IOException{
+     reader.readLine();
   }
 }
