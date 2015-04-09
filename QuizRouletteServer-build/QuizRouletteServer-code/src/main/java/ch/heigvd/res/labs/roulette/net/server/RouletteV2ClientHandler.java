@@ -88,8 +88,10 @@ public class RouletteV2ClientHandler implements IClientHandler {
                break;
             //ajout de deux nouvelle commande
             case RouletteV2Protocol.CMD_CLEAR:
+               //System.err.println("In clear");
                store.clear();
-               writer.write(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
+               //System.err.println("sending response");
+               writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
                writer.flush();
                break;
             case RouletteV2Protocol.CMD_LIST:

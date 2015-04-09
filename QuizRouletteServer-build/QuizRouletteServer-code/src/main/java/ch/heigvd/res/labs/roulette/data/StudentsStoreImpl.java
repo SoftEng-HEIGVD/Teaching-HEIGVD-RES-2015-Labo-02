@@ -23,7 +23,9 @@ public class StudentsStoreImpl implements IStudentsStore {
 
   @Override
   public synchronized void clear() {
-    students.clear();
+    if(!students.isEmpty()){
+        students.clear();
+    }
   }
 
   @Override
