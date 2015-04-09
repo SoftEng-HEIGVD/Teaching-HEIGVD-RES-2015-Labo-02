@@ -29,9 +29,4 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       return students.getStudents();
    }
 
-   @Override
-   protected void endOfLoad()throws IOException{
-      reader.readLine();
-      reader.readLine();
-   }
 }
