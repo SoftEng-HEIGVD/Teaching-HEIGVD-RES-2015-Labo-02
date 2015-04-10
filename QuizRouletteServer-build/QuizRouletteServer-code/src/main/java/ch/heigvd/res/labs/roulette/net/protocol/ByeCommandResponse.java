@@ -12,7 +12,14 @@ public class ByeCommandResponse {
 
    private String status;
 
-   private int numberCommands;
+   private int numberOfCommands;
+   
+   public ByeCommandResponse() {}
+   
+   public ByeCommandResponse(String status, int numberOfCommands) {
+      this.status = status;
+      this.numberOfCommands = numberOfCommands;      
+   }
 
    public String getStatus() {
       return status;
@@ -23,10 +30,10 @@ public class ByeCommandResponse {
    }
 
    public int getNumberOfCommands() {
-      return numberCommands;
+      return numberOfCommands;
    }
 
-   public void setNumberOfCommands(int numberCommands) {
-      this.numberCommands = numberCommands;
+   public void setNumberOfCommands(int numberOfCommands) {
+      this.numberOfCommands = numberOfCommands;
    }
 }

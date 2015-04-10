@@ -27,7 +27,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       writer.println(RouletteV2Protocol.CMD_CLEAR);
       writer.flush();
 
-      readLine();
+      reader.readLine();
    }
 
    @Override
@@ -38,18 +38,20 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       writer.println(RouletteV2Protocol.CMD_LIST);
       writer.flush();
 
-      StudentsList list = JsonObjectMapper.parseJson(readLine(), StudentsList.class);
+      StudentsList list = JsonObjectMapper.parseJson(reader.readLine(), StudentsList.class);
 
       return list.getStudents();
    }
 
+   /*
    protected void endLoadOfStudent() throws IOException {
       LoadCommandResponse lcr = JsonObjectMapper.parseJson(readLine(), LoadCommandResponse.class);
       if (lcr.getStatus().equalsIgnoreCase("success")) {
-         LOG.log(Level.INFO, "Added successfully: {0} students", lcr.getNumberNewStudents());
+         LOG.log(Level.INFO, "Added successfully: {0} students", lcr.getNumberOfNewStudents());
       } else {
          LOG.log(Level.SEVERE, "Error : Students not added...");
       }
    }
+   */
 
 }

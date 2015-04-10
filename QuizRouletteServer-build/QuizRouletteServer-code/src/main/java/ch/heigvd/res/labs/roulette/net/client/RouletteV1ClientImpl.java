@@ -26,18 +26,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
    private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
    private Socket socket;
-   private BufferedReader reader;
+   protected BufferedReader reader;
    protected PrintWriter writer;
-
-   protected String readLine() throws IOException {
-      String line = null;
-
-      do {
-         line = reader.readLine();
-      } while (line == null);
-
-      return line;
-   }
 
    @Override
    public void connect(String server, int port) throws IOException {
@@ -48,7 +38,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-      System.out.println(readLine());
+      reader.readLine();
 
    }
 
@@ -81,16 +71,22 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
    public void loadStudent(String fullname) throws IOException {
       // To change body of generated methods, choose Tools | Templates.
       //throw new UnsupportedOperationException("Not supported yet.");
+      
+      if (fullname.length() != 0) {
 
-      writer.println(RouletteV1Protocol.CMD_LOAD);
-      writer.flush();
-      writer.println(fullname);
-      writer.flush();
-      writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
-      writer.flush();
+         writer.println(RouletteV1Protocol.CMD_LOAD);
+         writer.flush();
+         
+         reader.readLine();
+         
+         writer.println(fullname);
+         writer.flush();
+         writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+         writer.flush();
 
-      System.out.println(readLine());
-
+         reader.readLine();
+         
+      }
    }
 
    @Override
@@ -120,7 +116,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       writer.println(RouletteV1Protocol.CMD_RANDOM);
       writer.flush();
 
-      RandomCommandResponse rcr = JsonObjectMapper.parseJson(readLine(), RandomCommandResponse.class);
+      RandomCommandResponse rcr = JsonObjectMapper.parseJson(reader.readLine(), RandomCommandResponse.class);
       if (rcr.getError() != null) {
          throw new EmptyStoreException();
       }
@@ -136,7 +132,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       writer.println(RouletteV1Protocol.CMD_INFO);
       writer.flush();
 
-      InfoCommandResponse icr = JsonObjectMapper.parseJson(readLine(), InfoCommandResponse.class);
+      InfoCommandResponse icr = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
       return icr.getNumberOfStudents();
    }
 
@@ -148,7 +144,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       writer.println(RouletteV1Protocol.CMD_INFO);
       writer.flush();
 
-      InfoCommandResponse icr = JsonObjectMapper.parseJson(readLine(), InfoCommandResponse.class);
+      InfoCommandResponse icr = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
       return icr.getProtocolVersion();
    }
 }
