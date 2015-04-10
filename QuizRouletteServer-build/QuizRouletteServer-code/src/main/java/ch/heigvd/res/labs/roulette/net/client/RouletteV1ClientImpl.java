@@ -2,9 +2,10 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 import java.util.logging.Logger;
@@ -16,56 +17,109 @@ import java.util.logging.Logger;
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
+    // BRUGE GUILLAUME (git: guiguismall)
+    // VILLA DAVID     (git: yoaaaarp)
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
-  private Socket clientSocket;
-  private OutputStream os;
-  private InputStream is;
+  // socket on which the client writes and reads
+  private Socket clientSocket = null;
+  private BufferedReader in;
+  private PrintWriter out;
 
+
+  
   @Override
   public void connect(String server, int port) throws IOException {
+      // handles missing info
       if(server.isEmpty() || port < 0)
           throw new IOException("Wrong data");
+      // connects to the socket
       clientSocket = new Socket(server, port);
-      os = clientSocket.getOutputStream();
-      is = clientSocket.getInputStream();
+      // opens and wraps iostreams
+      out = new PrintWriter(clientSocket.getOutputStream(),true);
+      in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+      // flushes the line sent by the server
+      in.readLine();
   }
 
   @Override
   public void disconnect() throws IOException {
-      os.write("BYE".getBytes());
+      out.write("BYE\n");
+      out.flush();
       clientSocket.close();
   }
 
   @Override
   public boolean isConnected() {
-      return clientSocket.isConnected();
+      // if client wasn't connected yet
+      if(clientSocket == null)
+          return false;
+      
+      // if socket was closed
+      return !clientSocket.isClosed() && clientSocket.isConnected();
   }
 
   @Override
   public void loadStudent(String fullname) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      // handles empty name
+      if(fullname.isEmpty())
+          return;
+      
+      // writes commands
+      out.write("LOAD\n");
+      out.write(fullname + "\n");
+      out.write("ENDOFDATA\n");
+      out.flush();
+      
+      // flushes the 2 lines sent by the server
+      in.readLine();
+      in.readLine();
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      // writes commands
+      out.write("LOAD\n");
+      for(Student s : students) {
+          out.write((s.getFullname() + "\n"));
+      }
+      out.write("ENDOFDATA\n");
+      out.flush();
+      
+      // flushes the 2 lines sent by the server
+      in.readLine();
+      in.readLine();
   }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      // handles no student in database
+      if(getNumberOfStudents() == 0)
+          throw new EmptyStoreException();
+      
+      // writes commands
+      out.write("RANDOM\n");
+      out.flush();
+      
+      // reads and extracts student name
+      String name = in.readLine();
+      return new Student(name.substring(13, name.length()-2));
   }
 
   @Override
-  public int getNumberOfStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public int getNumberOfStudents() throws IOException { 
+      // writes commands
+      out.write("INFO\n");
+      out.flush();
+      
+      // reads and extracts number of students 
+      String info = in.readLine();
+      info = info.substring(44, info.length()-1); 
+      return Integer.parseInt(info);
   }
 
   @Override
   public String getProtocolVersion() throws IOException {
-    return "V1";
+    return "1.0";
   }
-
-
 
 }
