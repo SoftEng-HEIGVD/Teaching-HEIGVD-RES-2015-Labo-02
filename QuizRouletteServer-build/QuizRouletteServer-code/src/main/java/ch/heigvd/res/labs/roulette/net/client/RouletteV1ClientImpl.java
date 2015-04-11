@@ -9,13 +9,11 @@ import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -26,15 +24,19 @@ import java.util.logging.Logger;
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
-    private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+    protected static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
     private Socket socket = new Socket();
 
-    private BufferedReader reader;
-    private PrintWriter writer;
+    protected BufferedReader reader;
+    protected PrintWriter writer;
 
     @Override
     public void connect(String server, int port) throws IOException {
+        if (isConnected()) {
+            throw new IOException();
+        }
+
         socket.connect(new InetSocketAddress(server, port));
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         writer = new PrintWriter(socket.getOutputStream());
@@ -42,7 +44,20 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public void disconnect() throws IOException {
+        if (!isConnected()) {
+            throw new IOException();
+        }
+
+        writer.println(RouletteV1Protocol.CMD_BYE);
+        writer.flush();
+        handleByeResponse();
+
+        reader.close();
+        writer.close();
         socket.close();
+    }
+
+    protected void handleByeResponse() throws IOException{
     }
 
     @Override
@@ -59,18 +74,26 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public void loadStudents(List<Student> students) throws IOException {
-        writer.write(RouletteV1Protocol.CMD_LOAD);
+        if (isConnected()) {
+            throw new IOException();
+        }
+
+        writer.println(RouletteV1Protocol.CMD_LOAD);
         writer.flush();
         if (!reader.readLine().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START)) {
             throw new IOException();
         }
 
         for (Student student : students) {
-            writer.write(student.getFullname());
+            writer.println(student.getFullname());
         }
 
-        writer.write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+        writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
         writer.flush();
+        handleLoadResponse();
+    }
+
+    protected void handleLoadResponse() throws IOException {
         if (!reader.readLine().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_DONE)) {
             throw new IOException();
         }
@@ -78,7 +101,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public Student pickRandomStudent() throws EmptyStoreException, IOException {
-        writer.write(RouletteV1Protocol.CMD_RANDOM);
+        if (!isConnected()) {
+            throw new IOException();
+        }
+
+        writer.println(RouletteV1Protocol.CMD_RANDOM);
         writer.flush();
 
         RandomCommandResponse response = JsonObjectMapper.parseJson(reader.readLine(), RandomCommandResponse.class);
@@ -100,7 +127,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     }
 
     private InfoCommandResponse getInfo() throws IOException {
-        writer.write(RouletteV1Protocol.CMD_RANDOM);
+        if (!isConnected()) {
+            throw new IOException();
+        }
+
+        writer.println(RouletteV1Protocol.CMD_RANDOM);
         writer.flush();
 
         return JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
