@@ -61,10 +61,22 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       //br.readLine(); // welcome message!
   }
 
+   /**
+   * Customized byeByVersion to handle V1/V2 dynamically.
+   * V1 sends the bye commands and returns. 
+   * V2 sends the bye commands and waits for a reply: the number of commands used during the session.
+   * 
+   * // V1: noting or V2: {"status":"success","numberOfCommands":3}
+   * @throws IOException 
+   */
+  private void byeByVersion () throws IOException {
+      printWriter.println(RouletteV1Protocol.CMD_BYE);
+      printWriter.flush(); //
+  }
+
   @Override
   public void disconnect() throws IOException {
-      printWriter.println(RouletteV1Protocol.CMD_BYE);
-      printWriter.flush();
+      byeByVersion();
       printWriter.close();
       buffReader.close();
       mysocket.close();

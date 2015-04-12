@@ -3,6 +3,7 @@ package ch.heigvd.res.labs.roulette.net.client;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.data.StudentsList;
+import ch.heigvd.res.labs.roulette.net.protocol.ByeCommandStatus;
 import ch.heigvd.res.labs.roulette.net.protocol.LoadCommandStatus;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import java.io.IOException;
@@ -52,4 +53,22 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       } // git trick for braces
   } // git trick for braces
 
+  /**
+   * Customized byeByVersion to handle V1/V2 dynamically.
+   * V1 sends the bye commands and returns. 
+   * V2 sends the bye commands and waits for a reply: the number of commands used during the session.
+   * 
+   * // V1: noting or V2: {"status":"success","numberOfCommands":3}
+   * @throws IOException 
+   */
+    private void byeByVersion () throws IOException {
+      printWriter.println(RouletteV2Protocol.CMD_BYE);
+      printWriter.flush();
+      ByeCommandStatus bcs = JsonObjectMapper.parseJson(myReadLine(), ByeCommandStatus.class);
+      if (bcs.getStatus().equalsIgnoreCase("success")) {
+          LOG.log(Level.INFO, "End. Run successfully: {0} commands", bcs.getNumberOfCommands());
+      } else {
+          LOG.severe("Error. Unexpected behavior with BYE command... ");
+      } // git trick for braces
+  } // git trick for braces
 }

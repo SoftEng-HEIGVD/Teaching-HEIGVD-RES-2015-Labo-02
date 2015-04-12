@@ -50,7 +50,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
     while (!done && ((command = reader.readLine()) != null)) {
       ++nbCommand;
       LOG.log(Level.INFO, "COMMAND: {0}", command);
-      LOG.log(Level.INFO, "# CMD: {0}", nbCommand);
+      //LOG.log(Level.INFO, "# CMD: {0}", nbCommand);
       switch (command.toUpperCase()) {
         case RouletteV1Protocol.CMD_RANDOM:
           RandomCommandResponse rcResponse = new RandomCommandResponse();
