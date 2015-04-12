@@ -31,8 +31,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   private Socket socket;
   
   // Writer and reader to exchange message with the sever
-  private PrintWriter writer;
-  private BufferedReader reader;
+  protected PrintWriter writer;
+  protected BufferedReader reader;
     
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
   

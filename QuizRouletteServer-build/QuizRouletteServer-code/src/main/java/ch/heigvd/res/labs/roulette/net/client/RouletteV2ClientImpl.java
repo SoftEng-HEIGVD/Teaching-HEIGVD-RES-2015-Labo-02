@@ -6,6 +6,7 @@ import ch.heigvd.res.labs.roulette.data.StudentsList;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import java.io.IOException;
 import java.util.List;
+import java.util.LinkedList;
 
 /**
  * This class implements the client side of the protocol specification (version 2).
@@ -15,13 +16,27 @@ import java.util.List;
 public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRouletteV2Client {
 
   @Override
-  public void clearDataStore() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public void clearDataStore() throws IOException
+  {
+    writer.println(RouletteV2Protocol.CMD_CLEAR);
+    writer.flush();
+    
+    // Check if the server is ready.
+    if (!readLine().equalsIgnoreCase(RouletteV2Protocol.RESPONSE_CLEAR_DONE)) 
+    {
+      throw new IOException("Incorrect server response");
+    }
   }
 
   @Override
-  public List<Student> listStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public List<Student> listStudents() throws IOException
+  {
+      writer.println(RouletteV2Protocol.CMD_LIST);
+      writer.flush();
+      
+      StudentsList students = JsonObjectMapper.parseJson(readLine(), StudentsList.class);
+      
+      return students.getStudents();
   }
   
 }
