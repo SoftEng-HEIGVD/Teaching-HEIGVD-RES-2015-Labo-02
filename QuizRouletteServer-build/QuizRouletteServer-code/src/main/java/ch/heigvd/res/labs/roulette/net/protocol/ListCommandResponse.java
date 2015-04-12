@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  *
- * @author Guillaume
+ * @author guiguismall
  */
 public class ListCommandResponse {
     private List<Student> students = new LinkedList();
