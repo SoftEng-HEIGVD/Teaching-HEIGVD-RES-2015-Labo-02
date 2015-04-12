@@ -42,17 +42,21 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public void disconnect() throws IOException {
-
+        writer.println(RouletteV1Protocol.CMD_BYE);
+        writer.flush();
+        socket.close();
+        writer.close();
+        reader.close();
     }
 
     @Override
     public boolean isConnected() {
 
         if (socket != null) {
-            return socket.isConnected();
-        } else {
-            return false;
+            return socket.isConnected() && !socket.isClosed();
         }
+
+      return false;
     }
 
     @Override
@@ -86,10 +90,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         writer.flush();
         // On lit le message reçu après la commande (RESPONSE_LOAD_START)
             System.out.println(reader.readLine());
-        for (Student student : students) {            
-            
-            writer.println(student.getFullname());        
-            
+        for (Student student : students) {
+
+            writer.println(student.getFullname());
+
         }
         writer.flush();
         writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
