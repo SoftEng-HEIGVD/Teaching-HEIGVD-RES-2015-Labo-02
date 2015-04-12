@@ -30,18 +30,25 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   // socket for server connection
   private Socket mysocket = null;
   // input from server
-  private BufferedReader br = null;
+  private BufferedReader buffReader = null;
   // output to server (dont forget to flush before expecting response!)
-  protected PrintWriter pw = null;
+  protected PrintWriter printWriter = null;
   // welcome message to avoid...
+  // these are hard-coded server-side (not in protocol) that's why there are here also.
   private final String welcome = "Hello. Online HELP is available. Will you find it?";
   private final String notUnderstood = "Huh? please use HELP if you don't know what commands are available.";
 
 
+  /**
+   * Customized readLine to read the next "interesting" line:
+   * avoid welcome message and "not understood" messages. 
+   * @return
+   * @throws IOException 
+   */
   protected String myReadLine() throws IOException {
       String line;
       do {
-          line = br.readLine();
+          line = buffReader.readLine();
       } while (line.equalsIgnoreCase(welcome) || line.equalsIgnoreCase(notUnderstood));
       return line;
   }
@@ -49,17 +56,17 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   @Override
   public void connect(String server, int port) throws IOException {
       mysocket = new Socket(server, port);
-      pw = new PrintWriter(new OutputStreamWriter(mysocket.getOutputStream()));
-      br = new BufferedReader(new InputStreamReader(mysocket.getInputStream()));
+      printWriter = new PrintWriter(new OutputStreamWriter(mysocket.getOutputStream()));
+      buffReader = new BufferedReader(new InputStreamReader(mysocket.getInputStream()));
       //br.readLine(); // welcome message!
   }
 
   @Override
   public void disconnect() throws IOException {
-      pw.println(RouletteV1Protocol.CMD_BYE);
-      pw.flush();
-      pw.close();
-      br.close();
+      printWriter.println(RouletteV1Protocol.CMD_BYE);
+      printWriter.flush();
+      printWriter.close();
+      buffReader.close();
       mysocket.close();
   }
 
@@ -68,6 +75,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       if (mysocket == null) {
          return false; 
       } else {
+          // return true if has been connected and not closed so far.
           return mysocket.isConnected() && !mysocket.isClosed();
       } // git trick for braces
   }
@@ -79,25 +87,33 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       loadStudents(list);
   }
 
+  /**
+   * Customized endLoad to handle V1/V2 dynamically.
+   * V1 reads the line and return. 
+   * V2 has a status code and number of added students printed in the logs.
+   * 
+   * // V1: DATA LOADED or V2: {"status":"success","numberOfNewStudents":3}
+   * @throws IOException 
+   */
   private void endLoad () throws IOException {
       myReadLine();
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-      pw.println(RouletteV1Protocol.CMD_LOAD);
-      pw.flush();
+      printWriter.println(RouletteV1Protocol.CMD_LOAD);
+      printWriter.flush();
 
       if (!myReadLine().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START)) {
           throw new IOException("server response not correct....");
       } // git trick for braces
 
       for (Student student : students) {
-          pw.println(student.getFullname());
+          printWriter.println(student.getFullname());
       } // git trick for braces
 
-      pw.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
-      pw.flush();
+      printWriter.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+      printWriter.flush();
 
       endLoad();
        // V1: DATA LOADED or V2: {"status":"success","numberOfNewStudents":3}
@@ -105,8 +121,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-      pw.println(RouletteV1Protocol.CMD_RANDOM);
-      pw.flush();
+      printWriter.println(RouletteV1Protocol.CMD_RANDOM);
+      printWriter.flush();
 
       RandomCommandResponse rcr = JsonObjectMapper.parseJson(myReadLine(), RandomCommandResponse.class);
       if(rcr.getError() != null) {
@@ -117,8 +133,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public int getNumberOfStudents() throws IOException {
-      pw.println(RouletteV1Protocol.CMD_INFO);
-      pw.flush();
+      printWriter.println(RouletteV1Protocol.CMD_INFO);
+      printWriter.flush();
 
       InfoCommandResponse icr = JsonObjectMapper.parseJson(myReadLine(), InfoCommandResponse.class);
       return icr.getNumberOfStudents();
@@ -126,8 +142,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public String getProtocolVersion() throws IOException {
-      pw.println(RouletteV1Protocol.CMD_INFO);
-      pw.flush();
+      printWriter.println(RouletteV1Protocol.CMD_INFO);
+      printWriter.flush();
 
       InfoCommandResponse icr = JsonObjectMapper.parseJson(myReadLine(), InfoCommandResponse.class);
       return icr.getProtocolVersion();

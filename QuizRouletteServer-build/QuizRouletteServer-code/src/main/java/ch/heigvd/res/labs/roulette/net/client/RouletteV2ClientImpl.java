@@ -19,8 +19,8 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
   @Override
   public void clearDataStore() throws IOException {
-      pw.println(RouletteV2Protocol.CMD_CLEAR);
-      pw.flush();
+      printWriter.println(RouletteV2Protocol.CMD_CLEAR);
+      printWriter.flush();
       if (!myReadLine().equalsIgnoreCase(RouletteV2Protocol.RESPONSE_CLEAR_DONE)) {
           throw new IOException("server not following conventions...");
       } // git trick for braces
@@ -28,14 +28,21 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
   @Override
   public List<Student> listStudents() throws IOException {
-      pw.println(RouletteV2Protocol.CMD_LIST);
-      pw.flush();
+      printWriter.println(RouletteV2Protocol.CMD_LIST);
+      printWriter.flush();
 
       StudentsList sl = JsonObjectMapper.parseJson(myReadLine(), StudentsList.class);
       return sl.getStudents();
   }
 
-  // V1: DATA LOADED or V2: {"status":"success","numberOfNewStudents":3}
+  /**
+   * Customized endLoad to handle V1/V2 dynamically.
+   * V1 reads the line and return. 
+   * V2 has a status code and number of added students printed in the logs.
+   * 
+   * // V1: DATA LOADED or V2: {"status":"success","numberOfNewStudents":3}
+   * @throws IOException 
+   */
   protected void endLoad() throws IOException {
       LoadCommandStatus lcs = JsonObjectMapper.parseJson(myReadLine(), LoadCommandStatus.class);
       if (lcs.getStatus().equalsIgnoreCase("success")) {

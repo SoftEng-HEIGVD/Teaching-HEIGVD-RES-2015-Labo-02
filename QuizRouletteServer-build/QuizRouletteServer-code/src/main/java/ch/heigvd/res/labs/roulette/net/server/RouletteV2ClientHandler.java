@@ -75,12 +75,12 @@ public class RouletteV2ClientHandler implements IClientHandler {
         case RouletteV1Protocol.CMD_LOAD:
           writer.println(RouletteV1Protocol.RESPONSE_LOAD_START);
           writer.flush();
-          int before = store.listStudents().size();
+          int nbStudBefore = store.getNumberOfStudents();
           store.importData(reader);
-          int after = store.listStudents().size();
+          int nbStudAfter = store.getNumberOfStudents();
           LoadCommandStatus lcs = new LoadCommandStatus();
           lcs.setStatus("success");
-          lcs.setNumberOfNewStudents(after-before);
+          lcs.setNumberOfNewStudents(nbStudAfter-nbStudBefore);
           writer.println(JsonObjectMapper.toJson(lcs));
           writer.flush();
           break;
