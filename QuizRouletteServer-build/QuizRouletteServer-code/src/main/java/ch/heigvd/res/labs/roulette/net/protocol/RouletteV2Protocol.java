@@ -9,7 +9,7 @@ public class RouletteV2Protocol extends RouletteV1Protocol {
 
   public final static String VERSION = "2.0";
 
-  public final static int DEFAULT_PORT = 1314;
+  public final static int DEFAULT_PORT = 2613; // specs default V2 port
   
   public final static String CMD_CLEAR = "CLEAR";
   public final static String CMD_LIST = "LIST";
