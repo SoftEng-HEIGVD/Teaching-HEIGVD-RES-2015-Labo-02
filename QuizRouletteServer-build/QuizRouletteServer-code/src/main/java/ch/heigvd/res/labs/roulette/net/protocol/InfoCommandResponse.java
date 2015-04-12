@@ -12,8 +12,7 @@ public class InfoCommandResponse {
   private String protocolVersion;
   private int numberOfStudents;
 
-  public InfoCommandResponse() {
-  }
+  public InfoCommandResponse() {}
 
   public InfoCommandResponse(String protocolVersion, int numberOfStudents) {
     this.protocolVersion = protocolVersion;

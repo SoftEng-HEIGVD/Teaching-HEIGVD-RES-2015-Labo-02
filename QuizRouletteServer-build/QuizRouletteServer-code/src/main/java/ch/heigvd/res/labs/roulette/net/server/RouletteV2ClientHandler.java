@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 /**
  * This class implements the Roulette protocol (version 2).
  *
- * @author Olivier Liechti
+ * @author Olivier Liechti, Sébastien Henneberger
  */
 public class RouletteV2ClientHandler implements IClientHandler {
 
@@ -75,7 +75,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
                writer.flush();
                break;
                
-            // Spécification du protocole v2
+            // Spécification du protocole version 2
             case RouletteV2Protocol.CMD_LOAD:
                int nbStudentsBefore = store.getNumberOfStudents();
                writer.println(RouletteV2Protocol.RESPONSE_LOAD_START);
@@ -86,7 +86,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
                writer.flush();
                break;
                
-            // Spécification du protocole v2
+            // Spécification du protocole version 2
             case RouletteV2Protocol.CMD_BYE:
                done = true;
                ByeCommandResponse bye = new ByeCommandResponse("success", ++numberOfCommands);
@@ -94,7 +94,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
                writer.flush();
                break;
                
-            // Spécification du protocole v2
+            // Spécification du protocole version 2
             case RouletteV2Protocol.CMD_CLEAR:
                //System.err.println("In clear");
                store.clear();

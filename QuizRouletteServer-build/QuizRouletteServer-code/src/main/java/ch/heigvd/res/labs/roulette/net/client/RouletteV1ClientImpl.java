@@ -24,9 +24,12 @@ import java.util.logging.Logger;
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
    private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
-
+   // Pour la connexion entre un client et le serveur
    private Socket socket;
+   
+   // Flux de texte d'entrée
    protected BufferedReader reader;
+   // Flux de texte de sortie
    protected PrintWriter writer;
 
    @Override
@@ -38,6 +41,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
+      // Lecture du message de bienvenue
       reader.readLine();
 
    }
@@ -47,7 +51,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       // To change body of generated methods, choose Tools | Templates.
       //throw new UnsupportedOperationException("Not supported yet.");
 
+      // Ecriture de "BYE"
       writer.println(RouletteV1Protocol.CMD_BYE);
+      
+      // Fermeture
       writer.flush();
       writer.close();
       reader.close();
@@ -72,6 +79,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       // To change body of generated methods, choose Tools | Templates.
       //throw new UnsupportedOperationException("Not supported yet.");
       
+      // Si le nom de l'étudiant est d'une longueur différente de 0 
       if (fullname.length() != 0) {
 
          writer.println(RouletteV1Protocol.CMD_LOAD);
