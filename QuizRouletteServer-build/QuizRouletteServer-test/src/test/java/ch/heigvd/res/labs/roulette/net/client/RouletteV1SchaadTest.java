@@ -17,11 +17,11 @@ import org.junit.rules.ExpectedException;
  */
 public class RouletteV1SchaadTest {
    
-   @Rule
-   private final int NB_STUDENT = 2;
+   //@Rule
+   //private final int NB_STUDENT = 2;
    
-   @Rule
-   private IRouletteV1Client tabClient[] = new RouletteV1ClientImpl[NB_STUDENT];
+   //@Rule
+   //private IRouletteV1Client tabClient[] = new RouletteV1ClientImpl[NB_STUDENT];
 
    @Rule
    public ExpectedException exception = ExpectedException.none();
@@ -38,7 +38,10 @@ public class RouletteV1SchaadTest {
    @Test
    @TestAuthor(githubId = "schaad")
    public void twoClientMuseBeAbleToConnectSimultaneously() throws IOException {
+      final int NB_STUDENT = 2;
+      
       int port = roulettePair.getServer().getPort();
+      IRouletteV1Client tabClient[] = new RouletteV1ClientImpl[NB_STUDENT];
       
       for(int i = 0 ; i < NB_STUDENT ; ++i){
          tabClient[i] = new RouletteV1ClientImpl();
@@ -64,21 +67,32 @@ public class RouletteV1SchaadTest {
    @Test
    @TestAuthor(githubId = "schaad")
    public void theServerShouldBeAbleToLoadStudentsFromDifferentClient() throws IOException {
+      final int NB_STUDENT = 2;
+      
       int port = roulettePair.getServer().getPort();
-      //IRouletteV1Client tabClient[] = new RouletteV1ClientImpl[NB_STUDENT];
+      IRouletteV1Client tabClient[] = new RouletteV1ClientImpl[NB_STUDENT];
+      
+      for(int i = 0 ; i < NB_STUDENT ; ++i){
+         tabClient[i] = new RouletteV1ClientImpl();
+         tabClient[i].connect("localhost", port);
+      }
       
       for(int i = 0 ; i < NB_STUDENT ; ++i){        
          tabClient[i].loadStudent("student " + i);
       }
       
-      // On vérifie qu'il y aie NB_STUDENT + 1 étudiants chargés 
-      // (le "+ 1" pour l'élève chargé dans aStudentShouldStayInTheServerAfterClientDisconnect)
-      assertEquals(NB_STUDENT + 1, roulettePair.getClient().getNumberOfStudents());
+      // On vérifie qu'il y aie NB_STUDENT
+      assertEquals(NB_STUDENT, roulettePair.getClient().getNumberOfStudents());
    }
    
    @Test
    @TestAuthor(githubId = "schaad")
    public void itShouldBePossibleToPickAStudent() throws IOException {
+      
+      int port = roulettePair.getServer().getPort();
+      roulettePair.getClient().loadStudent("student test1");
+      roulettePair.getClient().loadStudent("student test2");
+      
       try{
          roulettePair.getClient().pickRandomStudent();
       } catch(EmptyStoreException e){
@@ -89,7 +103,18 @@ public class RouletteV1SchaadTest {
    
    @Test
    @TestAuthor(githubId = "schaad")
+   
    public void twoClientShouldBeAbleToDisconnectSimultaneously() throws IOException {
+      final int NB_STUDENT = 2;
+      
+      int port = roulettePair.getServer().getPort();
+      IRouletteV1Client tabClient[] = new RouletteV1ClientImpl[NB_STUDENT];
+      
+      for(int i = 0 ; i < NB_STUDENT ; ++i){
+         tabClient[i] = new RouletteV1ClientImpl();
+         tabClient[i].connect("localhost", port);
+      }
+      
       for(int i = 0 ; i < NB_STUDENT ; ++i){
          tabClient[i].disconnect();
       }
