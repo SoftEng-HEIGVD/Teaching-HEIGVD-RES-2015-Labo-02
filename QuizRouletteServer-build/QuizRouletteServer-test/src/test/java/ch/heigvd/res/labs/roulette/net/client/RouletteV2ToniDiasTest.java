@@ -1,13 +1,22 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
+import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
 import java.io.IOException;
+<<<<<<< HEAD:QuizRouletteServer-build/QuizRouletteServer-test/src/test/java/ch/heigvd/res/labs/roulette/net/client/RouletteV2ToniDiasTest.java
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+=======
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import org.junit.Test;
+import static org.junit.Assert.*;
+>>>>>>> upstream/fb-students-tests-validated:QuizRouletteServer-build/QuizRouletteServer-test/src/test/java/ch/heigvd/res/labs/roulette/net/client/RouletteV1WasadigiTest.java
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
