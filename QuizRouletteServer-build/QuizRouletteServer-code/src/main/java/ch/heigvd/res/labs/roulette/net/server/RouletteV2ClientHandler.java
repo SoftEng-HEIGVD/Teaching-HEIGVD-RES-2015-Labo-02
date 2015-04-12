@@ -71,8 +71,11 @@ public class RouletteV2ClientHandler implements IClientHandler {
         case RouletteV2Protocol.CMD_LOAD:
           writer.println(RouletteV2Protocol.RESPONSE_LOAD_START);
           writer.flush();
+          int nbOfStudentsBeforeInsert = store.getNumberOfStudents();
           store.importData(reader);
-          writer.println(RouletteV2Protocol.RESPONSE_LOAD_DONE);
+          int nbOfStudentsAfterInsert = store.getNumberOfStudents();
+          //writer.println(RouletteV2Protocol.RESPONSE_LOAD_DONE);
+          writer.println("{\"status\":\"success\",\"numberOfNewStudents\":" + (nbOfStudentsAfterInsert - nbOfStudentsBeforeInsert) + "}");
           writer.flush();
           break;
         case RouletteV2Protocol.CMD_BYE:

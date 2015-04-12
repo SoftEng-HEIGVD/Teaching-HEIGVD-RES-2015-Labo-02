@@ -18,8 +18,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
   @Override
   public void clearDataStore() throws IOException
   {
-    writer.println(RouletteV2Protocol.CMD_CLEAR);
-    writer.flush();
+    writeLine(RouletteV2Protocol.CMD_CLEAR);
     
     // Check if the server is ready.
     if (!readLine().equalsIgnoreCase(RouletteV2Protocol.RESPONSE_CLEAR_DONE)) 
@@ -31,8 +30,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
   @Override
   public List<Student> listStudents() throws IOException
   {
-      writer.println(RouletteV2Protocol.CMD_LIST);
-      writer.flush();
+      writeLine(RouletteV2Protocol.CMD_LIST);
       
       StudentsList students = JsonObjectMapper.parseJson(readLine(), StudentsList.class);
       
