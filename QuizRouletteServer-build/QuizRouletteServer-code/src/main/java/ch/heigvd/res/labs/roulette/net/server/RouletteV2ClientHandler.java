@@ -4,6 +4,7 @@ import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Logger;
 
 /**
  * This class implements the Roulette protocol (version 2).
@@ -11,9 +12,13 @@ import java.io.OutputStream;
  * @author Olivier Liechti
  */
 public class RouletteV2ClientHandler implements IClientHandler {
+    
+  final static Logger LOG = Logger.getLogger(RouletteV2ClientHandler.class.getName());
+
+  private final IStudentsStore store;
 
   public RouletteV2ClientHandler(IStudentsStore store) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of gen  
+    this.store = store;
   }
 
   @Override
