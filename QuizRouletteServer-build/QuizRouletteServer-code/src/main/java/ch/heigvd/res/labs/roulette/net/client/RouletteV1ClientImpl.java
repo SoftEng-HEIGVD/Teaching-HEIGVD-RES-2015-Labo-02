@@ -39,23 +39,16 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
             }
 
             clientSocket = new Socket(server, port);
+            LOG.log(Level.INFO, "Client connected to" + server + " on port" + port);
             reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
+            LOG.log(Level.INFO, "Client initialized reader");
             writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"));
+            LOG.log(Level.INFO, "Client initialized writer");
 
+            LOG.log(Level.INFO, "Connection success HELLO CMD : {0}", reader.readLine());
         } catch (IOException ex) {
+            System.out.println("IOException");
             LOG.log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                reader.close();
-                writer.close();
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-            }
-            try {
-                clientSocket.close();
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-            }
         }
     }
 
@@ -92,10 +85,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         if (isConnected()) {
             writer.println(RouletteV1Protocol.CMD_LOAD);
             writer.flush();
-
+            LOG.log(Level.INFO, "Load Student Start Response : {0}", reader.readLine());
             writer.println(fullname);
             writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
             writer.flush();
+            LOG.log(Level.INFO, "Load Student End Response : {0}", reader.readLine());
         } else {
             // todo 
         }
@@ -107,12 +101,16 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
             writer.println(RouletteV1Protocol.CMD_LOAD);
             writer.flush();
 
+            LOG.log(Level.INFO, "Load Students Start Response : {0}", reader.readLine());
+
             for (Student student : students) {
                 writer.println(student.getFullname());
             }
 
             writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
             writer.flush();
+
+            LOG.log(Level.INFO, "Load Students End Response : {0}", reader.readLine());
         } else {
             //todo
         }
@@ -146,6 +144,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
             writer.flush();
             String json = reader.readLine();
 
+            LOG.log(Level.INFO, "Response string {0}", json);
             return JsonObjectMapper.parseJson(json, InfoCommandResponse.class).getNumberOfStudents();
         } else {
             throw new IOException("client not connected");
