@@ -117,7 +117,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     }
     
     private InfoCommandResponse getInfo() throws IOException {        
-        writer.println(RouletteV1Protocol.CMD_RANDOM);
+        writer.println(RouletteV1Protocol.CMD_INFO);
         writer.flush();
         
         return JsonObjectMapper.parseJson(readMessage(), InfoCommandResponse.class);
