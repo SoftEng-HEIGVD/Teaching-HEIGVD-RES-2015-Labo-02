@@ -85,11 +85,8 @@ public class RouletteV2ond9IIIIIIIIIIIIITest {
         reader = new BufferedReader(new InputStreamReader(s.getInputStream(), "UTF-8"));
         writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream(), "UTF-8"));
 
-        String inviteMSG = reader.readLine(); // not used
-        
         writer.println("CLEAR");
         writer.flush();
-        inviteMSG = reader.readLine();
 
         writer.println("RANDOM");
         writer.flush();
@@ -112,12 +109,9 @@ public class RouletteV2ond9IIIIIIIIIIIIITest {
         reader = new BufferedReader(new InputStreamReader(s.getInputStream(), "UTF-8"));
         writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream(), "UTF-8"));
 
-        String inviteMSG = reader.readLine(); // not used
-        
         writer.println("CLEAR");
         writer.flush();
-        inviteMSG = reader.readLine(); // not used
-        
+
         writer.println("INFO");
         writer.flush();
 
@@ -139,8 +133,6 @@ public class RouletteV2ond9IIIIIIIIIIIIITest {
         reader = new BufferedReader(new InputStreamReader(s.getInputStream(), "UTF-8"));
         writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream(), "UTF-8"));
 
-        String inviteMSG = reader.readLine(); // not used
-        
         writer.println("BYE");
         writer.flush();
 
