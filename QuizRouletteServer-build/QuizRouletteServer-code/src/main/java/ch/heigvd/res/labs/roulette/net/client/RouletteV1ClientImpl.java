@@ -42,27 +42,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public void disconnect() throws IOException {
-        writer.println(RouletteV1Protocol.CMD_BYE);
-        writer.flush();
-        writer.close();
 
-<<<<<<< HEAD
-  @Override
-  public void disconnect() throws IOException {
-
-
-
-  }
-=======
-        System.out.println(reader.readLine());
-
-        socket.close();
-        reader.close();
     }
 
     @Override
     public boolean isConnected() {
->>>>>>> 7cf3648d55a7a1c1cf56f4faa804ef95a6613934
 
         if (socket != null) {
             return socket.isConnected();
@@ -74,15 +58,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     @Override
     public void loadStudent(String fullname) throws IOException {
 
-<<<<<<< HEAD
-    return false;
-  }
-=======
         writer.println(RouletteV1Protocol.CMD_LOAD);
         writer.flush();
         // On lit le message reçu après la commande
         System.out.println(reader.readLine());
->>>>>>> 7cf3648d55a7a1c1cf56f4faa804ef95a6613934
 
         writer.println(fullname);
         writer.flush();
@@ -130,6 +109,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     public Student pickRandomStudent() throws EmptyStoreException, IOException {
         writer.println(RouletteV1Protocol.CMD_RANDOM);
         writer.flush();
+
         RandomCommandResponse rcRep = JsonObjectMapper.parseJson(reader.readLine(), RandomCommandResponse.class);
         if(rcRep.getError() != null){
             throw new EmptyStoreException();
