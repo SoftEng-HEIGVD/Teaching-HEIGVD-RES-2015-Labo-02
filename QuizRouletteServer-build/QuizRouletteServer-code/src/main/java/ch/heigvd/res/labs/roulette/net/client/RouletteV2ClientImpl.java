@@ -18,33 +18,25 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
     @Override
     public void clearDataStore() throws IOException {
-        if (!isConnected()) {
-            throw new IOException();
-        }
-
         writer.println(RouletteV2Protocol.CMD_CLEAR);
         writer.flush();
 
-        if (!reader.readLine().equalsIgnoreCase(RouletteV2Protocol.RESPONSE_CLEAR_DONE)) {
+        if (!readMessage().equalsIgnoreCase(RouletteV2Protocol.RESPONSE_CLEAR_DONE)) {
             throw new IOException();
         }
     }
 
     @Override
     public List<Student> listStudents() throws IOException {
-        if (isConnected()) {
-            throw new IOException();
-        }
-
         writer.println(RouletteV2Protocol.CMD_LIST);
         writer.flush();
-        StudentsList list = JsonObjectMapper.parseJson(reader.readLine(), StudentsList.class);
+        StudentsList list = JsonObjectMapper.parseJson(readMessage(), StudentsList.class);
         return list.getStudents();
     }
 
     @Override
     protected void handleByeResponse() throws IOException {
-        String response = reader.readLine();
+        String response = readMessage();
         if (!response.contains("success")) {
             throw new IOException();
         }
@@ -53,7 +45,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
     @Override
     protected void handleLoadResponse() throws IOException {
-        String response = reader.readLine();
+        String response = readMessage();
         if (!response.contains("success")) {
             throw new IOException();
         }
