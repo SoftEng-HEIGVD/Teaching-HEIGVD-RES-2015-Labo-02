@@ -93,10 +93,11 @@ public class RouletteServer {
       }
     }
 
+    shouldRun = true;
     Thread serverThread = new Thread(new Runnable() {
       @Override
       public void run() {
-        shouldRun = true;
+        //shouldRun = true;
         while (shouldRun) {
           try {
             LOG.log(Level.INFO, "Listening for client connection on {0}", serverSocket.getLocalSocketAddress());
