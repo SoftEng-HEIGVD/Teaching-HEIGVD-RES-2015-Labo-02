@@ -16,12 +16,19 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
   @Override
   public void clearDataStore() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    out.println("clear");
   }
 
   @Override
   public List<Student> listStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    String answer;
+    
+    out.print("list");
+    
+    do{
+        answer = in.readLine();
+    }while(!answer.contains("{"));
+    return JsonObjectMapper.parseJson(answer, StudentsList.class).getStudents();
   }
   
 }

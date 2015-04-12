@@ -27,8 +27,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
   private Socket clientSocket = null;
-  private BufferedReader in = null;
-  private PrintWriter out = null;
+  protected BufferedReader in = null;
+  protected PrintWriter out = null;
   private boolean connected = false;
 
   @Override
