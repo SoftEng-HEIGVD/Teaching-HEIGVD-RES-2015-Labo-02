@@ -48,7 +48,9 @@ public class RouletteV2ClientHandler implements IClientHandler {
     String command;
     boolean done = false;
     while (!done && ((command = reader.readLine()) != null)) {
+      ++nbCommand;
       LOG.log(Level.INFO, "COMMAND: {0}", command);
+      LOG.log(Level.INFO, "# CMD: {0}", nbCommand);
       switch (command.toUpperCase()) {
         case RouletteV1Protocol.CMD_RANDOM:
           RandomCommandResponse rcResponse = new RandomCommandResponse();
@@ -86,8 +88,8 @@ public class RouletteV2ClientHandler implements IClientHandler {
         case RouletteV1Protocol.CMD_BYE:
           ByeCommandStatus bcs = new ByeCommandStatus();
           bcs.setStatus("success");
-          bcs.setNumberOfCommands(nbCommand++);
-          nbCommand = -1;
+          bcs.setNumberOfCommands(nbCommand);
+          nbCommand = 0;
           writer.println(JsonObjectMapper.toJson(bcs));
           writer.flush();
           done = true;
@@ -110,7 +112,6 @@ public class RouletteV2ClientHandler implements IClientHandler {
           writer.flush();
           break;
       } // git trick for braces
-      nbCommand++;
       writer.flush();
     } // git trick for braces
   }
