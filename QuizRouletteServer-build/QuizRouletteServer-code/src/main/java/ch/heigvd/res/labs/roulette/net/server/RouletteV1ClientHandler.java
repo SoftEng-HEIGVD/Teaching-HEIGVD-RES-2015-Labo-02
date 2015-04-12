@@ -4,8 +4,10 @@ import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
+import ch.heigvd.res.labs.roulette.data.StudentsList;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,6 +75,17 @@ public class RouletteV1ClientHandler implements IClientHandler {
         case RouletteV1Protocol.CMD_BYE:
           done = true;
           break;
+        case RouletteV2Protocol.CMD_CLEAR:
+            store.clear();
+            writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
+            writer.flush();
+            break;
+        case RouletteV2Protocol.CMD_LIST:
+            StudentsList s = new StudentsList();
+            s.setStudents(store.listStudents());
+            writer.println(JsonObjectMapper.toJson(s));
+            writer.flush();
+            break;
         default:
           writer.println("Huh? please use HELP if you don't know what commands are available.");
           writer.flush();
