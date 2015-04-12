@@ -62,26 +62,32 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-    out.println("load"); 
-    for(Student s : students){
-        out.println(s.getFullname());
+    if(!students.isEmpty()){
+        out.println("load"); 
+        for(Student s : students){
+            out.println(s.getFullname());
+        }
+
+        out.println("endofdata");
+        out.flush();
     }
-    
-    out.println("endofdata");
-    out.flush();
   }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
       String answer;
       RandomCommandResponse rcr;
+      
+      if(getNumberOfStudents() == 0){
+          throw new EmptyStoreException();
+      }
+      
       out.print("random");
       out.flush();
-      answer = in.readLine();
-      if(!answer.contains("fullname")){
-          System.err.println("coucou");
-          throw new  EmptyStoreException();
-      }
+      do{
+        answer = in.readLine();
+    }while(!answer.contains("{"));
+     
       rcr = JsonObjectMapper.parseJson(answer, RandomCommandResponse.class);
       return new Student(rcr.getFullname());
   }
@@ -92,8 +98,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     InfoCommandResponse icr;
     out.print("info");
     out.flush();
-    
-    answer = in.readLine();
+    do{
+        answer = in.readLine();
+    }while(!answer.contains("{"));
+
     icr = JsonObjectMapper.parseJson(answer, InfoCommandResponse.class);
     return icr.getNumberOfStudents();
   }
@@ -105,7 +113,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     out.print("info");
     out.flush();
     
-    answer = in.readLine();
+    do{
+        answer = in.readLine();
+    }while(!answer.contains("{"));
+    
     icr = JsonObjectMapper.parseJson(answer, InfoCommandResponse.class);
     return icr.getProtocolVersion();
   }
