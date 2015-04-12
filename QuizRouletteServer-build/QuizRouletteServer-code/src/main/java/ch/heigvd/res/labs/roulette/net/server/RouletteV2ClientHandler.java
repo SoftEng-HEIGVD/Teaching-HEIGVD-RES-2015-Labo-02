@@ -69,10 +69,12 @@ public class RouletteV2ClientHandler implements IClientHandler {
                break;
             //modifier pour répondre au spécification
             case RouletteV2Protocol.CMD_LOAD:
+               // Compte le nombre de nouveaux etudiants ajoutes
                int nbStudentsBefore = store.getNumberOfStudents();
                writer.println(RouletteV2Protocol.RESPONSE_LOAD_START);
                writer.flush();
                store.importData(reader);
+               // calcul et renvoye le nombre d'etudiants ajoutes
                LoadCommandResponse load = new LoadCommandResponse("success", store.getNumberOfStudents() - nbStudentsBefore);
                writer.println(JsonObjectMapper.toJson(load));
                writer.flush();
@@ -80,15 +82,14 @@ public class RouletteV2ClientHandler implements IClientHandler {
             //modifier pour répondre au spécification
             case RouletteV2Protocol.CMD_BYE:
                done = true;
+               // ajout d'1 au nombre de commandes pour tenir compte du "bye"
                ByeCommandResponse bye = new ByeCommandResponse("success", ++nbCommande);
                writer.println(JsonObjectMapper.toJson(bye));
                writer.flush();
                break;
             //ajout de deux nouvelle commande
             case RouletteV2Protocol.CMD_CLEAR:
-               //System.err.println("In clear");
                store.clear();
-               //System.err.println("sending response");
                writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
                writer.flush();
                break;

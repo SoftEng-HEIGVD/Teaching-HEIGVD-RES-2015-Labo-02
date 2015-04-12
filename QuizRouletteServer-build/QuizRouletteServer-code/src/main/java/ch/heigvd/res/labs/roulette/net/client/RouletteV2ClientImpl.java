@@ -18,6 +18,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
    public void clearDataStore() throws IOException {
       writer.println(RouletteV2Protocol.CMD_CLEAR);
       writer.flush();
+      // attente de la reponse
       reader.readLine();
    }
 

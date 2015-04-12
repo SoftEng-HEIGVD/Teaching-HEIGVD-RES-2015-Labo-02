@@ -68,7 +68,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
      writer.flush();
      
      //lit le message de fin
-     endOfLoad();
+     reader.readLine();
   }
 
   @Override
@@ -87,7 +87,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
      writer.flush();
      
      //lit le message de fin
-     endOfLoad();
+     reader.readLine();
   }
 
   @Override
@@ -121,9 +121,5 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       InfoCommandResponse info = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
       
       return info.getProtocolVersion();
-  }
-  
-  protected void endOfLoad()throws IOException{
-     reader.readLine();
   }
 }
