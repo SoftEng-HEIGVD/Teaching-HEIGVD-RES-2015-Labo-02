@@ -19,9 +19,9 @@ import java.util.logging.Logger;
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
-  private BufferedReader reader = null;
-  private PrintWriter writer = null;
-  private Socket socket = null;
+  protected BufferedReader reader = null;
+  protected PrintWriter writer = null;
+  protected Socket socket = null;
 
 
   @Override
@@ -41,14 +41,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public void disconnect() throws IOException {
-    writer.println(RouletteV1Protocol.CMD_BYE);
-    writer.flush();
-    writer.close();
 
-    System.out.println(reader.readLine());
 
-    socket.close();
-    reader.close();
+
   }
 
   @Override
@@ -57,8 +52,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     if (socket != null)
       return socket.isConnected();
 
-    else
-      return false;
+    return false;
   }
 
   @Override
