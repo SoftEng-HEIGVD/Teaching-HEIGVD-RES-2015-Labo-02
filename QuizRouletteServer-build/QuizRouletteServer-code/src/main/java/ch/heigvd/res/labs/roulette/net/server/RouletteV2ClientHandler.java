@@ -4,6 +4,7 @@ import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.ListCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import static ch.heigvd.res.labs.roulette.net.server.RouletteV1ClientHandler.LOG;
@@ -20,6 +21,8 @@ import java.util.logging.Level;
 /**
  * This class implements the Roulette protocol (version 2).
  *
+ * Modified by guiguismall, yoaaaarp
+ * 
  * @author Olivier Liechti
  */
 public class RouletteV2ClientHandler implements IClientHandler {
@@ -71,10 +74,20 @@ public class RouletteV2ClientHandler implements IClientHandler {
         case RouletteV2Protocol.CMD_BYE:
           done = true;
           break;
+            
+        // new command: CLEAR
         case RouletteV2Protocol.CMD_CLEAR:
+          store.clear();
+          writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
+          writer.flush();
           break;
+            
+        // new command: LIST
         case RouletteV2Protocol.CMD_LIST:
+          ListCommandResponse lcresponse = new ListCommandResponse(store.listStudents());
+          writer.println(JsonObjectMapper.toJson(lcresponse));
           break;
+            
         default:
           writer.println("Huh? please use HELP if you don't know what commands are available.");
           writer.flush();

@@ -1,7 +1,10 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
+import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.Student;
+import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,9 +25,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     // VILLA DAVID     (git: yoaaaarp)
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
   // socket on which the client writes and reads
-  private Socket clientSocket = null;
-  private BufferedReader in;
-  private PrintWriter out;
+  protected Socket clientSocket = null;
+  protected BufferedReader in;
+  protected PrintWriter out;
 
 
   
@@ -103,7 +106,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       
       // reads and extracts student name
       String name = in.readLine();
-      return new Student(name.substring(13, name.length()-2));
+      return new Student(JsonObjectMapper.parseJson(name, RandomCommandResponse.class).getFullname());
   }
 
   @Override
@@ -114,13 +117,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       
       // reads and extracts number of students 
       String info = in.readLine();
-      info = info.substring(44, info.length()-1); 
-      return Integer.parseInt(info);
+      return JsonObjectMapper.parseJson(info, InfoCommandResponse.class).getNumberOfStudents();
   }
 
   @Override
   public String getProtocolVersion() throws IOException {
     return RouletteV1Protocol.VERSION;
   }
-
 }
