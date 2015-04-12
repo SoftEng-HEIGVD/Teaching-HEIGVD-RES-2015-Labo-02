@@ -33,14 +33,19 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public void connect(String server, int port) throws IOException {
+    
     clientSocket = new Socket(server, port);
     in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     out = new PrintWriter(clientSocket.getOutputStream());
     connected = true;
+    in.readLine();
   }
 
   @Override
   public void disconnect() throws IOException {
+    out.println("bye");
+    out.flush();
+    
     in.close();
     out.close();
     clientSocket.close();
@@ -55,22 +60,32 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   @Override
   public void loadStudent(String fullname) throws IOException {
     out.println("load");
+    out.flush();
     out.println(fullname);
+    out.flush();
     out.println("endofdata");
     out.flush();
+    
+    in.readLine();
+    in.readLine();
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
     if(!students.isEmpty()){
         out.println("load"); 
+        out.flush();
         for(Student s : students){
             out.println(s.getFullname());
+            out.flush();
         }
 
         out.println("endofdata");
         out.flush();
+        in.readLine();
+        in.readLine();
     }
+
   }
 
   @Override
@@ -82,11 +97,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
           throw new EmptyStoreException();
       }
       
-      out.print("random");
+      out.println("random");
       out.flush();
-      do{
-        answer = in.readLine();
-    }while(!answer.contains("{"));
+      
+      answer = in.readLine();
      
       rcr = JsonObjectMapper.parseJson(answer, RandomCommandResponse.class);
       return new Student(rcr.getFullname());
@@ -96,11 +110,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   public int getNumberOfStudents() throws IOException {
     String answer;
     InfoCommandResponse icr;
-    out.print("info");
+    out.println("info");
     out.flush();
-    do{
-        answer = in.readLine();
-    }while(!answer.contains("{"));
+    answer = in.readLine();
 
     icr = JsonObjectMapper.parseJson(answer, InfoCommandResponse.class);
     return icr.getNumberOfStudents();
@@ -110,13 +122,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   public String getProtocolVersion() throws IOException {
     String answer;
     InfoCommandResponse icr;
-    out.print("info");
+    out.println("info");
     out.flush();
     
-    do{
-        answer = in.readLine();
-    }while(!answer.contains("{"));
-    
+    answer = in.readLine();
+
     icr = JsonObjectMapper.parseJson(answer, InfoCommandResponse.class);
     return icr.getProtocolVersion();
   }

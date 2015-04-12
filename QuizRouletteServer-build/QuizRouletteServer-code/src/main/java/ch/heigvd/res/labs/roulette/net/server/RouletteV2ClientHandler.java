@@ -3,6 +3,7 @@ package ch.heigvd.res.labs.roulette.net.server;
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
+import ch.heigvd.res.labs.roulette.data.StudentsList;
 import ch.heigvd.res.labs.roulette.net.protocol.ByeCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.LoadCommandResponse;
@@ -74,7 +75,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
           writer.println(RouletteV2Protocol.RESPONSE_LOAD_START);
           writer.flush();
           store.importData(reader);
-          writer.println(RouletteV2Protocol.RESPONSE_LOAD_DONE);
+          //writer.println(RouletteV2Protocol.RESPONSE_LOAD_DONE);
           
           LoadCommandResponse lresponse = new LoadCommandResponse("success", store.getNumberOfStudents()-temp);
           writer.println(JsonObjectMapper.toJson(lresponse));
@@ -84,15 +85,18 @@ public class RouletteV2ClientHandler implements IClientHandler {
           ByeCommandResponse bresponse = new ByeCommandResponse("success", nbCmd);
           done = true;
           writer.println(JsonObjectMapper.toJson(bresponse));
+          writer.flush();
           break;
         case RouletteV2Protocol.CMD_CLEAR:
             store.clear();
             writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
+            writer.flush();
             break;
             
         case RouletteV2Protocol.CMD_LIST:
-            writer.println(JsonObjectMapper.toJson(store));
-            writer.flush();
+            StudentsList tempList = new StudentsList();
+            tempList.setStudents(store.listStudents());
+            writer.println(JsonObjectMapper.toJson(tempList));
             break;
         default:
           writer.println("Huh? please use HELP if you don't know what commands are available.");
