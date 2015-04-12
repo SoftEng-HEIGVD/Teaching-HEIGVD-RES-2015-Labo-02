@@ -114,7 +114,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         if(rcRep.getError() != null){
             throw new EmptyStoreException();
         }
-        return Student.fromJson(reader.readLine());
+        return new Student(rcRep.getFullname());
     }
 
     @Override
