@@ -1,3 +1,4 @@
+//v1
 package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
@@ -23,98 +24,107 @@ import java.util.logging.Logger;
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
-	private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
-	private Socket sock = null;
-	private PrintWriter out;
-	private BufferedReader in;
+    private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+    private Socket sock = null;
+    protected PrintWriter out;
+    protected BufferedReader in;
 
-	@Override
-	public void connect(String server, int port) throws IOException {
+    public Logger getLogger(){
+        return LOG;
+    }
+    @Override
+    public void connect(String server, int port) throws IOException {
 
-		// Force to connect to a new server
-		if(isConnected()) {
-			disconnect();
-		}
+        // Force to connect to a new server
+        if (isConnected()) {
+            disconnect();
+        }
 
-		sock = new Socket(server, port);
-		out = new PrintWriter(sock.getOutputStream(), true);
-		in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-	}
+        sock = new Socket(server, port);
+        out = new PrintWriter(sock.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+    }
 
-	@Override
-	public void disconnect() throws IOException {
-		sock.shutdownInput();
-		sock.shutdownOutput();
-		sock.close();
-	}
+    @Override
+    public void disconnect() throws IOException {
+        sock.shutdownInput();
+        sock.shutdownOutput();
+        sock.close();
+    }
 
-	@Override
-	public boolean isConnected() {
-		if(sock == null) {
-			return false;
-		} else {
-			return sock.isConnected();
-		}
-	}
+    @Override
+    public boolean isConnected() {
+        if (sock == null) {
+            return false;
+        } else {
+            return sock.isConnected();
+        }
+    }
 
-	@Override
-	public void loadStudent(String fullname) throws IOException {
+    @Override
+    public void loadStudent(String fullname) throws IOException {
 
-		if(!isConnected()) {
-			return;
-		}
+        if (!isConnected()) {
+            return;
+        }
 
-		out.write(RouletteV1Protocol.CMD_LOAD);
-		out.flush();
-		out.write(fullname);
-		out.flush();
-	}
+        out.write(RouletteV1Protocol.CMD_LOAD);
+        out.flush();
+        out.write(fullname);
+        out.flush();
+    }
 
-	@Override
-	public void loadStudents(List<Student> students) throws IOException {
+    @Override
+    public void loadStudents(List<Student> students) throws IOException {
 
-		if(!isConnected()) {
-			return;
-		}
+        if (!isConnected()) {
+            return;
+        }
 
-		for(Student student : students) {
-			out.write(student.getFullname());
-			out.flush();
-		}
+        for (Student student : students) {
+            out.write(student.getFullname());
+            out.flush();
+        }
 
-		out.write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
-		out.flush();
-	}
+        out.write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+        out.flush();
+    }
 
-	@Override
-	public Student pickRandomStudent() throws EmptyStoreException, IOException {
+    @Override
+    public Student pickRandomStudent() throws EmptyStoreException, IOException {
 
-		out.write(RouletteV1Protocol.CMD_RANDOM);
-		out.flush();
+        out.write(RouletteV1Protocol.CMD_RANDOM);
+        out.flush();
 
-		Student parseJson;
-		parseJson = JsonObjectMapper.parseJson(in.readLine(), Student.class);
-		return new Student(parseJson.getFullname());
-	}
+        Student parseJson;
+        parseJson = JsonObjectMapper.parseJson(in.readLine(), Student.class);
+        return new Student(parseJson.getFullname());
+    }
 
-	@Override
-	public int getNumberOfStudents() throws IOException {
-		out.write(RouletteV1Protocol.CMD_INFO);
-		out.flush();
+    @Override
+    public int getNumberOfStudents() throws IOException {
+        out.write(RouletteV1Protocol.CMD_INFO);
+        out.flush();
 
-		InfoCommandResponse parseJson;
-		parseJson = JsonObjectMapper.parseJson(in.readLine(), InfoCommandResponse.class);
-		return parseJson.getNumberOfStudents();
-	}
+        InfoCommandResponse parseJson;
+        parseJson = JsonObjectMapper.parseJson(in.readLine(), InfoCommandResponse.class);
+        return parseJson.getNumberOfStudents();
+    }
 
-	@Override
-	public String getProtocolVersion() throws IOException {
-		out.write(RouletteV1Protocol.CMD_INFO);
-		out.flush();
+    @Override
+    public String getProtocolVersion() throws IOException {
+        out.write(RouletteV1Protocol.CMD_INFO);
+        out.flush();
 
-		InfoCommandResponse parseJson;
-		parseJson = JsonObjectMapper.parseJson(in.readLine(), InfoCommandResponse.class);
-		return parseJson.getProtocolVersion();
-	}
-
+        InfoCommandResponse parseJson;
+        parseJson = JsonObjectMapper.parseJson(in.readLine(), InfoCommandResponse.class);
+        return parseJson.getProtocolVersion();
+    }
+        protected String readMessage() throws IOException {
+        String line = null;
+        do {
+            line = in.readLine();
+        } while (line == null);
+        return line;
+    }
 }
