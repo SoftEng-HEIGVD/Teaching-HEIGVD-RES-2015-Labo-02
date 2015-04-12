@@ -7,7 +7,7 @@ package ch.heigvd.res.labs.roulette.net.protocol;
 
 /**
  *
- * @author st4ck
+ * @author Zundler Cyrill & Wertenbroek Rick
  */
 public class ByeCommandResponse {
 

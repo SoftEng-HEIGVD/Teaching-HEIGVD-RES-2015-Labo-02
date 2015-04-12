@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  *
- * @author st4ck
+ * @author Zundler Cyrill & Wertenbroek Rick
  */
 public class ListCommandResponse {
 
