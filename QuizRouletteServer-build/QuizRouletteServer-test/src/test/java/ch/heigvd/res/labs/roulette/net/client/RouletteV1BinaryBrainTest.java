@@ -50,6 +50,7 @@ public class RouletteV1BinaryBrainTest {
     students.add(new Student("Test 1"));
     students.add(new Student("Test 2"));
 
+    client.loadStudents(students);
     Student student = client.pickRandomStudent();
 
     assertTrue(students.contains(student));
@@ -78,7 +79,7 @@ public class RouletteV1BinaryBrainTest {
   public void differentClientsShouldWork() throws IOException, EmptyStoreException {
     IRouletteV1Client client = roulettePair.getClient();
     IRouletteV1Client client2 = new RouletteV1ClientImpl();
-    client2.connect("localhost", 1314);
+    client2.connect("localhost", roulettePair.getServer().getPort());
 
     assertTrue(client.isConnected() && client2.isConnected());
   }
