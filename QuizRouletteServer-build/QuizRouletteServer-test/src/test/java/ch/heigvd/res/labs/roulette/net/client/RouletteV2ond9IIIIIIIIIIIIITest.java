@@ -140,11 +140,14 @@ public class RouletteV2ond9IIIIIIIIIIIIITest {
         writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream(), "UTF-8"));
 
         String inviteMSG = reader.readLine(); // not used
-        
+
+        System.out.println(inviteMSG);
+
         writer.println("BYE");
         writer.flush();
 
         String response = reader.readLine();
+        System.out.println(response);
 
         String expectedResponse = "{\"status\":\"success\",\"numberOfCommands\":1}";
         assertEquals(expectedResponse, response);

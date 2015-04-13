@@ -4,10 +4,8 @@ import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.StudentsList;
-import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
-import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
+import ch.heigvd.res.labs.roulette.net.protocol.*;
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -23,6 +21,8 @@ public class RouletteV2ClientHandler implements IClientHandler {
   final static Logger LOG = Logger.getLogger(RouletteV2ClientHandler.class.getName());
 
   private final IStudentsStore store;
+
+  public int numberOfcommands = 0;
 
   public RouletteV2ClientHandler(IStudentsStore store) {
    this.store = store;
@@ -40,7 +40,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
     String command;
     boolean done = false;
     while (!done && ((command = reader.readLine()) != null)) {
-
+      numberOfcommands++;
       LOG.log(Level.INFO, "COMMAND: {0}", command);
       switch (command.toUpperCase()) {
         case RouletteV2Protocol.CMD_CLEAR:
@@ -76,10 +76,14 @@ public class RouletteV2ClientHandler implements IClientHandler {
           writer.println(RouletteV2Protocol.RESPONSE_LOAD_START);
           writer.flush();
           store.importData(reader);
-          writer.println(RouletteV2Protocol.RESPONSE_LOAD_DONE);
+          LoadCommandResponse lcr = new LoadCommandResponse("success",store.getNumberOfStudents());
+          writer.println(JsonObjectMapper.toJson(lcr));
           writer.flush();
           break;
         case RouletteV2Protocol.CMD_BYE:
+          ByeCommandResponse byeResponse = new ByeCommandResponse("success", numberOfcommands);
+//          writer.println(JsonObjectMapper.toJson(byeResponse));
+//          writer.flush();
           done = true;
           break;
         default:
@@ -87,7 +91,6 @@ public class RouletteV2ClientHandler implements IClientHandler {
           writer.flush();
           break;
       }
-
       writer.flush();
     }
 
