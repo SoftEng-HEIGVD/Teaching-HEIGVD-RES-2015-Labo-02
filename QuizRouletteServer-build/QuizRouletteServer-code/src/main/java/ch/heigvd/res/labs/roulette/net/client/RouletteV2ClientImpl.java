@@ -69,6 +69,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       writer.flush();
       line=lineReader();
       LoadCommandResponse lcr = JsonObjectMapper.parseJson(line, LoadCommandResponse.class);
+      System.out.println("Gnarf");
       if(!lcr.getStatus().equalsIgnoreCase("success")){
           throw new IOException("Operation failure!");
       }
@@ -76,7 +77,6 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       if(!line.equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_DONE)){
           throw new IOException("server response not correct....");
       }
-      System.out.println(line);
   }
   
 }

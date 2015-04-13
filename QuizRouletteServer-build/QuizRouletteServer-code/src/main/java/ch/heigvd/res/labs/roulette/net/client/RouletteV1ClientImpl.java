@@ -71,14 +71,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
           return false;
       }
       else{
-          if(socket.isClosed() ){
-          return false;
+          return socket.isConnected() && !socket.isClosed();
       }
-      if(socket.isConnected()){
-          return true;
-      }
-      }
-      return false;
   }
 
   @Override
@@ -98,7 +92,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       if(!line.equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START)){
           throw new IOException("server response not correct....");
       }
-      System.out.println(line);
       Iterator<Student> s = students.iterator();
       while(s.hasNext()){
           writer.println(s.next().getFullname());
@@ -110,7 +103,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       if(!line.equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_DONE)){
           throw new IOException("server response not correct....");
       }
-      System.out.println(line);
   }
 
   @Override
