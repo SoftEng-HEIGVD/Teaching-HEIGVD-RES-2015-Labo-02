@@ -1,6 +1,7 @@
 package ch.heigvd.schoolpulse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.Date;
