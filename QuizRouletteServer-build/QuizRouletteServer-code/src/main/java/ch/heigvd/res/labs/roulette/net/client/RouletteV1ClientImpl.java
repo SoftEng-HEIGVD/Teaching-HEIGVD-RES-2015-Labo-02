@@ -33,41 +33,34 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     @Override
     public void connect(String server, int port) throws IOException {
 
-        try {
-            if (isConnected()) {
-                disconnect();
-            }
-
-            clientSocket = new Socket(server, port);
-            LOG.log(Level.INFO, "Client connected to" + server + " on port" + port);
-            reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
-            LOG.log(Level.INFO, "Client initialized reader");
-            writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"));
-            LOG.log(Level.INFO, "Client initialized writer");
-
-            LOG.log(Level.INFO, "Connection success HELLO CMD : {0}", reader.readLine());
-        } catch (IOException ex) {
-            System.out.println("IOException");
-            LOG.log(Level.SEVERE, null, ex);
-            throw ex; // to pass all test but it's not in Roulette Specs :/
+        if (isConnected()) {
+            throw new IOException("client already connected");
         }
+
+        clientSocket = new Socket(server, port);
+        LOG.log(Level.INFO, "Client connected to" + server + " on port" + port);
+        reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
+        LOG.log(Level.INFO, "Client initialized reader");
+        writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"));
+        LOG.log(Level.INFO, "Client initialized writer");
+
+        LOG.log(Level.INFO, "Connection success HELLO CMD : {0}", reader.readLine());
     }
 
     @Override
     public void disconnect() throws IOException {
-        try {
-            if (isConnected()) {
-                writer.println(RouletteV1Protocol.CMD_BYE);
-                writer.flush();
-                clientSocket.close();
-                writer.close();
-                reader.close();
-                clientSocket = null;
-                writer = null;
-                reader = null;
-            }
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+
+        if (isConnected()) {
+            writer.println(RouletteV1Protocol.CMD_BYE);
+            writer.flush();
+            clientSocket.close();
+            writer.close();
+            reader.close();
+            clientSocket = null;
+            writer = null;
+            reader = null;
+        } else {
+            throw new IOException("client not connected");
         }
     }
 
