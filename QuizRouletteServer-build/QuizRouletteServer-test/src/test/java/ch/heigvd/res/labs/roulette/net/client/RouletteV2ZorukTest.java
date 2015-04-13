@@ -1,19 +1,14 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
-import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import ch.heigvd.schoolpulse.TestAuthor;
 import java.io.IOException;
-import java.util.EmptyStackException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
@@ -89,7 +84,7 @@ public class RouletteV2ZorukTest {
     public void theServerShoudHandleMultipleClientAtSameTime() throws IOException {
         List<IRouletteV1Client> clients = new LinkedList<>();
         for (int i = 0; i < 50; ++i) {
-           IRouletteV1Client c = new RouletteV1ClientImpl();
+           IRouletteV1Client c = new RouletteV2ClientImpl();
            c.connect("localhost", roulettePair.getServer().getPort());
            clients.add(c);
            c.loadStudent("Client " + i);

@@ -24,6 +24,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       //read the answer
       in.readLine();
       clientSocket.close();
+      isConnected = false;
   }
   
   @Override

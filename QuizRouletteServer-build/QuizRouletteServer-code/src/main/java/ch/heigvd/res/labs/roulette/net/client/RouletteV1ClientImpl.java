@@ -28,14 +28,16 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   protected Socket clientSocket = null;
   protected BufferedReader in;
   protected PrintWriter out;
+  protected boolean isConnected = false;
+  protected String defaultServer = "localhost";
 
 
   
   @Override
   public void connect(String server, int port) throws IOException {
-      // handles missing info
-      if(server.isEmpty() || port < 0)
-          throw new IOException("Wrong data");
+      // in this case, we only want to connect to localhost
+      if(server != defaultServer)
+          throw new IOException();
       // connects to the socket
       clientSocket = new Socket(server, port);
       // opens and wraps iostreams
@@ -43,6 +45,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
       // flushes the line sent by the server
       in.readLine();
+      isConnected = true;
   }
 
   @Override
@@ -50,16 +53,12 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       out.write("BYE\n");
       out.flush();
       clientSocket.close();
+      isConnected = false;
   }
 
   @Override
   public boolean isConnected() {
-      // if client wasn't connected yet
-      if(clientSocket == null)
-          return false;
-      
-      // if socket was closed
-      return !clientSocket.isClosed() && clientSocket.isConnected();
+      return isConnected;
   }
 
   @Override
