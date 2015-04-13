@@ -102,10 +102,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       }
       writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
       writer.flush();
-      if(!lineReader().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_DONE)){
-          throw new IOException("server response not correct....");
-      }
-//      endLoad();
+//      if(!lineReader().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_DONE)){
+//          throw new IOException("server response not correct....");
+//      }
+      endLoad();
   }
 
   @Override
