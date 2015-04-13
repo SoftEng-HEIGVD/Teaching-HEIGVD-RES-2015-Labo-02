@@ -47,14 +47,13 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
   }
   
 
-//    protected void endLoad() throws IOException {
-//      LoadCommandResponse lcs = JsonObjectMapper.parseJson(lineReader(), LoadCommandResponse.class);
-//      if (lcs.getStatus().equalsIgnoreCase("success")) {
-//          LOG.log(Level.INFO, "Added successfully: {0} students", lcs.getNbStudents());
-//      } else {
-//          LOG.severe("Error. Students not added...");
-//      } 
-//  }
+    protected void endLoad() throws IOException {
+      LoadCommandResponse lcs = JsonObjectMapper.parseJson(lineReader(), LoadCommandResponse.class);
+      if (lcs.getStatus().equalsIgnoreCase("success")) {
+          LOG.log(Level.INFO, "Added successfully: {0} students", lcs.getNbStudents());
+      } else {
+          LOG.severe("Error. Students not added...");
+      } 
+  }
   
 }
-
