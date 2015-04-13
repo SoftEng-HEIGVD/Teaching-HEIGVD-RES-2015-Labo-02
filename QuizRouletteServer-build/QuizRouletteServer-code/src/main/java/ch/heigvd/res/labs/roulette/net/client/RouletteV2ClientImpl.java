@@ -47,6 +47,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
   }
   
 
+  @Override
     protected void endLoad() throws IOException {
       LoadCommandResponse lcs = JsonObjectMapper.parseJson(lineReader(), LoadCommandResponse.class);
       if (lcs.getStatus().equalsIgnoreCase("success")) {
