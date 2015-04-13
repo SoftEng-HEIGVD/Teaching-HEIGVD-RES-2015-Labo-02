@@ -73,6 +73,7 @@ public class TestResultListener extends RunListener {
   @Override
   public void testRunFinished(Result result) throws Exception {
     ObjectMapper mapper = new ObjectMapper();
+    mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     TestStats stats = new TestStats();
     stats.setNumberOfTestsByAuthor(numberOfTestsByAuthor);
     stats.setTestResults(result);
