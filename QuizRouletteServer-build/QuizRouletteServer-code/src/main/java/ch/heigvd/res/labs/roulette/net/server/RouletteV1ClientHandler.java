@@ -34,15 +34,15 @@ public class RouletteV1ClientHandler implements IClientHandler {
 
   @Override
   public void handleClientConnection(InputStream is, OutputStream os) throws IOException {
-    BufferedReader br = new BufferedReader(new InputStreamReader(is));
-    PrintWriter pw = new PrintWriter(new OutputStreamWriter(os));
+    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    PrintWriter writer = new PrintWriter(new OutputStreamWriter(os));
 
-    pw.println("Hello. Online HELP is available. Will you find it?");
-    pw.flush();
+    writer.println("Hello. Online HELP is available. Will you find it?");
+    writer.flush();
 
     String command;
     boolean done = false;
-    while (!done && ((command = br.readLine()) != null)) {
+    while (!done && ((command = reader.readLine()) != null)) {
       LOG.log(Level.INFO, "COMMAND: {0}", command);
       switch (command.toUpperCase()) {
         case RouletteV1Protocol.CMD_RANDOM:
@@ -52,33 +52,33 @@ public class RouletteV1ClientHandler implements IClientHandler {
           } catch (EmptyStoreException ex) {
             rcResponse.setError("There is no student, you cannot pick a random one");
           }
-          pw.println(JsonObjectMapper.toJson(rcResponse));
-          pw.flush();
+          writer.println(JsonObjectMapper.toJson(rcResponse));
+          writer.flush();
           break;
         case RouletteV1Protocol.CMD_HELP:
-          pw.println("Commands: " + Arrays.toString(RouletteV1Protocol.SUPPORTED_COMMANDS));
+          writer.println("Commands: " + Arrays.toString(RouletteV1Protocol.SUPPORTED_COMMANDS));
           break;
         case RouletteV1Protocol.CMD_INFO:
           InfoCommandResponse response = new InfoCommandResponse(RouletteV1Protocol.VERSION, store.getNumberOfStudents());
-          pw.println(JsonObjectMapper.toJson(response));
-          pw.flush();
+          writer.println(JsonObjectMapper.toJson(response));
+          writer.flush();
           break;
         case RouletteV1Protocol.CMD_LOAD:
-          pw.println(RouletteV1Protocol.RESPONSE_LOAD_START);
-          pw.flush();
-          store.importData(br);
-          pw.println(RouletteV1Protocol.RESPONSE_LOAD_DONE);
-          pw.flush();
+          writer.println(RouletteV1Protocol.RESPONSE_LOAD_START);
+          writer.flush();
+          store.importData(reader);
+          writer.println(RouletteV1Protocol.RESPONSE_LOAD_DONE);
+          writer.flush();
           break;
         case RouletteV1Protocol.CMD_BYE:
           done = true;
           break;
         default:
-          pw.println("Huh? please use HELP if you don't know what commands are available.");
-          pw.flush();
+          writer.println("Huh? please use HELP if you don't know what commands are available.");
+          writer.flush();
           break;
       }
-      pw.flush();
+      writer.flush();
     }
 
   }
