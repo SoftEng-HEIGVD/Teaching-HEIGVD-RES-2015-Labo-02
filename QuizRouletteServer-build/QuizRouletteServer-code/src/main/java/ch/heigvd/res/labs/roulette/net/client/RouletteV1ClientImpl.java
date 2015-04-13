@@ -44,10 +44,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     public void disconnect() throws IOException {
         writer.println(RouletteV1Protocol.CMD_BYE);
         writer.flush();
-        reader.readLine();
-        socket.close();
         writer.close();
         reader.close();
+        socket.close();
     }
 
     @Override
