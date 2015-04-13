@@ -4,3 +4,8 @@ pom.xml.releaseBackup
 pom.xml.versionsBackup
 pom.xml.next
 release.properties
+package ch.heigvd.res.labs.roulette.net.client;
+.idea
+*.iml
+test-stats.json
+test-results.json
