@@ -25,6 +25,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       if(!line.equalsIgnoreCase(RouletteV2Protocol.RESPONSE_CLEAR_DONE)){
           throw new IOException("server response not correct....");
       }
+      
   }
 
   @Override
