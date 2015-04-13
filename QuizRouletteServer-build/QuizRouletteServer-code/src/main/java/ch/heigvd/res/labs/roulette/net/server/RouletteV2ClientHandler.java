@@ -63,7 +63,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
           writer.flush();
           break;
         case RouletteV1Protocol.CMD_HELP:
-          writer.println("Commands: " + Arrays.toString(RouletteV1Protocol.SUPPORTED_COMMANDS));
+          writer.println("Commands: " + Arrays.toString(RouletteV2Protocol.SUPPORTED_COMMANDS));
           break;
         case RouletteV1Protocol.CMD_INFO:
           InfoCommandResponse response = new InfoCommandResponse(RouletteV2Protocol.VERSION, store.getNumberOfStudents());
@@ -90,19 +90,21 @@ public class RouletteV2ClientHandler implements IClientHandler {
             bcr.setNbCommande(nbCommande);
             bcr.setStatus("success");
             writer.println(JsonObjectMapper.toJson(bcr));
-            writer.flush();
             nbCommande=0;
-          done = true;
+            writer.flush();
+            
+            done = true;
           break;
+        
+        case RouletteV2Protocol.CMD_LIST:
+           StudentsList myList= new StudentsList();
+            myList.setStudents(store.listStudents());
+            writer.println(JsonObjectMapper.toJson(myList));
+            writer.flush();
+            break;
         case RouletteV2Protocol.CMD_CLEAR:
             store.clear();
             writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
-            writer.flush();
-            break;
-        case RouletteV2Protocol.CMD_LIST:
-            StudentsList list=new StudentsList();
-            list.setStudents(store.listStudents());
-            writer.println(JsonObjectMapper.toJson(list));
             writer.flush();
             break;
         default:

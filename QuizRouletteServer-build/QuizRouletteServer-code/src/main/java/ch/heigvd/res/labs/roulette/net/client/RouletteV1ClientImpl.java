@@ -74,6 +74,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
           return socket.isConnected() && !socket.isClosed();
       }
   }
+  
+  private void endLoad()throws IOException{
+      lineReader();
+  }
 
   @Override
   public void loadStudent(String fullname) throws IOException {
@@ -87,9 +91,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   public void loadStudents(List<Student> students) throws IOException {
       writer.println(RouletteV1Protocol.CMD_LOAD);
       writer.flush();
-      String line;
-      line=lineReader();
-      if(!line.equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START)){
+      
+      if(!lineReader().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START)){
           throw new IOException("server response not correct....");
       }
       Iterator<Student> s = students.iterator();
@@ -99,10 +102,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       }
       writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
       writer.flush();
-      line=lineReader();
-      if(!line.equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_DONE)){
+      if(!lineReader().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_DONE)){
           throw new IOException("server response not correct....");
       }
+//      endLoad();
   }
 
   @Override
@@ -126,9 +129,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       writer.println(RouletteV1Protocol.CMD_INFO);
       writer.flush();
       line=lineReader();
-      
       int nombStudents = JsonObjectMapper.parseJson(line, InfoCommandResponse.class).getNumberOfStudents();
-      
       return nombStudents;
   }
 

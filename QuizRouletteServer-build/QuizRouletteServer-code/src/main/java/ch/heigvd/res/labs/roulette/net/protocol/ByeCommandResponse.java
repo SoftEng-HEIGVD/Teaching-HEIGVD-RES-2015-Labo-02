@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package ch.heigvd.res.labs.roulette.net.protocol;
-
 /**
  *
  * @author Marom

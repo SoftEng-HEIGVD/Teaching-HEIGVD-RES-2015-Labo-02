@@ -5,6 +5,7 @@
  */
 package ch.heigvd.res.labs.roulette.net.protocol;
 
+
 /**
  *
  * @author Marom
