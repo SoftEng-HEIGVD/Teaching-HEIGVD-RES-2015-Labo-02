@@ -76,7 +76,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   }
   
   private void endLoad()throws IOException{
-      lineReader();
+      if(!lineReader().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_DONE)){
+          throw new IOException("server response not correct....");
+      }
   }
 
   @Override
