@@ -75,12 +75,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       }
   }
   
-  protected void endLoad()throws IOException{
-      if(!lineReader().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_DONE)){
-          throw new IOException("server response not correct....");
-      }
-  }
-
   @Override
   public void loadStudent(String fullname) throws IOException {
       List<Student> temp = new LinkedList<Student>();
@@ -95,7 +89,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       writer.flush();
       
       if(!lineReader().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START)){
-          throw new IOException("server response not correct....");
+          throw new IOException("LOAD START server response not correct....");
       }
       Iterator<Student> s = students.iterator();
       while(s.hasNext()){
@@ -104,10 +98,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       }
       writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
       writer.flush();
-//      if(!lineReader().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_DONE)){
-//          throw new IOException("server response not correct....");
-//      }
-      endLoad();
+
+      if(!lineReader().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_DONE)){
+          throw new IOException("LOAD DONE server response not correct....");
+      }
   }
 
   @Override

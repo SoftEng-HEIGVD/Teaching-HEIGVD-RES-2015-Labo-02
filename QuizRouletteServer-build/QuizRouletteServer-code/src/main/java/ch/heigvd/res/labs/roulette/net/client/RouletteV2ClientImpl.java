@@ -46,18 +46,33 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       return s.getStudents();
   }
   
+  
+    @Override
+  public void loadStudents(List<Student> students) throws IOException {
+      writer.println(RouletteV1Protocol.CMD_LOAD);
+      writer.flush();
+      
+      if(!lineReader().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START)){
+          throw new IOException("LOAD START server response not correct....");
+      }
+      Iterator<Student> s = students.iterator();
+      while(s.hasNext()){
+          writer.println(s.next().getFullname());
+          writer.flush();
+      }
+      writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+      writer.flush();
 
-  @Override
-    protected void endLoad() throws IOException {
       LoadCommandResponse lcs = JsonObjectMapper.parseJson(lineReader(), LoadCommandResponse.class);
+      
       if (lcs.getStatus().equalsIgnoreCase("success")) {
           LOG.log(Level.INFO, "Added successfully: {0} students", lcs.getNumberOfStudents());
       } else {
           LOG.severe("Error. Students not added...");
       } 
       if(!lineReader().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_DONE)){
-          throw new IOException("server response not correct....");
+          throw new IOException("V2 LOAD DONE server response not correct....");
       }
   }
-  
+
 }
