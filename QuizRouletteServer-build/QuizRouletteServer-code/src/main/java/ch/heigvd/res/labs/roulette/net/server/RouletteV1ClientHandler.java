@@ -75,17 +75,6 @@ public class RouletteV1ClientHandler implements IClientHandler {
         case RouletteV1Protocol.CMD_BYE:
           done = true;
           break;
-        case RouletteV2Protocol.CMD_CLEAR:
-            store.clear();
-            writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
-            writer.flush();
-            break;
-        case RouletteV2Protocol.CMD_LIST:
-            StudentsList s = new StudentsList();
-            s.setStudents(store.listStudents());
-            writer.println(JsonObjectMapper.toJson(s));
-            writer.flush();
-            break;
         default:
           writer.println("Huh? please use HELP if you don't know what commands are available.");
           writer.flush();

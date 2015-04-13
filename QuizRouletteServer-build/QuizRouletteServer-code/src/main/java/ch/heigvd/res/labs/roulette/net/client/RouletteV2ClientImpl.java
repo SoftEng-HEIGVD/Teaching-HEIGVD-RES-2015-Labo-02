@@ -4,6 +4,7 @@ import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.data.StudentsList;
 import ch.heigvd.res.labs.roulette.net.protocol.ByeCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.LoadCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
@@ -36,7 +37,9 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
   public List<Student> listStudents() throws IOException {
       writer.println(RouletteV2Protocol.CMD_LIST);
       writer.flush();
-      StudentsList s = JsonObjectMapper.parseJson(lineReader(), StudentsList.class);
+      String line=lineReader();
+      System.out.println(line);
+      StudentsList s = JsonObjectMapper.parseJson(line, StudentsList.class);
       return s.getStudents();
   }
   
@@ -69,7 +72,6 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       writer.flush();
       line=lineReader();
       LoadCommandResponse lcr = JsonObjectMapper.parseJson(line, LoadCommandResponse.class);
-      System.out.println("Gnarf");
       if(!lcr.getStatus().equalsIgnoreCase("success")){
           throw new IOException("Operation failure!");
       }
@@ -78,7 +80,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
           throw new IOException("server response not correct....");
       }
   }
-  
+   
 }
 
 

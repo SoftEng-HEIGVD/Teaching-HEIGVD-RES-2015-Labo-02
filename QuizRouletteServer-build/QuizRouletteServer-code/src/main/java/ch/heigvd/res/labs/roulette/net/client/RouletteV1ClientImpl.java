@@ -126,7 +126,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       writer.println(RouletteV1Protocol.CMD_INFO);
       writer.flush();
       line=lineReader();
+      
       int nombStudents = JsonObjectMapper.parseJson(line, InfoCommandResponse.class).getNumberOfStudents();
+      
       return nombStudents;
   }
 
