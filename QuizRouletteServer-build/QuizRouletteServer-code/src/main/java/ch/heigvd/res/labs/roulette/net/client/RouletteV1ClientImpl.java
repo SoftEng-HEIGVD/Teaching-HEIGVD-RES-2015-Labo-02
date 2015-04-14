@@ -20,6 +20,8 @@ import java.util.logging.Logger;
  * This class implements the client side of the protocol specification (version 1).
  * 
  * @author Olivier Liechti
+ * @author Mélanie Huck
+ * @author James Nolan
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
@@ -28,22 +30,42 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   // The client's socket
   private Socket clientSocket = null;
   
-  // The writer and reader from the socket
-  private OutputStreamWriter out;
-  private InputStreamReader in;
+  // The writer and reader from the socket (protected to be used by subversions)
+  protected PrintWriter out;
+  protected BufferedReader in;
   
   @Override
   public void connect(String server, int port) throws IOException {
-      // Connect to the port
+      // If connected, do nothing
+      if (isConnected()) {
+          return;
+      }
+      
+      // Else, connect to the port
       clientSocket = new Socket(server, port);
       
       // Prepare the writer and reader
-      out = new OutputStreamWriter(clientSocket.getOutputStream());
-      in = new InputStreamReader(clientSocket.getInputStream());
+      out = new PrintWriter(clientSocket.getOutputStream());
+      in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+      
+      LOG.log(Level.INFO, "Client connection OK with greetings: " + in.readLine());
   }
 
   @Override
   public void disconnect() throws IOException {
+      // If already disconnected, do nothing
+      if (!isConnected()) {
+          return;
+      }
+      
+      // Bye
+      out.println(RouletteV1Protocol.CMD_BYE);
+      out.flush();
+      
+      // Close the read/writers
+      out.close();
+      in.close();
+      
       // Close the socket
       clientSocket.close();
   }
@@ -51,60 +73,113 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   @Override
   public boolean isConnected() {
       // The server is connected if the socket is not closed
-      return !clientSocket.isClosed();
+      return clientSocket != null && !clientSocket.isClosed();
   }
 
   @Override
   public void loadStudent(String fullname) throws IOException {
+      // If not connected, throw exception
+      if (!isConnected()) {
+          throw new IOException("Must be connected to load student!");
+      }
+      
       // Send load command
-      out.write("LOAD");
+      out.println(RouletteV1Protocol.CMD_LOAD);
+      out.flush();
+      
+      // Skip server info messages
+      in.readLine();
       
       // Write name
-      out.write(fullname);
+      out.println(fullname);
       
       // Send end of data marker
-      out.write("ENDOFDATA");
+      out.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+      out.flush();
+      
+      // Skip server info messages
+      in.readLine();
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
+      // If not connected, throw exception
+      if (!isConnected()) {
+          throw new IOException("Must be connected to load students!");
+      }
+      
       // Send load command
-      out.write("LOAD");
+      out.println(RouletteV1Protocol.CMD_LOAD);
+      out.flush();
+      
+      // Skip server info messages
+      in.readLine();
       
       // Write all students
       for (Student s : students) {
-          out.write(s.getFullname());
+          out.println(s.getFullname());
+          LOG.log(Level.INFO, "SENT student with name " + s.getFullname());
       }
       
       // Send end of data marker
-      out.write("ENDOFDATA");
-      
-      // Flush stream
+      out.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
       out.flush();
+      
+      // Skip server info messages
+      in.readLine();
   }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-      // Send RANDOM comamand
-      out.write("RANDOM");
+      // If not connected, throw exception
+      if (!isConnected()) {
+          throw new IOException("Must be connected to load students!");
+      }
       
-      // Wait for response
-      while(!in.ready());
+      // Send RANDOM command
+      out.println(RouletteV1Protocol.CMD_RANDOM);
+      out.flush();
+
+      // Read line and parse json
+      String response = in.readLine();
+      RandomCommandResponse result = JsonObjectMapper.parseJson(response, RandomCommandResponse.class);
       
-      // Read
-      char[] buffer = new char[100];
-      in.read(buffer, 0, 100);
-      
-      return new Student(new String(buffer));
+      // Maybe there was an error...
+      if (result.getError() != null) {
+          // Maybe there's no student?
+          if (result.getError().equals("There is no student, you cannot pick a random one")) {
+            throw new EmptyStoreException();
+          }
+          
+          // Maybe the error is something else
+          throw new IOException(result.getError());
+      }
+      return new Student(result.getFullname());
   }
 
   @Override
   public int getNumberOfStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      // If not connected, throw exception
+      if (!isConnected()) {
+          throw new IOException("Must be connected to retrieve number of students!");
+      }
+      
+      
+      // Request INFOs from the server
+      out.println(RouletteV1Protocol.CMD_INFO);
+      out.flush();
+      
+      // read line and Parse JSON
+      String response = in.readLine();
+      InfoCommandResponse infos = JsonObjectMapper.parseJson(response, InfoCommandResponse.class);
+      
+      // Return number of students
+      LOG.log(Level.INFO, "Number of students is " + infos.getNumberOfStudents());
+      return infos.getNumberOfStudents();
   }
 
   @Override
   public String getProtocolVersion() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return RouletteV1Protocol.VERSION;
   }
 }
