@@ -9,62 +9,133 @@ import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class implements the client side of the protocol specification (version 1).
- * 
+ * This class implements the client side of the protocol specification (version
+ * 1).
+ *
  * @author Olivier Liechti
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
-  private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+	static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
-  @Override
-  public void connect(String server, int port) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+	private Socket sock = null;
 
-  @Override
-  public void disconnect() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+	protected BufferedReader in;
+	protected PrintWriter out;
 
-  @Override
-  public boolean isConnected() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+	@Override
+	public void connect(String server, int port) throws IOException {
+		if(isConnected()) {
+			throw new IOException();
+		}
 
-  @Override
-  public void loadStudent(String fullname) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+		sock = new Socket();
+		sock.connect(new InetSocketAddress(server, port));
+		in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+		out = new PrintWriter(sock.getOutputStream());
+	}
 
-  @Override
-  public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+	@Override
+	public void disconnect() throws IOException {
+		if(!isConnected()) {
+			throw new IOException();
+		}
 
-  @Override
-  public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+		out.println(RouletteV1Protocol.CMD_BYE);
+		out.flush();
+		handleByeResponse();
 
-  @Override
-  public int getNumberOfStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+		in.close();
+		out.close();
+		sock.close();
+	}
 
-  @Override
-  public String getProtocolVersion() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+	protected void handleByeResponse() throws IOException {
+	}
 
+	@Override
+	public boolean isConnected() {
+		return sock.isConnected() && !sock.isClosed();
+	}
 
+	@Override
+	public void loadStudent(String fullname) throws IOException {
+		List<Student> list = new ArrayList<>();
+		list.add(new Student(fullname));
+		loadStudents(list);
+	}
 
+	@Override
+	public void loadStudents(List<Student> students) throws IOException {
+		out.println(RouletteV1Protocol.CMD_LOAD);
+		out.flush();
+		
+		if(!readLine().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START)) {
+			throw new IOException();
+		}
+
+		for(Student s : students) {
+			out.println(s.getFullname());
+		}
+
+		out.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+		out.flush();
+		
+		handleLoadResponse();
+	}
+
+	@Override
+	public Student pickRandomStudent() throws EmptyStoreException, IOException {
+		out.println(RouletteV1Protocol.CMD_RANDOM);
+		out.flush();
+
+		RandomCommandResponse response = JsonObjectMapper.parseJson(readLine(), RandomCommandResponse.class);
+		if(response.getError() != null) {
+			throw new EmptyStoreException();
+		}
+
+		return new Student(response.getFullname());
+	}
+
+	@Override
+	public int getNumberOfStudents() throws IOException {
+		return getInfo().getNumberOfStudents();
+	}
+
+	@Override
+	public String getProtocolVersion() throws IOException {
+		out.println(RouletteV1Protocol.CMD_INFO);
+		out.flush();
+
+		return getInfo().getProtocolVersion();
+	}
+
+	private InfoCommandResponse getInfo() throws IOException {
+		out.println(RouletteV1Protocol.CMD_INFO);
+		out.flush();
+
+		return JsonObjectMapper.parseJson(readLine(), InfoCommandResponse.class);
+	}
+
+	protected void handleLoadResponse() throws IOException {
+		this.readLine();
+	}
+		
+	protected String readLine() throws IOException {
+		String line;
+		String sub;
+		do {
+			line = in.readLine();
+			sub = line.substring(0, 10);
+		} while(!sub.equalsIgnoreCase("Huh? pleas") && !sub.equalsIgnoreCase("Hello. Onl"));
+		return line;
+	}
 }
