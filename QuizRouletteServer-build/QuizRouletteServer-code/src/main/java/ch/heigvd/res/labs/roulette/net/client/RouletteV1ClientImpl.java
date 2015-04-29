@@ -16,126 +16,123 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import java.util.LinkedList;
+
 /**
- * This class implements the client side of the protocol specification (version
- * 1).
- *
- * @author Olivier Liechti
+ * This class implements the client side of the protocol specification (version 1).
+ * 
+ * @author Olivier Liechti, Henrik Akesson
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
-	static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+  private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
-	private Socket sock = null;
+  private Socket sock = null;
+  private BufferedReader in = null;
+  protected PrintWriter out = null;
+  
+  protected String readLine() throws IOException {
+      String line;
+      do {
+          line = in.readLine();
+      } while (line.equalsIgnoreCase("Hello. Online HELP is available. Will you find it?") 
+            || line.equalsIgnoreCase("Huh? please use HELP if you don't know what commands are available."));
+      return line;
+  }
+  
+  @Override
+    public void connect(String server, int port) throws IOException {
+        if (isConnected()) {
+            throw new IOException();
+        }
 
-	protected BufferedReader in;
-	protected PrintWriter out;
+        sock = new Socket();
+        sock.connect(new InetSocketAddress(server, port));
+        in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+        out = new PrintWriter(sock.getOutputStream());
+    }
+    
 
-	@Override
-	public void connect(String server, int port) throws IOException {
-		if(isConnected()) {
-			throw new IOException();
-		}
+  @Override
+    public void disconnect() throws IOException {
+        if (!isConnected()) {
+            throw new IOException();
+        }
 
-		sock = new Socket();
-		sock.connect(new InetSocketAddress(server, port));
-		in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-		out = new PrintWriter(sock.getOutputStream());
-	}
+        out.println(RouletteV1Protocol.CMD_BYE);
+        out.flush();
 
-	@Override
-	public void disconnect() throws IOException {
-		if(!isConnected()) {
-			throw new IOException();
-		}
+        in.close();
+        out.close();
+        sock.close();
+    }
 
-		out.println(RouletteV1Protocol.CMD_BYE);
-		out.flush();
-		handleByeResponse();
+  @Override
+  public boolean isConnected() {
+      if (sock == null) {
+         return false; 
+      } else {
+          return sock.isConnected() && !sock.isClosed();
+      }
+  }
 
-		in.close();
-		out.close();
-		sock.close();
-	}
+  @Override
+  public void loadStudent(String fullname) throws IOException {
+      List<Student> list = new ArrayList<Student>();
+      list.add(new Student(fullname));
+      loadStudents(list);
+  }
 
-	protected void handleByeResponse() throws IOException {
-	}
+  @Override
+    public void loadStudents(List<Student> students) throws IOException {
+        out.println(RouletteV1Protocol.CMD_LOAD);
+        out.flush();
 
-	@Override
-	public boolean isConnected() {
-		return sock.isConnected() && !sock.isClosed();
-	}
+        if (!readLine().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START)) {
+            throw new IOException();
+        }
 
-	@Override
-	public void loadStudent(String fullname) throws IOException {
-		List<Student> list = new ArrayList<>();
-		list.add(new Student(fullname));
-		loadStudents(list);
-	}
+        for (Student s : students) {
+            out.println(s.getFullname());
+        }
 
-	@Override
-	public void loadStudents(List<Student> students) throws IOException {
-		out.println(RouletteV1Protocol.CMD_LOAD);
-		out.flush();
-		
-		if(!readLine().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START)) {
-			throw new IOException();
-		}
+        out.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+        out.flush();
 
-		for(Student s : students) {
-			out.println(s.getFullname());
-		}
+        readLine();
+    }
 
-		out.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
-		out.flush();
-		
-		handleLoadResponse();
-	}
+  @Override
+    public Student pickRandomStudent() throws EmptyStoreException, IOException {
+        out.println(RouletteV1Protocol.CMD_RANDOM);
+        out.flush();
 
-	@Override
-	public Student pickRandomStudent() throws EmptyStoreException, IOException {
-		out.println(RouletteV1Protocol.CMD_RANDOM);
-		out.flush();
+        RandomCommandResponse response = JsonObjectMapper.parseJson(readLine(), RandomCommandResponse.class);
+        if (response.getError() != null) {
+            throw new EmptyStoreException();
+        }
 
-		RandomCommandResponse response = JsonObjectMapper.parseJson(readLine(), RandomCommandResponse.class);
-		if(response.getError() != null) {
-			throw new EmptyStoreException();
-		}
+        return new Student(response.getFullname());
+    }
 
-		return new Student(response.getFullname());
-	}
+  @Override
+  public int getNumberOfStudents() throws IOException {
+      out.println(RouletteV1Protocol.CMD_INFO);
+      out.flush();
 
-	@Override
-	public int getNumberOfStudents() throws IOException {
-		return getInfo().getNumberOfStudents();
-	}
+      InfoCommandResponse icr = JsonObjectMapper.parseJson(readLine(), InfoCommandResponse.class);
+      return icr.getNumberOfStudents();
+  }
 
-	@Override
-	public String getProtocolVersion() throws IOException {
-		out.println(RouletteV1Protocol.CMD_INFO);
-		out.flush();
+  @Override
+  public String getProtocolVersion() throws IOException {
+      out.println(RouletteV1Protocol.CMD_INFO);
+      out.flush();
 
-		return getInfo().getProtocolVersion();
-	}
+      InfoCommandResponse icr = JsonObjectMapper.parseJson(readLine(), InfoCommandResponse.class);
+      return icr.getProtocolVersion();
+  }
 
-	private InfoCommandResponse getInfo() throws IOException {
-		out.println(RouletteV1Protocol.CMD_INFO);
-		out.flush();
 
-		return JsonObjectMapper.parseJson(readLine(), InfoCommandResponse.class);
-	}
 
-	protected void handleLoadResponse() throws IOException {
-		this.readLine();
-	}
-		
-	protected String readLine() throws IOException {
-		String line;
-		String sub;
-		do {
-			line = in.readLine();
-			sub = line.substring(0, 10);
-		} while(!sub.equalsIgnoreCase("Huh? pleas") && !sub.equalsIgnoreCase("Hello. Onl"));
-		return line;
-	}
 }
