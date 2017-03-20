@@ -40,7 +40,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         outputStream = new PrintWriter(socket.getOutputStream());
 
-        inputStream.readLine();
+        LOG.info("Connected to server.");
+        LOG.info("Received: " + inputStream.readLine());
     }
 
     @Override
@@ -52,6 +53,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         inputStream = null;
         outputStream = null;
         socket = null;
+
+        LOG.info("Disconnect from server.");
     }
 
     @Override
@@ -64,22 +67,21 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         outputStream.write(RouletteV1Protocol.CMD_LOAD + "\n");
         outputStream.flush();
 
-        // Must get rid of the server's response.
-        inputStream.readLine();
+        LOG.info("Received: " + inputStream.readLine());
 
         outputStream.write(fullname + "\n");
         outputStream.write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER + "\n");
         outputStream.flush();
 
-        // Same here.
-        inputStream.readLine();
+        LOG.info("Received: " + inputStream.readLine());
     }
 
     @Override
     public void loadStudents(List<Student> students) throws IOException {
         outputStream.write(RouletteV1Protocol.CMD_LOAD + "\n");
         outputStream.flush();
-        inputStream.readLine();
+
+        LOG.info("Received: " + inputStream.readLine());
 
         for(Student student : students) {
             outputStream.write(student.getFullname());
@@ -87,7 +89,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         outputStream.write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER + "\n");
         outputStream.flush();
 
-        inputStream.readLine();
+        LOG.info("Received: " + inputStream.readLine());
     }
 
     @Override
@@ -98,7 +100,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
         outputStream.write(RouletteV1Protocol.CMD_RANDOM);
 
-        return new Student(JsonObjectMapper.parseJson(inputStream.readLine(), RandomCommandResponse.class).getFullname());
+        String response = inputStream.readLine();
+        LOG.info("Received: " + response);
+
+        return new Student(JsonObjectMapper.parseJson(response, RandomCommandResponse.class).getFullname());
     }
 
     @Override
@@ -106,9 +111,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         outputStream.write(RouletteV1Protocol.CMD_INFO + "\n");
         outputStream.flush();
 
-        String res = inputStream.readLine();
+        String response = inputStream.readLine();
+        LOG.info("Received: " + response);
 
-        return JsonObjectMapper.parseJson(res, InfoCommandResponse.class).getNumberOfStudents();
+        return JsonObjectMapper.parseJson(response, InfoCommandResponse.class).getNumberOfStudents();
     }
 
     @Override
@@ -116,8 +122,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         outputStream.write(RouletteV1Protocol.CMD_INFO + "\n");
         outputStream.flush();
 
-        String res = inputStream.readLine();
+        String response = inputStream.readLine();
+        LOG.info("Received: " + response);
 
-        return JsonObjectMapper.parseJson(res, InfoCommandResponse.class).getProtocolVersion();
+        return JsonObjectMapper.parseJson(response, InfoCommandResponse.class).getProtocolVersion();
     }
 }
