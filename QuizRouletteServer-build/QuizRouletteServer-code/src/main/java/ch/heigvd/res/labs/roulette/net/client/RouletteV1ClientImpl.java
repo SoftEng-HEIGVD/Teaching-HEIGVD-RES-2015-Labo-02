@@ -34,13 +34,14 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
    @Override
    public void disconnect() throws IOException
    {
+      writer.println("BYE");
       socket.close();
    }
 
    @Override
    public boolean isConnected()
    {
-      if(socket != null)
+      if (socket != null)
          return socket.isBound();
       else
          return false;
@@ -49,19 +50,24 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
    @Override
    public void loadStudent(String fullname) throws IOException
    {
-      // Read the hello message from the server
+      //TODO Fix de cette requête au serveur
       reader.readLine();
 
       // Ask the server the current version
       writer.println("LOAD");
       writer.flush();
 
-      // Read the answer from the server
       reader.readLine();
 
       // Load the student given in parameters
       writer.println(fullname);
       writer.flush();
+
+      // Sent the ENDOFDATA
+      writer.println("ENDOFDATA");
+      writer.flush();
+
+      reader.readLine();
    }
 
    @Override
@@ -73,7 +79,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
    @Override
    public Student pickRandomStudent() throws EmptyStoreException, IOException
    {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      //TODO Implémenter la classe
+      throw new EmptyStoreException(); //To change body of generated methods, choose Tools | Templates.
    }
 
    @Override
