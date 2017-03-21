@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// Test comment
+
 /**
  * This class provides the main() method for starting the application. It creates an
  * instance of RouletteServer and starts it (it will bind on the default port specified
