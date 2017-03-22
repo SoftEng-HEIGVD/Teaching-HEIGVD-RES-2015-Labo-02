@@ -30,15 +30,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   private BufferedReader br = null;
   private PrintWriter pw = null;
 
-  // When we read from the server, we do it until we have a line to read (while line == null)
-  public String readMessageFromServer() throws IOException {
-    String line = null;
-    do
-      line = br.readLine();
-    while (line == null);
-    return line;
-  }
-
   @Override
   public void connect(String server, int port) throws IOException {
     // We etablishes the connection with the server and
@@ -46,7 +37,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     clientSocket = new Socket(server, port);
     br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     pw = new PrintWriter(clientSocket.getOutputStream());
-    readMessageFromServer(); // don't forget to read the welcome message from the server
+    br.readLine(); // don't forget to read the welcome message from the server
   }
 
   @Override
@@ -87,7 +78,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     pw.flush();
 
     // If the server don't respond correctly, we have a loading failure
-    if(!readMessageFromServer().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START))
+    if(!br.readLine().equalsIgnoreCase(RouletteV1Protocol.RESPONSE_LOAD_START))
       throw new IOException("Loading Failure !");
 
     for(Student currentStudent : students)
@@ -98,7 +89,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     pw.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
     pw.flush();
 
-    readMessageFromServer(); // don't forget to read the validation message from the server (DATA LOADED)
+    br.readLine(); // don't forget to read the validation message from the server (DATA LOADED)
   }
 
   @Override
@@ -108,7 +99,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     pw.flush();
 
     // Converts the json string into a POJO (plain old Java object)
-    RandomCommandResponse response = JsonObjectMapper.parseJson(readMessageFromServer(), RandomCommandResponse.class);
+    RandomCommandResponse response = JsonObjectMapper.parseJson(br.readLine(), RandomCommandResponse.class);
     if(response.getError() == null)
       return new Student(response.getFullname());
     else
@@ -123,7 +114,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     pw.flush();
 
     // Converts the json string into a POJO (plain old Java object)
-    InfoCommandResponse response = JsonObjectMapper.parseJson(readMessageFromServer(), InfoCommandResponse.class);
+    InfoCommandResponse response = JsonObjectMapper.parseJson(br.readLine(), InfoCommandResponse.class);
     return response.getNumberOfStudents();
   }
 
@@ -134,7 +125,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     pw.flush();
 
     // Converts the json string into a POJO (plain old Java object)
-    InfoCommandResponse info = JsonObjectMapper.parseJson(readMessageFromServer(), InfoCommandResponse.class);
+    InfoCommandResponse info = JsonObjectMapper.parseJson(br.readLine(), InfoCommandResponse.class);
     return info.getProtocolVersion();
   }
 }
