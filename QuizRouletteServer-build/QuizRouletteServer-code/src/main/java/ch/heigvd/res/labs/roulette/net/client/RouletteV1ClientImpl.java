@@ -6,12 +6,11 @@ import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+
+import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,44 +24,116 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
+  private Socket socket = new Socket();
+
+  public RouletteV1ClientImpl(){
+      socket = new Socket();
+  }
+
   @Override
   public void connect(String server, int port) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      socket.connect(new InetSocketAddress(server,port));
+      BufferedReader bis = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+      bis.readLine();
   }
 
   @Override
   public void disconnect() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      socket.close();
   }
 
   @Override
   public boolean isConnected() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return socket.isConnected();
   }
 
   @Override
   public void loadStudent(String fullname) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      OutputStream os = socket.getOutputStream();
+      BufferedReader bis = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+      os.write("LOAD".getBytes("UTF-8"));
+      os.write('\n');
+
+      bis.readLine();
+
+      os.write(fullname.getBytes("UTF-8"));
+      os.write('\n');
+
+      os.write("ENDOFDATA".getBytes("UTF-8"));
+      os.write('\n');
+
+      bis.readLine();
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+      OutputStream os = socket.getOutputStream();
+      BufferedReader bis = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+      os.write("LOAD".getBytes("UTF-8"));
+      os.write('\n');
+
+      bis.readLine();
+
+      for(Student student:students) {
+          os.write(student.getFullname().getBytes("UTF-8"));
+          os.write('\n');
+      }
+
+      os.write("ENDOFDATA".getBytes("UTF-8"));
+      os.write('\n');
+
+      bis.readLine();
   }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+      OutputStream os = socket.getOutputStream();
+      os.write("RANDOM".getBytes("UTF-8"));
+      os.write('\n');
+
+      BufferedReader bis = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+      String response = bis.readLine();
+
+      RandomCommandResponse parsedResponse = JsonObjectMapper.parseJson(response,RandomCommandResponse.class);
+
+      if(parsedResponse.getFullname()==null)
+          throw new EmptyStoreException();
+
+      return new Student(parsedResponse.getFullname());
   }
 
   @Override
   public int getNumberOfStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      OutputStream os = socket.getOutputStream();
+      os.write("INFO".getBytes("UTF-8"));
+      os.write('\n');
+
+      BufferedReader bis = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+      String response = bis.readLine();
+
+      InfoCommandResponse parsedResponse = JsonObjectMapper.parseJson(response,InfoCommandResponse.class);
+      return parsedResponse.getNumberOfStudents();
   }
 
   @Override
   public String getProtocolVersion() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      OutputStream os = socket.getOutputStream();
+      os.write("INFO".getBytes("UTF-8"));
+      os.write('\n');
+
+      BufferedReader bis = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+      String response = bis.readLine();
+
+      InfoCommandResponse parsedResponse = JsonObjectMapper.parseJson(response,InfoCommandResponse.class);
+      return parsedResponse.getProtocolVersion();
   }
 
 
