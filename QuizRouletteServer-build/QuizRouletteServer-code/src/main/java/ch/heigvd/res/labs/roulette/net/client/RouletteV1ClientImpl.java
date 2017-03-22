@@ -25,46 +25,121 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
+  private static String CHARSET = "UTF-8";
+
+  private Socket clientSocket;
+  private BufferedReader reader;
+  private PrintWriter writer;
+
   @Override
   public void connect(String server, int port) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    clientSocket = new Socket(server, port);
+
+    reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), CHARSET));
+    writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), CHARSET));
+
+    reader.readLine();
   }
 
   @Override
   public void disconnect() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    writer.println("BYE");
+    writer.flush();
+
+    reader.close();
+    writer.close();
+
+    clientSocket.close();
   }
 
   @Override
   public boolean isConnected() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    if (clientSocket != null) {
+      return clientSocket.isConnected();
+    }
+
+    return false;
   }
 
   @Override
   public void loadStudent(String fullname) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    writer.println("LOAD");
+    writer.flush();
+
+    reader.readLine();
+
+    writer.println(fullname);
+    writer.println("ENDOFDATA");
+    writer.flush();
+
+    reader.readLine();
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    writer.println("LOAD");
+    writer.flush();
+
+    reader.readLine();
+
+    for (Student student : students) {
+      writer.println(student.getFullname());
+    }
+
+    writer.println("ENDOFDATA");
+    writer.flush();
+
+    reader.readLine();
   }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    String serverResponseJson = null;
+    RandomCommandResponse serverResponse = null;
+
+    writer.println("RANDOM");
+    writer.flush();
+
+    serverResponseJson = reader.readLine();
+
+    serverResponse = JsonObjectMapper.parseJson(serverResponseJson, RandomCommandResponse.class);
+
+    if (serverResponse.getError().isEmpty()) {
+      return new Student(serverResponse.getFullname());
+
+    } else {
+      throw new EmptyStoreException();
+    }
   }
 
   @Override
   public int getNumberOfStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    String serverResponseJson = null;
+    InfoCommandResponse serverResponse = null;
+
+    writer.println("INFO");
+    writer.flush();
+
+    serverResponseJson = reader.readLine();
+
+    serverResponse = JsonObjectMapper.parseJson(serverResponseJson, InfoCommandResponse.class);
+
+    return serverResponse.getNumberOfStudents();
   }
 
   @Override
   public String getProtocolVersion() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    String serverResponseJson = null;
+    InfoCommandResponse serverResponse = null;
+
+    writer.println("INFO");
+    writer.flush();
+
+    serverResponseJson = reader.readLine();
+
+    serverResponse = JsonObjectMapper.parseJson(serverResponseJson, InfoCommandResponse.class);
+
+    return serverResponse.getProtocolVersion();
   }
-
-
-
+  
 }
