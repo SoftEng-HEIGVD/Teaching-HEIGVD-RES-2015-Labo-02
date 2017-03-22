@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
  * @author Arnold von Bauer Gauss
  */
 public class RouletteV2GaussianBlursTest {
-
+    
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
@@ -68,5 +68,52 @@ public class RouletteV2GaussianBlursTest {
         List<Student> students = client.listStudents();
         assertEquals(addStudents, students);
     }
+=======
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
+
+  @Rule
+  public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
+
+  @Ignore
+  @Test
+  @TestAuthor(githubId = "gaussianblurs")
+  public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
+    assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
+  }
+
+  @Ignore
+  @Test
+  @TestAuthor(githubId = "gaussianblurs")
+  public void theServerShouldListenToTheCorrectPort() {
+    assertEquals(RouletteV2Protocol.DEFAULT_PORT, roulettePair.getServer().getPort());
+  }
+
+  @Ignore
+  @Test
+  @TestAuthor(githubId = "gaussianblurs")
+  public void theServerShouldHaveZeroStudentsAfterClear() throws IOException {
+    IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
+    client.loadStudent("Albert");
+    client.loadStudent("Gerard");
+    client.loadStudent("Roger");
+    client.clearDataStore();
+    assertEquals(0, client.getNumberOfStudents());
+  }
+
+  @Ignore
+  @Test
+  @TestAuthor(githubId = "gaussianblurs")
+  public void theServerShouldListStudents() throws IOException {
+    IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
+    List<Student> addStudents = new ArrayList<>();
+    addStudents.add(new Student("Albert"));
+    addStudents.add(new Student("Gerard"));
+    addStudents.add(new Student("Roger"));
+    client.loadStudents(addStudents);
+    List<Student> students = client.listStudents();
+    assertEquals(addStudents, students);
+  }
+>>>>>>> 44b0025ceada59bffb7c5ccff94c208ab03f1f3e
 
 }

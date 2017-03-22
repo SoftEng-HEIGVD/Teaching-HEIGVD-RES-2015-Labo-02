@@ -9,33 +9,18 @@
 6. [Tasks](#Tasks)
     1. [Task 1: Study the specification and the code provided for the server](#Task1)
     1. [Task 2: Execute the server and play with it](#Task2)
-    1. [Task 3.1: Write automated tests to specify the behavior of the app](#Task3.1)
-    1. [Task 3.2: Write a client compliant with the protocol specification](#Task3.2)
-    1. [Task 4: Extend the server to implement the Roulette Protocol V2](#Task4)
+    1. [Task 3: Implement the client for the Roulette Protocol v1](#Task3)
+    1. [Task 4: Write automated tests to specify the behaviour of the v2 protocol](#Task4)
+    1. [Task 5: Extend the server to implement the Roulette Protocol V2](#Task5)
+
 
 ## <a name="Deadlines"></a>Deadlines
 
-* Tuesday, March 31st at 12:00 (at the latest!): each group submits a pull request for their `fb-lab02-tests` feature branch.
-
-* Wednesday, April 1st: each group merges `upstream/master` on local repo.
-
-* Wednesday, April 8th at 8:00 (at the latest!): each group makes a first submission of the lab (partial implementation).
-
-* Monday, 13th at 8:00 (at the latest!): each group submits the lab (full implementation).
+* Check the deadlines on Cyberlearn. 
+* As always, they are very strict.
+* Be aware that there is an intermediate deadline! If you do not deliver your automated tests in time, your grade will be impacted.
 
 ## <a name="Important"></a>IMPORTANT
-
-* Do not forget to include your GitHub IDs in the `@TestAuthor` annotations in your tests. If you work in a group of 2 students, please include your 2 logins in every test:
-
-```
-// use this if there is one student in the group
-@TestAuthor(githubId = "wasadigi")
-```
-
-```
-// use this if there are 2 students in the group
-@TestAuthor(githubId = {"wasadigi", "prevole"})
-```
 
 * When you create the `.java` files that contain your JUnit tests, make sure to include one of your GitHub ids in the name (replace 'wasadigi' with your GitHub id in `RouletteV1WasadigiTest.java`). This is important to make sure that all groups create their own files, so that we don't have merge conflicts afterwards.
 
@@ -70,10 +55,6 @@ After this lab, you should be able to:
 
 * There is **a grade** for this lab. You can work in groups of 2 students max. 
 * **No report to write**.
-* I might ask some of you to **present their solution in front of the class**.
-* For that reason, you should be ready with:
-  * **Working code in your IDE**. You should be able to walk through the code and explain how you have implemented the various functions. I expect you to run a live demo and to present the results. The demo should be "**end-to-end**", in other words it should start with the generation of the test data files.
-  * **A few slides that explain what you have implemented and how**. You should write and use these slides to help you structure your explanations. I would like to see that you have understood the different sub-problems to solve (in order to implement the complete solution). I would also like to see how you have actually solved them.
 
 ## <a name="Specifications"></a>Specifications
 
@@ -135,6 +116,8 @@ When this is clear, **go through the code** of the [QuizRouletteServer project](
 
 ### <a name="Task2"></a>Task 2: Execute the server and play with it
 
+Note that when you build the whole project (`code` + `tests`), you will initially have a failure. The reason is there are tests for the client, which you still need to implement (so you will get UnsupporteOperationExceptions). Nevertheless, the server code is successfully built! This means that you can go in the `target` folder of the `code` project and find the executable jar.
+
 Execute the server program and make sure that it starts as expected and that it listens on the specified port. Open a terminal window and connect to the server by typing:
 
 ```
@@ -153,9 +136,17 @@ node client.js
 
 Finally, **run Wireshark and capture traffic** between your clients and the server. **Inspect the TCP segments** and study the content on the header fields (source address, source port, destination address, destination port). Compare these values for outgoing and incoming traffic. Make sure that you understand the relationship between these header values and how sockets are identified on both sides of the communication channel.
 
-### <a name="Task3.1"></a>Task 3.1: Write automated tests to specify the behavior of the app
+### <a name="Task3"></a>Task 3: Implement the client for the Roulette Protocol v1
 
-Each group should write a collection of JUnit tests **before** implementing the Roulette client and server. The tests are meant to specify the expected behavior of the application, so that it can be validated automatically, on a regular basis.
+**Implement the RouletteV1ClientImpl.java class**, based on the specification in this document and on the provided unit tests. Be aware, however, that these tests do not fully validate the behaviour of your code!
+
+Thanks to your implementation, it should be possible to write a client application for the Roulette Protocol (e.g. an application doing the same job as the `client.js` Node.js script provided in the lab repo).
+
+### <a name="Task4"></a>Task 4: Write automated tests to specify the behaviour of the v2 protocol
+
+Each group should write a collection of JUnit tests **before** implementing the v2 Roulette client and server. The tests are meant to specify the expected behavior of the application, so that it can be validated automatically, on a regular basis.
+
+Create a file `RouletteV2XXXTest.java` (replace XXX with your GitHub account) in the test project and add at least 3 tests to validate other aspects of the code. In this test file, create methods to validate the v2 specification as completely as possible. In other words, read carefully the Roulette v2 Protocol Specification and define a test for every rule defined in the protocol (port, message syntax, behaviour).
 
 When all groups have submitted their tests, we will integrate them on the master branch of the original repo. All groups will then have to merge the contributions into their repo. In other words, each group will validate its implementation against the tests submitted by all groups (and we will add our own).
 
@@ -163,26 +154,18 @@ To do that, each group will need to setup git in order to **work in a feature br
 
 ```
 # Use this command to create the feature branch and use it
-$ git checkout -b fb-lab02-tests
+$ git fetch origin
+$ git checkout fb-lab02-v2-tests
+$ git checkout -b fb-lab02-v2-contrib
 
 # Use git add and git commit as usual
 ...
 
 # Use this command to push the feature branch to your fork
-$ git push origin fb-lab02-tests
+$ git push origin fb-lab02-v2-contrib
 ```
 
-
-
-
-### <a name="Task3.2"></a>Task 3.2: Write a client compliant with the protocol specification
-
-**Implement a client compliant with the protocol specification in Java**. We have provided you with 2 interfaces: `IRouletteV1Client.java` and `IRouletteV2Client.java`. Your job is to implement them in the `RouletteV1ClientImpl.java` and `RouletteV2ClientImpl` classes.
-
-Thanks to your implementation, it should be possible to write a client application for the Roulette Protocol (e.g. an application doing the same job as the `client.js` Node.js script provided in the lab repo).
-
-
-### <a name="Task4"></a>Task 4: Extend the server to implement the Roulette Protocol V2
+### <a name="Task5"></a>Task 5: implement the Roulette Protocol V2 (client and server)
 
 The last task of the lab is for you to **extend the server project** and to **add an implementation of the version 2** of the Roulette protocol. In other words, when you are done the server should be able to work both in V1 and in V2 modes.
 
