@@ -4,13 +4,10 @@ import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import ch.heigvd.schoolpulse.TestAuthor;
-import java.io.IOException;
+import java.io.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Rule;
 import org.junit.Ignore;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
 import java.net.Socket;
 
 
@@ -33,14 +30,16 @@ public class RouletteV2JulienBrechetTest {
   
   @Test
   @TestAuthor(githubId = "JulienBrechet")
-  public void CorrectNumberOfStudentsInStore(){
-     assertEquals(0, roulettePair.getClient().getNumberOfStudents());
-     roulettePair.getClient().loadStudent("Lucas");
-     assertEquals(1, roulettePair.getClient().getNumberOfStudents());
-     roulettePair.getClient().loadStudent("Ali");
-     assertEquals(2, roulettePair.getClient().getNumberOfStudents());
-     ((RouletteV2ClientImpl)roulettePair.getClient()).clearDataStore();
-     assertEquals(0, roulettePair.getClient().getNumberOfStudents());
+  public void CorrectNumberOfStudentsInStore() throws IOException {
+      IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
+
+      assertEquals(0, client.getNumberOfStudents());
+      client.loadStudent("ali");
+      assertEquals(1, client.getNumberOfStudents());
+      client.loadStudent("adrien");
+      assertEquals(2, client.getNumberOfStudents());
+      client.loadStudent("julien");
+      assertEquals(3, client.getNumberOfStudents());
   }
   
   
