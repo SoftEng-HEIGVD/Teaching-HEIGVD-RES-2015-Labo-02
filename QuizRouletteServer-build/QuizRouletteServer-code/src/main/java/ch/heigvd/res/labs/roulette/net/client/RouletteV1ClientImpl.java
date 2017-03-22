@@ -9,7 +9,7 @@ import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
-import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -28,7 +28,12 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
    @Override
    public void connect(String server, int port) throws IOException
    {
+      LOG.log(Level.FINE, "Client is connecting to the server");
+
+      // Create the soclet
       socket = new Socket(server, port);
+
+      // Create the reader and the writer to read from the socket and to write to it
       reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
@@ -39,13 +44,20 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
    @Override
    public void disconnect() throws IOException
    {
+      LOG.log(Level.FINE, "Client is requesting a disconnect, disconnecting...");
+
+      // Terminate the connection with the server
       writer.println("BYE");
+
+      // Close the socket on the client side
       socket.close();
    }
 
    @Override
    public boolean isConnected()
    {
+      LOG.log(Level.FINE, "Checking whether the clint is connected to the server or not");
+
       if (socket != null)
          return socket.isBound();
       else
@@ -55,7 +67,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
    @Override
    public void loadStudent(String fullname) throws IOException
    {
-      // Ask the server the current version
+      LOG.log(Level.FINE, "Client is loading a student into the store");
+
+      // Ask the server to load a student into the store
       writer.println("LOAD");
       writer.flush();
 
@@ -70,18 +84,41 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
       writer.println("ENDOFDATA");
       writer.flush();
 
+      // Trash the server's reply (useless for us)
       reader.readLine();
    }
 
    @Override
    public void loadStudents(List<Student> students) throws IOException
    {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      LOG.log(Level.FINE, "Client is loading multiple students into the store");
+
+      // Ask the server to load students into the store
+      writer.println("LOAD");
+      writer.flush();
+
+      // Trash the reply from the server (we know how to talk to the server)
+      reader.readLine();
+
+      // Load students from the List
+      for (Student student : students)
+         writer.println(student.getFullname());
+
+      // Write them to the server
+      writer.flush();
+
+      // Sent the ENDOFDATA
+      writer.println("ENDOFDATA");
+      writer.flush();
+
+      reader.readLine();
    }
 
    @Override
    public Student pickRandomStudent() throws EmptyStoreException, IOException
    {
+      LOG.log(Level.FINE, "Picking a random student from the store");
+
       // Ask the server to provice a random student
       writer.println("RANDOM");
       writer.flush();
@@ -100,6 +137,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
    @Override
    public int getNumberOfStudents() throws IOException
    {
+      LOG.log(Level.FINE, "Getting the number of students in the store");
+
       // Ask the server the current version
       writer.println("INFO");
       writer.flush();
@@ -113,6 +152,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
    @Override
    public String getProtocolVersion() throws IOException
    {
+      LOG.log(Level.FINE, "Getting the protocol version...");
+
       // Ask the server the current version
       writer.println("INFO");
       writer.flush();
