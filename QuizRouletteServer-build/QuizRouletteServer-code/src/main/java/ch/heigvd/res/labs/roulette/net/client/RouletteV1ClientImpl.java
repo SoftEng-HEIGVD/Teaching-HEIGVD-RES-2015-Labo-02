@@ -24,47 +24,102 @@ import java.util.logging.Logger;
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+  private Socket connection;
+  protected PrintWriter writer;
+  protected BufferedReader reader;
 
   @Override
   public void connect(String server, int port) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     connection = new Socket(server, port);
+     writer = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()));
+     reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+     
+     //lit le message de bienvenue
+     reader.readLine();
   }
 
   @Override
   public void disconnect() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     writer.println(RouletteV1Protocol.CMD_BYE);
+     writer.flush();
+     writer.close();   
+     reader.close();
+     
+     connection.close();
+     connection = new Socket();
   }
 
   @Override
   public boolean isConnected() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     return (connection != null) && connection.isConnected();
   }
 
   @Override
   public void loadStudent(String fullname) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     writer.println(RouletteV1Protocol.CMD_LOAD);
+     writer.flush();
+     
+     //lit le message de début
+     reader.readLine();
+     
+     writer.println(fullname);
+     writer.flush();
+     writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+     writer.flush();
+     
+     //lit le message de fin
+     reader.readLine();
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     writer.println(RouletteV1Protocol.CMD_LOAD);
+     writer.flush();
+     
+     //lit le message de début
+     reader.readLine();
+     
+     for(Student student : students){
+        writer.println(student.getFullname());
+        writer.flush();
+     }
+     writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+     writer.flush();
+     
+     //lit le message de fin
+     reader.readLine();
   }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      writer.println(RouletteV1Protocol.CMD_RANDOM);
+      writer.flush();
+      RandomCommandResponse student = JsonObjectMapper.parseJson(reader.readLine(), RandomCommandResponse.class);
+      
+      //vérifie s'il y a une erreur (base vide)
+      if(student.getError() != null){
+         throw new EmptyStoreException();
+      }
+      return new Student(student.getFullname());
   }
 
   @Override
   public int getNumberOfStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      writer.println(RouletteV1Protocol.CMD_INFO);
+      writer.flush();
+      
+      InfoCommandResponse info = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
+      
+      return info.getNumberOfStudents();
   }
 
   @Override
   public String getProtocolVersion() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      writer.println(RouletteV1Protocol.CMD_INFO);
+      writer.flush();
+      
+      InfoCommandResponse info = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
+      
+      return info.getProtocolVersion();
   }
-
-
-
 }
