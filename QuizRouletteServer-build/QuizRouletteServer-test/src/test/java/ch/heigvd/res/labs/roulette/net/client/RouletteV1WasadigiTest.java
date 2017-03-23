@@ -14,6 +14,7 @@ import org.junit.rules.ExpectedException;
  * implementation of the Roulette Protocol (version 1)
  * 
  * @author Olivier Liechti
+ * @autor Loan Lassalle and Tano Iannetta
  */
 public class RouletteV1WasadigiTest {
 
