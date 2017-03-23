@@ -93,6 +93,7 @@ Command | Processing done by the server       | Response
 `CLEAR`    | The server resets the data store by clearing all students | `DATASTORE CLEARED`
 `LIST`    | The server fetches the list of students in the store | `{"students":[{"fullname":"john doe"},{"fullname":"bill smith"}]}`, where the value of students is an array containing all students in the store.
 
+
 * the protocol **modifies** the following **existing commands** defined in version 1:
 
 Command | Processing done by the server       | Response               
