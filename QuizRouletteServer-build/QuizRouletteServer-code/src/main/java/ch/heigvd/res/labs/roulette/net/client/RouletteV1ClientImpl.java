@@ -20,49 +20,105 @@ import java.util.logging.Logger;
  * This class implements the client side of the protocol specification (version 1).
  * 
  * @author Olivier Liechti
+ * @autor Loan Lassalle and Tano Iannetta
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
+  private Socket socket;
+  private BufferedReader in;
+  private PrintWriter out;
+
   @Override
   public void connect(String server, int port) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    socket = new Socket(server, port);
+
+    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    out = new PrintWriter(socket.getOutputStream());
+
+    receive();
   }
 
   @Override
   public void disconnect() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    send(RouletteV1Protocol.CMD_BYE);
+
+    in.close();
+    out.close();
+    socket.close();
+
+    LOG.info("Disconnected");
   }
 
   @Override
   public boolean isConnected() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return socket != null && socket.isConnected();
+  }
+
+  public String receive() throws IOException {
+    return in.readLine();
+  }
+
+  public void send(String message) throws IOException {
+    out.println(message);
+    out.flush();
   }
 
   @Override
   public void loadStudent(String fullname) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    send(RouletteV1Protocol.CMD_LOAD);
+    receive();
+
+    send(fullname);
+
+    send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+    receive();
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    send(RouletteV1Protocol.CMD_LOAD);
+    receive();
+
+    for (Student s : students) {
+        send(s.getFullname());
+    }
+
+    send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+    receive();
   }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      send(RouletteV1Protocol.CMD_RANDOM);
+
+      RandomCommandResponse reponse = JsonObjectMapper.parseJson(receive(), RandomCommandResponse.class);
+
+      if (!reponse.getError().isEmpty())
+      {
+          throw new EmptyStoreException();
+      }
+
+      return new Student(reponse.getFullname());
   }
 
   @Override
   public int getNumberOfStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      send(RouletteV1Protocol.CMD_INFO);
+
+      InfoCommandResponse reponse = JsonObjectMapper.parseJson(receive(), InfoCommandResponse.class);
+
+      return reponse.getNumberOfStudents();
   }
 
   @Override
   public String getProtocolVersion() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    send(RouletteV1Protocol.CMD_INFO);
+
+    InfoCommandResponse reponse = JsonObjectMapper.parseJson(receive(), InfoCommandResponse.class);
+
+    return reponse.getProtocolVersion();
   }
 
 
