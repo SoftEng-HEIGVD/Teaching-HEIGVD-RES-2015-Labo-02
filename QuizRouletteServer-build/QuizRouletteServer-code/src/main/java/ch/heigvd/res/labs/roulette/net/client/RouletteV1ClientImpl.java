@@ -41,6 +41,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   public void disconnect() throws IOException {
     outToServer.writeChars(RouletteV1Protocol.CMD_BYE);
     clientS.close();
+    outToServer.close();
+    inFromServer.close();
   }
 
   @Override
@@ -67,6 +69,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
+    if (getNumberOfStudents() == 0) {
+      throw new EmptyStoreException();
+    }
     outToServer.writeChars(RouletteV1Protocol.CMD_RANDOM);
     return jsm.parseJson(inFromServer.readLine(), Student.class);
   }
