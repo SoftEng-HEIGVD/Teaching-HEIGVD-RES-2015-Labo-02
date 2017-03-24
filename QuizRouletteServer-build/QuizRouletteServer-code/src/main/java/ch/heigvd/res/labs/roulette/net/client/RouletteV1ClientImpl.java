@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 /**
  * This class implements the client side of the protocol specification (version 1).
- * 
+ *
  * @author Olivier Liechti
  * @autor Loan Lassalle
  * @author Tano Iannetta
@@ -85,7 +85,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
    */
   @Override
   public boolean isConnected() {
-      return socket != null && socket.isConnected();
+    return socket != null && socket.isConnected();
   }
 
   /**
@@ -134,7 +134,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     receive();
 
     for (Student s : students) {
-        send(s.getFullname());
+      send(s.getFullname());
     }
 
     send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
@@ -149,16 +149,16 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
    */
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-      send(RouletteV1Protocol.CMD_RANDOM);
+    send(RouletteV1Protocol.CMD_RANDOM);
 
-      RandomCommandResponse responseRandom = JsonObjectMapper.parseJson(receive(), RandomCommandResponse.class);
+    RandomCommandResponse responseRandom = JsonObjectMapper.parseJson(receive(), RandomCommandResponse.class);
 
-      if (!responseRandom.getError().isEmpty())
-      {
-          throw new EmptyStoreException();
-      }
+    if (!responseRandom.getError().isEmpty())
+    {
+      throw new EmptyStoreException();
+    }
 
-      return new Student(responseRandom.getFullname());
+    return new Student(responseRandom.getFullname());
   }
 
   /**
@@ -168,11 +168,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
    */
   @Override
   public int getNumberOfStudents() throws IOException {
-      send(RouletteV1Protocol.CMD_INFO);
+    send(RouletteV1Protocol.CMD_INFO);
 
-      InfoCommandResponse responseInfo = JsonObjectMapper.parseJson(receive(), InfoCommandResponse.class);
+    InfoCommandResponse responseInfo = JsonObjectMapper.parseJson(receive(), InfoCommandResponse.class);
 
-      return responseInfo.getNumberOfStudents();
+    return responseInfo.getNumberOfStudents();
   }
 
   /**
