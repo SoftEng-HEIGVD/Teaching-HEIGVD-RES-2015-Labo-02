@@ -18,8 +18,8 @@ import org.junit.rules.ExpectedException;
  * These tests are partly based on the tests made for the V1 protocol
  *
  * As these tests will be used by every student, we could not test things
- * that are not precisely written in the specification (for exemple, do we use
- * a "ByeCommandResponse" ?)
+ * that are not precisely written in the specification (for exemple, do we have
+ * to use a "ByeCommandResponse" ?)
  * @author Remi, Aurelie
  */
 public class RouletteV2remij1Test {
