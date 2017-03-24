@@ -165,6 +165,4 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
 
       return response.getProtocolVersion();
    }
-
-
 }
