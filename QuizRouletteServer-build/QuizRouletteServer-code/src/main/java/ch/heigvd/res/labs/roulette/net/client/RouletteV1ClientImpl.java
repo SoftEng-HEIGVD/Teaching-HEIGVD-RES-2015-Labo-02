@@ -17,6 +17,8 @@ import java.util.logging.Logger;
  * This class implements the client side of the protocol specification (version 1).
  *
  * @author Olivier Liechti
+ * @author Christopher Meier
+ * @author Daniel Palumbo
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
@@ -26,6 +28,12 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     BufferedWriter os;
     BufferedReader is;
 
+    /**
+     * Connect the client to the server
+     * @param server the IP address or DNS name of the servr
+     * @param port the TCP port on which the server is listening
+     * @throws IOException
+     */
     @Override
     public void connect(String server, int port) throws IOException {
         clientSocket = new Socket(server, port);
@@ -36,6 +44,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         LOG.log(Level.INFO, is.readLine());
     }
 
+    /**
+     * Disconnect client from the server and close Buffers
+     * @throws IOException
+     */
     @Override
     public void disconnect() throws IOException {
         os.close();
@@ -43,6 +55,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         clientSocket.close();
     }
 
+    /**
+     *
+     * @return a boolean to know if the client is connected to the server
+     */
     @Override
     public boolean isConnected() {
         if(clientSocket == null) {
@@ -52,51 +68,69 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         }
     }
 
+    private void send(String rp) throws IOException {
+        // Send string argument to the server
+        try {
+            os.write(rp);
+            os.newLine();
+            os.flush();
+        } catch (IOException e){
+            System.out.println(e);
+        }
+    }
+
+    /**
+     * Send one student to the server
+     * @param fullname the student's full name
+     * @throws IOException
+     */
     @Override
     public void loadStudent(String fullname) throws IOException {
-        os.write(RouletteV1Protocol.CMD_LOAD);
-        os.newLine();
-        os.flush();
+        // Send Load command
+        send(RouletteV1Protocol.CMD_LOAD);
 
         is.readLine();
 
-        os.write(fullname);
-        os.newLine();
+        // Send student name to the server
+        send(fullname);
 
-        os.write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
-        os.newLine();
-        os.flush();
+        // Send command that stop the load of student
+        send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
 
         is.readLine();
     }
 
+    /**
+     * Send more than one student to the server
+     * @param students
+     * @throws IOException
+     */
     @Override
     public void loadStudents(List<Student> students) throws IOException {
-        os.write(RouletteV1Protocol.CMD_LOAD);
-        os.newLine();
-        os.flush();
+
+        send(RouletteV1Protocol.CMD_LOAD);
 
         is.readLine();
 
         for(Student s : students) {
-            os.write(s.getFullname());
-            os.newLine();
-            os.flush();
+            send(s.getFullname());
         }
 
-        os.write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
-        os.newLine();
-        os.flush();
+        send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
 
         is.readLine();
     }
 
+    /**
+     * Get a random student name from the server
+     * @return student name
+     * @throws EmptyStoreException
+     * @throws IOException
+     */
     @Override
     public Student pickRandomStudent() throws EmptyStoreException, IOException {
 
-        os.write(RouletteV1Protocol.CMD_RANDOM);
-        os.newLine();
-        os.flush();
+        send(RouletteV1Protocol.CMD_RANDOM);
 
         String response = is.readLine();
 
@@ -109,22 +143,26 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         return new Student(r.getFullname());
     }
 
+    /**
+     * @return the number of student
+     * @throws IOException
+     */
     @Override
     public int getNumberOfStudents() throws IOException {
-        os.write(RouletteV1Protocol.CMD_INFO);
-        os.newLine();
-        os.flush();
+        send(RouletteV1Protocol.CMD_INFO);
 
         InfoCommandResponse info = JsonObjectMapper.parseJson(is.readLine(), InfoCommandResponse.class);
 
         return info.getNumberOfStudents();
     }
 
+    /**
+     * @return the current version of the protocol and the number of student
+     * @throws IOException
+     */
     @Override
     public String getProtocolVersion() throws IOException {
-        os.write(RouletteV1Protocol.CMD_INFO);
-        os.newLine();
-        os.flush();
+        send(RouletteV1Protocol.CMD_INFO);
 
         InfoCommandResponse info = JsonObjectMapper.parseJson(is.readLine(), InfoCommandResponse.class);
 
