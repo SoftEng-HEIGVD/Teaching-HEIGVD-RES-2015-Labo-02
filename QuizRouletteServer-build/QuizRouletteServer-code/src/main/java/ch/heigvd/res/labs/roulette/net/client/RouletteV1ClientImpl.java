@@ -68,6 +68,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         }
     }
 
+    /**
+     * Write and send string to the server
+     * @param rp string to be send
+     * @throws IOException
+     */
     private void send(String rp) throws IOException {
         // Send string argument to the server
         os.write(rp);
@@ -85,16 +90,16 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         // Send Load command
         send(RouletteV1Protocol.CMD_LOAD);
 
-        // Read message to inform user that he can write data
+        // Read message that inform the user that he can write data
         is.readLine();
 
         // Send student name to the server
         send(fullname);
 
-        // Send command that stop the load of student
+        // Send command that stop the loading of the student
         send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
 
-        // Inform user that the data were loaded
+        // Read DATA LOADED message
         is.readLine();
     }
 
@@ -117,10 +122,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
             send(s.getFullname());
         }
 
-        // Send command that stop the load of student
+        // Send command that stop the loading of students
         send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
 
-        // Inform user that the data were loaded
+        // Read DATA LOADED message
         is.readLine();
     }
 
@@ -136,7 +141,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         // Send request to server to get a random student name
         send(RouletteV1Protocol.CMD_RANDOM);
 
-        // get student name
+        // Get server response
         String response = is.readLine();
 
         RandomCommandResponse r = JsonObjectMapper.parseJson(response, RandomCommandResponse.class);
@@ -154,7 +159,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
      */
     @Override
     public int getNumberOfStudents() throws IOException {
-        // Send request to the server to get the number of student
+        // Send request to the server to get the number of students
         send(RouletteV1Protocol.CMD_INFO);
 
         InfoCommandResponse info = JsonObjectMapper.parseJson(is.readLine(), InfoCommandResponse.class);
