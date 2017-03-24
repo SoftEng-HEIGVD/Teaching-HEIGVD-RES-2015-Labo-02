@@ -10,7 +10,9 @@ import org.junit.rules.ExpectedException;
  *
  * @author Olivier Liechti
  */
-public class RouletteV2WasadigiTest {
+
+public class RouletteV2NewttTest
+{
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
@@ -18,6 +20,4 @@ public class RouletteV2WasadigiTest {
   @Rule
   public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
 
-
-  
 }
