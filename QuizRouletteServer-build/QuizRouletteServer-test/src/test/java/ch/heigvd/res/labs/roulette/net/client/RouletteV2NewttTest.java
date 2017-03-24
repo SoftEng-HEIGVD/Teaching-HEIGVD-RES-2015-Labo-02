@@ -21,12 +21,11 @@ import static org.junit.Assert.assertTrue;
  * This class contains automated tests to validate the client and the server
  * implementation of the Roulette Protocol (version 2)
  *
- * @author Newtt -> Matthieu Chatelan
- * @author Naewy -> Lara Chauffoureaux
+ * @author Matthieu Chatelan
+ * @author Lara Chauffoureaux
  */
 public class RouletteV2NewttTest
 {
-
    @Rule
    public ExpectedException exception = ExpectedException.none();
 
