@@ -54,6 +54,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     outToServer.println(fullname);
     outToServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
     outToServer.flush();
+    inFromServer.readLine(); //Flushing the SEND and ENDOFDATA responses from server
+    inFromServer.readLine();
   }
 
   @Override
@@ -64,6 +66,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     }
     outToServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
     outToServer.flush();
+    inFromServer.readLine(); //Flushing the SEND and ENDOFDATA responses from server
+    inFromServer.readLine();
   }
 
   @Override
