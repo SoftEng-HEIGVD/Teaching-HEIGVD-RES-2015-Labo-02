@@ -48,7 +48,14 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         clientSocket = new Socket(server, port);
         fromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         toServer = new PrintWriter(clientSocket.getOutputStream());
-        System.out.println("client creates a socket for server " + server + " on port " + port);
+        // System.out.println("client creates a socket for server " + server + " on port " + port);
+        // lire la reponse du serveur
+        System.out.println(fromServer.readLine());
+        // repondre au serveur
+        toServer.write(RouletteV1Protocol.CMD_HELP);
+        toServer.flush();
+        // lire la seconde réponse du serveur
+        System.out.println(fromServer.readLine());
 
     }
 
@@ -60,6 +67,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     @Override
     public void disconnect() throws IOException {
         toServer.write(RouletteV1Protocol.CMD_BYE);
+        toServer.flush();
         clientSocket.close();
         System.out.println("closing of the client socket.");
     }
@@ -87,12 +95,14 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     public void loadStudent(String fullname) throws IOException {
         // ask to load data
         toServer.write(RouletteV1Protocol.CMD_LOAD);
+        toServer.flush();
         // wait for answer
         String serverResponse = fromServer.readLine();
         //check the answer
         if (serverResponse.equals(RouletteV1Protocol.RESPONSE_LOAD_START)) {
             // write if ok
             toServer.write(fullname);
+            toServer.flush();
             toServer.write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
         }
         else {
@@ -139,6 +149,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     public Student pickRandomStudent() throws EmptyStoreException, IOException {
         // asking to pick a student at random
         toServer.write(RouletteV1Protocol.CMD_RANDOM);
+        toServer.flush();
         // get the answer
         String serverResponse = fromServer.readLine();
         // assuming it's a correct Json string to create a Student
