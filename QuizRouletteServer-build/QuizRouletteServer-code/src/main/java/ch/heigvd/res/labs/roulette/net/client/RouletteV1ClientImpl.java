@@ -5,13 +5,10 @@ import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
-import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
-import jdk.nashorn.internal.parser.JSONParser;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -22,27 +19,25 @@ import java.util.logging.Logger;
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
   private Socket clientS;
-  private DataOutputStream outToServer;
+  private PrintWriter outToServer;
   private BufferedReader inFromServer;
-  private JsonObjectMapper jsm;
-
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
   @Override
   public void connect(String server, int port) throws IOException {
     clientS = new Socket(server, port);
-    outToServer = new DataOutputStream(clientS.getOutputStream());
+    outToServer = new PrintWriter(clientS.getOutputStream());
     inFromServer = new BufferedReader(new InputStreamReader(clientS.getInputStream()));
-    jsm = new JsonObjectMapper();
+    inFromServer.readLine(); // To pass the fisrt line that says "Hello..."
   }
 
   @Override
   public void disconnect() throws IOException {
-    outToServer.writeChars(RouletteV1Protocol.CMD_BYE);
-    clientS.close();
+    outToServer.println(RouletteV1Protocol.CMD_BYE);
     outToServer.close();
     inFromServer.close();
+    clientS.close();
   }
 
   @Override
@@ -50,41 +45,51 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     if (clientS != null) {
       return clientS.isConnected();
     }
-      return false;
+    return false;
   }
 
   @Override
   public void loadStudent(String fullname) throws IOException {
-    outToServer.writeChars(fullname);
+    outToServer.println(RouletteV1Protocol.CMD_LOAD);
+    outToServer.println(fullname);
+    outToServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+    outToServer.flush();
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-    outToServer.writeChars(RouletteV1Protocol.CMD_LOAD);
+    outToServer.println(RouletteV1Protocol.CMD_LOAD);
     for (Student s : students) {
-      loadStudent(s.getFullname());
+      outToServer.println(s.getFullname());
     }
-    outToServer.writeChars(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+    outToServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+    outToServer.flush();
   }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
     if (getNumberOfStudents() == 0) {
       throw new EmptyStoreException();
+    } else {
+      outToServer.println(RouletteV1Protocol.CMD_RANDOM);
+      outToServer.flush();
+      return JsonObjectMapper.parseJson(inFromServer.readLine(), Student.class);
     }
-    outToServer.writeChars(RouletteV1Protocol.CMD_RANDOM);
-    return jsm.parseJson(inFromServer.readLine(), Student.class);
   }
 
   @Override
   public int getNumberOfStudents() throws IOException {
-    outToServer.writeChars(RouletteV1Protocol.CMD_INFO);
-    return jsm.parseJson(inFromServer.readLine(), InfoCommandResponse.class).getNumberOfStudents();
+    outToServer.println(RouletteV1Protocol.CMD_INFO);
+    outToServer.flush();
+    InfoCommandResponse info = JsonObjectMapper.parseJson(inFromServer.readLine(), InfoCommandResponse.class);
+    return info.getNumberOfStudents();
   }
 
   @Override
   public String getProtocolVersion() throws IOException {
-    outToServer.writeChars(RouletteV1Protocol.CMD_INFO);
-    return jsm.parseJson(inFromServer.readLine(), InfoCommandResponse.class).getProtocolVersion();
+    outToServer.println(RouletteV1Protocol.CMD_INFO);
+    outToServer.flush();
+    InfoCommandResponse info = JsonObjectMapper.parseJson(inFromServer.readLine(), InfoCommandResponse.class);
+    return info.getProtocolVersion();
   }
 }
