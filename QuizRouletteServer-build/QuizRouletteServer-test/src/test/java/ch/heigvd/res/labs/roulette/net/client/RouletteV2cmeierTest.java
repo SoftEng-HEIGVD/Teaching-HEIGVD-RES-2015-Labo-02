@@ -1,15 +1,19 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -29,6 +33,33 @@ public class RouletteV2cmeierTest {
 
   @Test
   @TestAuthor(githubId = {"c-meier", "danpa32"})
+  public void theServerShouldHaveTheRightPort() throws IOException {
+    int port = roulettePair.getServer().getPort();
+    assertEquals(2613, port);
+  }
+
+  @Test
+  @TestAuthor(githubId = {"c-meier", "danpa32"})
+  public void theServerSouldHaveAnEmptyListOfStudentsAtStart() throws IOException {
+    IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
+    assertTrue(client.listStudents().isEmpty());
+  }
+
+  @Test
+  @TestAuthor(githubId = {"c-meier", "danpa32"})
+  public void theServerShouldFetchTheListOfStudentsInTheStore() throws IOException {
+    IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
+
+    List<Student> listStudents = new ArrayList<>();
+    listStudents.add(new Student("Daniel Palumbo"));
+    listStudents.add(new Student("Christopher Meier"));
+    client.loadStudents(listStudents);
+
+    assertEquals(listStudents, client.listStudents());
+  }
+
+  @Test
+  @TestAuthor(githubId = {"c-meier", "danpa32"})
   public void theServerShouldHaveZeroStudentsAfterClearDataStore() throws IOException {
     IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
 
@@ -41,5 +72,7 @@ public class RouletteV2cmeierTest {
 
     assertEquals(0, client.getNumberOfStudents());
   }
+
+
   
 }
