@@ -46,7 +46,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
    @Override
    public void disconnect() throws IOException
    {
-      LOG.log(Level.FINE, "Client is requesting a disconnect, disconnecting...");
+      LOG.log(Level.FINE, "Client is requesting a disconnection, disconnecting...");
 
       // Terminate the connection with the server
       writer.println("BYE");
@@ -58,12 +58,16 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
    @Override
    public boolean isConnected()
    {
-      LOG.log(Level.FINE, "Checking whether the clint is connected to the server or not");
+      LOG.log(Level.FINE, "Checking whether the client is connected to the server or not");
 
       if (socket != null)
+      {
          return socket.isBound();
+      }
       else
-         return false;
+      {   
+          return false;
+      }
    }
 
    @Override
@@ -82,7 +86,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
       writer.println(fullname);
       writer.flush();
 
-      // Sent the ENDOFDATA
+      // Sent the ENDOFDATA according to the protocole
       writer.println("ENDOFDATA");
       writer.flush();
 
@@ -104,12 +108,15 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
 
       // Load students from the List
       for (Student student : students)
+      {
+         // Print one student per line 
          writer.println(student.getFullname());
+      }
 
       // Write them to the server
       writer.flush();
 
-      // Sent the ENDOFDATA
+      // Sent the ENDOFDATA according to the protocole
       writer.println("ENDOFDATA");
       writer.flush();
 
@@ -121,19 +128,23 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
    {
       LOG.log(Level.FINE, "Picking a random student from the store");
 
-      // Ask the server to provice a random student
+      // Ask the server to provide a random student
       writer.println("RANDOM");
       writer.flush();
 
-      // We collect the reply
+      // We collect the response and transform it to an "RandomCommandResponse" object
       RandomCommandResponse response = JsonObjectMapper.parseJson(reader.readLine(), RandomCommandResponse.class);
 
       // If there is no error, return a new Student with the name received
       if (response.getError().equals(""))
+      {
          return new Student(response.getFullname());
+      }
       // Otherwise if there is an error, throw an exception
       else
+      {
          throw new EmptyStoreException();
+      }
    }
 
    @Override
@@ -141,28 +152,30 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
    {
       LOG.log(Level.FINE, "Getting the number of students in the store");
 
-      // Ask the server the current version
+      // Ask the server the current info
       writer.println("INFO");
       writer.flush();
 
-      // get the reply and transform it to an "InfoCommandResponse" Object
+      // Get the response and transform it to an "InfoCommandResponse" object
       InfoCommandResponse response = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
 
+      // Return the extracted number of students from info
       return response.getNumberOfStudents();
    }
 
    @Override
    public String getProtocolVersion() throws IOException
    {
-      LOG.log(Level.FINE, "Getting the protocol version...");
+      LOG.log(Level.FINE, "Getting the protocol version");
 
-      // Ask the server the current version
+      // Ask the server the current info
       writer.println("INFO");
       writer.flush();
 
-      // get the reply and transform it to an "InfoCommandResponse" Object
+      // Get the response and transform it to an "InfoCommandResponse" object
       InfoCommandResponse response = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
 
+      // Return the extracted protocole version from info
       return response.getProtocolVersion();
    }
 }
