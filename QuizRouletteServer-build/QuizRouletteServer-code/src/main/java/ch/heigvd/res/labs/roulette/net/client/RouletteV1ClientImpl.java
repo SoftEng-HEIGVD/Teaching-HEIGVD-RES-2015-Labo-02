@@ -24,6 +24,7 @@ import java.util.ArrayList;
  * 1).
  *
  * @author Olivier Liechti
+ * modified by abass mahdavi
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
