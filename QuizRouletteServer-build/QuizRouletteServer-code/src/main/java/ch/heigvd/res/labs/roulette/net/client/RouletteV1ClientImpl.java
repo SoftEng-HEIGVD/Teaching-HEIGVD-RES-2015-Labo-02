@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,48 +25,49 @@ import java.util.logging.Logger;
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
-  private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+    private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+    private Socket clientSocket;
 
-  @Override
-  public void connect(String server, int port) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public void connect(String server, int port) throws IOException {
+        clientSocket = new Socket(server, port);
+        
+        BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
+        reader.readLine();
+    }
 
-  @Override
-  public void disconnect() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public void disconnect() throws IOException {
+        clientSocket.close();
+    }
 
-  @Override
-  public boolean isConnected() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public boolean isConnected() {
+        return clientSocket.isConnected();
+    }
 
-  @Override
-  public void loadStudent(String fullname) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public void loadStudent(String fullname) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
-  @Override
-  public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public void loadStudents(List<Student> students) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
-  @Override
-  public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public Student pickRandomStudent() throws EmptyStoreException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
-  @Override
-  public int getNumberOfStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public int getNumberOfStudents() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
-  @Override
-  public String getProtocolVersion() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-
-
+    @Override
+    public String getProtocolVersion() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
