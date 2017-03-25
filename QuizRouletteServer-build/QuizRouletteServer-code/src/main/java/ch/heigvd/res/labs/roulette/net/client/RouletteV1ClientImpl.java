@@ -50,14 +50,14 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
    */
   @Override
   public void connect(String server, int port) throws IOException {
-    //Opens socket
+    // Opens socket
     socket = new Socket(server, port);
 
     // Opens input and output streams
     in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     out = new PrintWriter(socket.getOutputStream());
 
-    // Wait a message of targeted server
+    // Waits a message of targeted server
     receive();
   }
 
@@ -75,7 +75,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     out.close();
     socket.close();
 
-    // Display a message of disconnection
+    // Displays a message of disconnection
     LOG.info("Disconnected");
   }
 
@@ -142,7 +142,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   }
 
   /**
-   * @brief Student pickRandomStudent get back a randomly student
+   * @brief Student pickRandomStudent gets back a randomly student
    * @return random student
    * @throws EmptyStoreException with RandomCommandResponse
    * @throws IOException with PrintWriter and BufferedReader
@@ -162,7 +162,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   }
 
   /**
-   * @brief int getNumberOfStudents get back number of students
+   * @brief int getNumberOfStudents gets back number of students
    * @return number of students
    * @throws IOException with PrintWriter and BufferedReader
    */
@@ -176,7 +176,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   }
 
   /**
-   * @brief String getProtocolVersion get back protocol version of targeted server
+   * @brief String getProtocolVersion gets back protocol version of targeted server
    * @return protocol version of targeted server
    * @throws IOException with PrintWriter and BufferedReader
    */
