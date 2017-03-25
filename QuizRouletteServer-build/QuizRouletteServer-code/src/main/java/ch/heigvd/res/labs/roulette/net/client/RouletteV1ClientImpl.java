@@ -72,7 +72,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     @Override
     public void loadStudent(String fullname) throws IOException {
         // Use the loadStudents method to minimize code duplication
-        List tmp = new LinkedList<Student>();
+        List<Student> tmp = new LinkedList<Student>();
         tmp.add(new Student(fullname));
         loadStudents(tmp);
     }
