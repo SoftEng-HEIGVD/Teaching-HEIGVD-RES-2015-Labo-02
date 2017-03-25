@@ -40,7 +40,6 @@ public class RouletteV2NewttTest
 
    @Test
    @TestAuthor(githubId = "Newtt")
-   @TestAuthor(githubId = "Naewy")
    public void TheClearCommandShouldClearTheStore() throws IOException
    {
       // Creation of a V2 client
@@ -64,7 +63,6 @@ public class RouletteV2NewttTest
 
    @Test
    @TestAuthor(githubId = "Newtt")
-   @TestAuthor(githubId = "Naewy")
    public void TheListCommandShouldReturnTheCorrectContent() throws IOException
    {
       // Creation of a V2 client
@@ -92,7 +90,6 @@ public class RouletteV2NewttTest
 
    @Test
    @TestAuthor(githubId = "Newtt")
-   @TestAuthor(githubId = "Naewy")
    public void TheInfoCommandResponseShouldReplyWithTheCorrectProtocolVersion() throws IOException
    {
       // Creation of a V2 client and a roulette server
