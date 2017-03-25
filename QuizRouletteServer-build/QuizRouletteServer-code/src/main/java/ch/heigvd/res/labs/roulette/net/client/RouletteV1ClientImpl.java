@@ -53,8 +53,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public void disconnect() throws IOException {
-      bos.close();
       bis.close();
+      bos.write("BYE\n");
+      bos.close();
       socket.close();
       LOG.info("Disconnected");
   }
