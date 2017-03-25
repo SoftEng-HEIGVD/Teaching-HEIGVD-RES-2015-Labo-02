@@ -29,11 +29,15 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
   private Socket socket = new Socket();
+  BufferedReader reader;
+  PrintWriter writer;
 
   @Override
   public void connect(String server, int port) throws IOException {
     /* Connexion to a server with a specific port */
     socket = new Socket(server, port);
+    reader = new BufferedReader( new InputStreamReader(socket.getInputStream()));
+    writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 
     /* We read the welcome message */
     BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
@@ -45,7 +49,13 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     if (socket == null || socket.isClosed()) {
       return;
     }
+
+    writer.println(RouletteV1Protocol.CMD_BYE);
+    writer.flush();
+
     /* Close connexion */
+    reader.close();
+    writer.close();
     socket.close();
   }
 
@@ -56,9 +66,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public void loadStudent(String fullname) throws IOException {
-
-    BufferedReader reader = new BufferedReader( new InputStreamReader(socket.getInputStream()));
-    PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 
     /* Sends the command */
     writer.println(RouletteV1Protocol.CMD_LOAD);
@@ -91,9 +98,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   @Override
   public void loadStudents(List<Student> students) throws IOException {
 
-    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-    PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-
     /* Sends command */
     writer.println(RouletteV1Protocol.CMD_LOAD);
     writer.flush();
@@ -117,9 +121,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
 
-    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-    PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-
     /* Sends command */
     writer.println(RouletteV1Protocol.CMD_RANDOM);
     writer.flush();
@@ -136,8 +137,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public int getNumberOfStudents() throws IOException {
-    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-    PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 
     /* Sends command */
     writer.println(RouletteV1Protocol.CMD_INFO);
@@ -151,9 +150,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public String getProtocolVersion() throws IOException {
-
-    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 
     /* Sends command */
     writer.println(RouletteV1Protocol.CMD_INFO);
