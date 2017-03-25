@@ -3,9 +3,11 @@ package ch.heigvd.res.labs.roulette.net.server;
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
+import ch.heigvd.res.labs.roulette.data.StudentsList;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
+import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 
 import java.io.*;
 import java.util.Arrays;
@@ -32,7 +34,6 @@ public class RouletteV2ClientHandler implements IClientHandler
    @Override
    public void handleClientConnection(InputStream is, OutputStream os) throws IOException
    {
-      // TODO Implement the client handling here
       BufferedReader reader = new BufferedReader(new InputStreamReader(is));
       PrintWriter writer = new PrintWriter(new OutputStreamWriter(os));
 
@@ -58,24 +59,43 @@ public class RouletteV2ClientHandler implements IClientHandler
                writer.println(JsonObjectMapper.toJson(rcResponse));
                writer.flush();
                break;
+
             case RouletteV1Protocol.CMD_HELP:
                writer.println("Commands: " + Arrays.toString(RouletteV1Protocol.SUPPORTED_COMMANDS));
                break;
+
             case RouletteV1Protocol.CMD_INFO:
-               InfoCommandResponse response = new InfoCommandResponse(RouletteV1Protocol.VERSION, store.getNumberOfStudents());
+               InfoCommandResponse response = new InfoCommandResponse(RouletteV2Protocol.VERSION, store.getNumberOfStudents());
                writer.println(JsonObjectMapper.toJson(response));
                writer.flush();
                break;
-            case RouletteV1Protocol.CMD_LOAD:
+
+            case RouletteV1Protocol.CMD_LOAD: //TODO modify that
                writer.println(RouletteV1Protocol.RESPONSE_LOAD_START);
                writer.flush();
                store.importData(reader);
                writer.println(RouletteV1Protocol.RESPONSE_LOAD_DONE);
                writer.flush();
                break;
-            case RouletteV1Protocol.CMD_BYE:
+
+            case RouletteV1Protocol.CMD_BYE: //TODO complete that
                done = true;
                break;
+
+            case RouletteV2Protocol.CMD_LIST: //TODO relecture, semble marcher
+               StudentsList list = new StudentsList();
+               list.addAll(store.listStudents());
+
+               writer.println(JsonObjectMapper.toJson(list));
+               writer.flush();
+               break;
+
+            case RouletteV2Protocol.CMD_CLEAR: //TODO relecture, semble marcher
+               store.clear();
+               writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
+               writer.flush();
+               break;
+
             default:
                writer.println("Huh? please use HELP if you don't know what commands are available.");
                writer.flush();
