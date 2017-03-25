@@ -30,7 +30,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   private Socket socket = new Socket();
 
-
   @Override
   public void connect(String server, int port) throws IOException {
     /* Connexion to a server with a specific port */
@@ -43,6 +42,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public void disconnect() throws IOException {
+    if (socket == null || socket.isClosed()) {
+      return;
+    }
     /* Close connexion */
     socket.close();
   }
@@ -62,7 +64,12 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     writer.println(RouletteV1Protocol.CMD_LOAD);
     writer.flush();
     /* Reads the answer */
-    reader.readLine();
+    String response = reader.readLine();
+
+    if (!response.equals(RouletteV1Protocol.RESPONSE_LOAD_START)) {
+      System.out.println("Error while using" + RouletteV1Protocol.CMD_LOAD + "  command");
+      return;
+    }
 
     /* Writes the name of the student */
     writer.println(fullname);
@@ -73,7 +80,12 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     writer.flush();
 
     /* Reads server's message */
-    reader.readLine();
+    response = reader.readLine();
+
+    if (!response.equals(RouletteV1Protocol.RESPONSE_LOAD_DONE)) {
+      System.out.println("Error at the end of process ");
+    }
+
   }
 
   @Override
