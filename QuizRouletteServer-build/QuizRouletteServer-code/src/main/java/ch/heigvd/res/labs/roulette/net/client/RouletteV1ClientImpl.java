@@ -56,6 +56,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
     {
         if (!clientSocket.isClosed())
         {
+            writer.println(RouletteV1Protocol.CMD_BYE);
             clientSocket.close();
         }
     }
