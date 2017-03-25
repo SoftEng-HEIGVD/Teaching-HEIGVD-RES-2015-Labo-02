@@ -36,9 +36,12 @@ public class RouletteV2Blade7foldTest {
      */
     @Test
     @TestAuthor(githubId = "Blade7fold")
-    public void testClearDataStore() throws IOException {
+    public void theMethodShouldClearCorrectlyTheStudentsInTheServer() throws IOException {
         System.out.println("Clear Data Store");
         RouletteV2ClientImpl instance = new RouletteV2ClientImpl();
+        instance.loadStudent("JeSaisPas");
+        instance.loadStudent("QuelNom");
+        instance.loadStudent("MettreIci");
         instance.clearDataStore();
         List<Student> result = instance.listStudents();
         assertTrue(result.isEmpty());
@@ -50,7 +53,7 @@ public class RouletteV2Blade7foldTest {
      */
     @Test
     @TestAuthor(githubId = "Blade7fold")
-    public void testListStudents() throws IOException {
+    public void theServerShouldReturnTheCorrectListOfStudents() throws IOException {
         System.out.println("List Students");
         RouletteV2ClientImpl instance = new RouletteV2ClientImpl();
         StudentsList sl = new StudentsList();
@@ -60,14 +63,23 @@ public class RouletteV2Blade7foldTest {
     }
     
     /**
-     * Test of listStudents method, of class RouletteV2ClientImpl.
+     * Test the correct version of class RouletteV2ClientImpl.
      * @throws java.io.IOException
      */
     @Test
     @TestAuthor(githubId = "Blade7fold")
-    public void testIfWeUseTheInfoCommandFromClientV2() throws IOException {
-        System.out.println("INFO Command used");
+    public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
         assertEquals(RouletteV2Protocol.VERSION, roulettePair2.getClient().getProtocolVersion());
+    }
+    
+    /**
+     * Test of info command method with number of students, 
+     * of class RouletteV2ClientImpl.
+     * @throws java.io.IOException
+     */
+    @Test
+    @TestAuthor(githubId = "Blade7fold")
+    public void theServerShouldReturnTheCorrectNumberOFStudents() throws IOException {
         RouletteV2ClientImpl usingINFO = new RouletteV2ClientImpl();
         int nbOfStudents = roulettePair2.getClient().getNumberOfStudents();
         int result = usingINFO.getNumberOfStudents();
