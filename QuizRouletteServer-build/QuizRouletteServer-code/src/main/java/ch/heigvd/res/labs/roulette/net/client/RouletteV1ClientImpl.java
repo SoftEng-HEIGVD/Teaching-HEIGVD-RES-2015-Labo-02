@@ -4,6 +4,7 @@ import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 
 import java.io.BufferedReader;
@@ -49,13 +50,13 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         fromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         toServer = new PrintWriter(clientSocket.getOutputStream());
         // System.out.println("client creates a socket for server " + server + " on port " + port);
-        // lire la reponse du serveur
+        // lire la reponse du serveur HELLO
         System.out.println(fromServer.readLine());
-        // repondre au serveur
-        toServer.write(RouletteV1Protocol.CMD_HELP);
-        toServer.flush();
-        // lire la seconde réponse du serveur
-        System.out.println(fromServer.readLine());
+//        // repondre au serveur
+//        toServer.write(RouletteV1Protocol.CMD_HELP);
+//        toServer.flush();
+//        // lire la seconde réponse du serveur
+//        System.out.println(fromServer.readLine());
 
     }
 
@@ -66,9 +67,15 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
      */
     @Override
     public void disconnect() throws IOException {
-        toServer.write(RouletteV1Protocol.CMD_BYE);
+        toServer.println(RouletteV1Protocol.CMD_BYE);
         toServer.flush();
+        // pas de reponse du serveur
+        //System.out.println(fromServer.readLine());
+
+        toServer.close();
+        fromServer.close();
         clientSocket.close();
+
         System.out.println("closing of the client socket.");
     }
 
@@ -94,16 +101,17 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     @Override
     public void loadStudent(String fullname) throws IOException {
         // ask to load data
-        toServer.write(RouletteV1Protocol.CMD_LOAD);
+        toServer.println(RouletteV1Protocol.CMD_LOAD);
         toServer.flush();
         // wait for answer
         String serverResponse = fromServer.readLine();
         //check the answer
         if (serverResponse.equals(RouletteV1Protocol.RESPONSE_LOAD_START)) {
             // write if ok
-            toServer.write(fullname);
+            toServer.println(fullname);
             toServer.flush();
-            toServer.write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+            toServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+            toServer.flush();
         }
         else {
             // problem
@@ -148,13 +156,19 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     @Override
     public Student pickRandomStudent() throws EmptyStoreException, IOException {
         // asking to pick a student at random
-        toServer.write(RouletteV1Protocol.CMD_RANDOM);
+        toServer.println(RouletteV1Protocol.CMD_RANDOM);
         toServer.flush();
         // get the answer
         String serverResponse = fromServer.readLine();
-        // assuming it's a correct Json string to create a Student
-        // return the Student
-        return Student.fromJson(serverResponse);
+        RandomCommandResponse temp = JsonObjectMapper.parseJson(serverResponse, RandomCommandResponse.class);
+        // if the error is not empty, throw exception
+        if (!temp.getError().equals("")) {
+            throw new EmptyStoreException();
+        }
+        else {
+            // return the Student
+            return Student.fromJson(serverResponse);
+        }
     }
 
     /**
@@ -167,7 +181,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     @Override
     public int getNumberOfStudents() throws IOException {
         // question the server
-        toServer.write(RouletteV1Protocol.CMD_INFO);
+        toServer.println(RouletteV1Protocol.CMD_INFO);
+        toServer.flush();
         // wait the answer
         String serverResponse = fromServer.readLine();
         // deserialize and fetch the info
@@ -183,7 +198,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     @Override
     public String getProtocolVersion() throws IOException {
         // question the server
-        toServer.write(RouletteV1Protocol.CMD_INFO);
+        toServer.println(RouletteV1Protocol.CMD_INFO);
+        toServer.flush();
         // wait the answer
         String serverResponse = fromServer.readLine();
         // deserialize and fetch the info
