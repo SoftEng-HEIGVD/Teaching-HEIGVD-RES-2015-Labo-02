@@ -4,10 +4,7 @@ import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.StudentsList;
-import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
-import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
+import ch.heigvd.res.labs.roulette.net.protocol.*;
 
 import java.io.*;
 import java.util.Arrays;
@@ -25,6 +22,7 @@ public class RouletteV2ClientHandler implements IClientHandler
    final static Logger LOG = Logger.getLogger(RouletteV2ClientHandler.class.getName());
 
    private final IStudentsStore store;
+   private int numberOfCommands = 0;
 
    public RouletteV2ClientHandler(IStudentsStore store)
    {
@@ -44,6 +42,8 @@ public class RouletteV2ClientHandler implements IClientHandler
       boolean done = false;
       while (!done && ((command = reader.readLine()) != null))
       {
+         numberOfCommands++;
+
          LOG.log(Level.INFO, "COMMAND: {0}", command);
          switch (command.toUpperCase())
          {
@@ -70,15 +70,19 @@ public class RouletteV2ClientHandler implements IClientHandler
                writer.flush();
                break;
 
-            case RouletteV1Protocol.CMD_LOAD: //TODO modify that
+            case RouletteV1Protocol.CMD_LOAD: //TODO relecture, semble marche
                writer.println(RouletteV1Protocol.RESPONSE_LOAD_START);
                writer.flush();
                store.importData(reader);
-               writer.println(RouletteV1Protocol.RESPONSE_LOAD_DONE);
+               LoadCommandResponse reply = new LoadCommandResponse("success", store.getNumberOfStudents());
+               writer.println(JsonObjectMapper.toJson(reply));
                writer.flush();
                break;
 
-            case RouletteV1Protocol.CMD_BYE: //TODO complete that
+            case RouletteV1Protocol.CMD_BYE: //TODO relecture, semble marcher
+               ByeCommandResponse bye = new ByeCommandResponse("success", numberOfCommands);
+               writer.println(JsonObjectMapper.toJson(bye));
+               writer.flush();
                done = true;
                break;
 
