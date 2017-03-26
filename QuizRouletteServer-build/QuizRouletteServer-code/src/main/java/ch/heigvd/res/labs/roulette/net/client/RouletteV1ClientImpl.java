@@ -32,7 +32,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
   public void connect(String server, int port) throws IOException {
-    Socket clientSocket = new Socket("localhost", 1313);
+    Socket clientSocket = new Socket(server, port);
       in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
       out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
       connected = true;
