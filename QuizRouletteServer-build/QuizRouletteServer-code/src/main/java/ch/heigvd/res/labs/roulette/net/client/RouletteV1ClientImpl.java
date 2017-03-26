@@ -6,9 +6,12 @@ import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
+
+
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 
 import java.io.*;
+
 import java.net.Socket;
 import java.util.List;
 import java.util.logging.Logger;
@@ -44,12 +47,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     is = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
     LOG.info(is.readLine());
-
-
   }
 
   @Override
   public void disconnect() throws IOException {
+
 
     send(RouletteV1Protocol.CMD_BYE);
 
@@ -57,7 +59,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     is.close();
 
     conn.close();
-
   }
 
   @Override
@@ -67,19 +68,32 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public void loadStudent(String fullname) throws IOException {
+
     send(RouletteV1Protocol.CMD_LOAD);
     send(fullname);
     send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
-
+    
     //flush answers
     is.readLine();
     is.readLine();
   }
-
-  @Override
-  public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+  
+   @Override
+    public void loadStudents(List<Student> students) throws IOException {
+        if(students == null || students.isEmpty())
+            return;
+        send(RouletteV1Protocol.CMD_LOAD);
+        
+        //Comment tester la reponse du serveur???
+        
+        for(Student s : students){
+            if(s!=null && !s.getFullname().isEmpty()){
+                send(s.getFullname());
+            }
+        }
+        
+        send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+    }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
@@ -103,15 +117,16 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public String getProtocolVersion() throws IOException {
+
     send(RouletteV1Protocol.CMD_INFO);
 
     return JsonObjectMapper.parseJson(is.readLine(), InfoCommandResponse.class).getProtocolVersion();
   }
 
   private void send(String msg) throws IOException{
-    os.write(msg);
-    os.newLine();
-    os.flush();
+      os.write(msg);
+      os.newLine();
+      os.flush();
   }
 
 }
