@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,47 +23,93 @@ import java.util.logging.Logger;
  * @author Olivier Liechti
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
+  private Socket socket = null;
+  PrintWriter w = null;
+  BufferedReader r = null;
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
   @Override
   public void connect(String server, int port) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    //bind socket to port
+    socket = new Socket(server,port);
+    //Store the Stream object
+    w = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(),StandardCharsets.UTF_8));
+    r = new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
+
+    r.readLine();//read the Hello
   }
 
   @Override
   public void disconnect() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    //terminate connection
+    w.println(RouletteV1Protocol.CMD_BYE);
+    w.flush();
+    //close pipe & socket
+    w.close();
+    r.close();
+    socket.close();
   }
 
   @Override
   public boolean isConnected() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    //before using the object check if exist
+    return socket!=null && socket.isConnected();
   }
 
   @Override
   public void loadStudent(String fullname) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+    w.println(RouletteV1Protocol.CMD_LOAD);w.flush();//Say we want to load student
+    r.readLine();//response
+
+    w.println(fullname);//send student name
+    w.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+    w.flush();
+
+    r.readLine();//DATA LOADED response
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    w.println(RouletteV1Protocol.CMD_LOAD);w.flush();//Say we want to load student
+    r.readLine();//response on server
+    //send student one by one
+    for (Student student: students
+         ) {
+      w.println(student.getFullname());
+    }
+
+    w.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+    w.flush();
+    
+    r.readLine();//data loaded response
   }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+    w.println(RouletteV1Protocol.CMD_RANDOM);w.flush();
+    RandomCommandResponse randomResponse = JsonObjectMapper.parseJson(r.readLine(),RandomCommandResponse.class);
+
+    if(!randomResponse.getError().isEmpty()) throw new EmptyStoreException();
+
+    else
+      return new Student(randomResponse.getFullname());
   }
 
   @Override
   public int getNumberOfStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    w.println(RouletteV1Protocol.CMD_INFO);w.flush();
+
+    return JsonObjectMapper.parseJson(r.readLine(),InfoCommandResponse.class).getNumberOfStudents();
   }
 
   @Override
   public String getProtocolVersion() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    w.println(RouletteV1Protocol.CMD_INFO);w.flush();
+
+    return JsonObjectMapper.parseJson(r.readLine(),InfoCommandResponse.class).getProtocolVersion();
   }
 
 
