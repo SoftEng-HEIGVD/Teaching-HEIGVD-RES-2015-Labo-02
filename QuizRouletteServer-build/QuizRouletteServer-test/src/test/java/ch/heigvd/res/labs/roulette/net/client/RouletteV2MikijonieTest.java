@@ -8,7 +8,7 @@ import org.junit.rules.ExpectedException;
  * This class contains automated tests to validate the client and the server
  * implementation of the Roulette Protocol (version 1)
  *
- * @author Olivier Liechti
+ * @author Olivier Liechti, Mika Pagani
  */
 public class RouletteV2MikijonieTest {
 
@@ -19,13 +19,13 @@ public class RouletteV2MikijonieTest {
   public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
 
   @Test
-  @TestAuthor(githubId = "wasadigi")
+  @TestAuthor(githubId = {"wasadigi", "mikijonie"})
   public void theTestRouletteServerShouldRunDuringTests() throws IOException {
     assertTrue(roulettePair.getServer().isRunning());
   }
 
   @Test
-  @TestAuthor(githubId = "wasadigi")
+  @TestAuthor(githubId = {"wasadigi", "mikijonie"})
   public void theTestRouletteClientShouldBeConnectedWhenATestStarts() throws IOException {
     assertTrue(roulettePair.getClient().isConnected());
   }
@@ -76,7 +76,7 @@ public class RouletteV2MikijonieTest {
   }
 
   @Test
-  @TestAuthor(githubId = "wasadigi")
+  @TestAuthor(githubId = {"wasadigi", "mikijonie"})
   public void theServerShouldSendAnErrorResponseWhenRandomIsCalledAndThereIsNoStudent() throws IOException, EmptyStoreException {
     IRouletteV1Client client = roulettePair.getClient();
     exception.expect(EmptyStoreException.class);
