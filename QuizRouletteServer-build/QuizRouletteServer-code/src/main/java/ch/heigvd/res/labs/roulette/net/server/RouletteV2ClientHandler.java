@@ -3,6 +3,7 @@ package ch.heigvd.res.labs.roulette.net.server;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.net.protocol.ByeCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 
 import java.io.*;
@@ -54,15 +55,21 @@ public class RouletteV2ClientHandler implements IClientHandler {
                 // 'BYE' command.
                 case RouletteV2Protocol.CMD_BYE:
                     done = true;
-                    String status = done ? RouletteV2Protocol.STATUS_SUCCESS : RouletteV2Protocol.STATUS_FAILURE;
-                    ByeCommandResponse response = new ByeCommandResponse(status, commandsCount);
-                    writer.println(JsonObjectMapper.toJson(response));
+                    ByeCommandResponse byeCommandResponse = new ByeCommandResponse(RouletteV2Protocol.STATUS_SUCCESS, commandsCount);
+                    writer.println(JsonObjectMapper.toJson(byeCommandResponse));
                     writer.flush();
                     break;
 
                 // 'HELP' command.
                 case RouletteV2Protocol.CMD_HELP:
                     writer.println("Available commands: " + Arrays.toString(RouletteV2Protocol.SUPPORTED_COMMANDS));
+                    writer.flush();
+                    break;
+
+                // 'INFO' command.
+                case RouletteV2Protocol.CMD_INFO:
+                    InfoCommandResponse infoCommandResponse = new InfoCommandResponse(RouletteV2Protocol.VERSION, store.getNumberOfStudents());
+                    writer.println(JsonObjectMapper.toJson(infoCommandResponse));
                     writer.flush();
                     break;
 
