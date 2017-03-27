@@ -24,7 +24,7 @@ public class RouletteV2kkoPSTest {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-    // binding the client and the server. BUT THIS IS A V1 PROTOCOL CLIENT
+    // wizard with the client and the server.
     @Rule
     public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
 
@@ -34,8 +34,7 @@ public class RouletteV2kkoPSTest {
      * @throws IOException
      */
     @Test
-    @TestAuthor(githubId = "kkoPS")
-    //@TestAuthor(githubId =  "antoineNourZaf")
+    @TestAuthor(githubId = {"kkoPS", "antoineNourZaf"})
     public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
         assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
     }
@@ -45,26 +44,100 @@ public class RouletteV2kkoPSTest {
      * @throws IOException
      */
     @Test
-    @TestAuthor (githubId = "kkoPS")
+    @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
     public void noMoreStudentsInServerAfterCallingMethodClearDataStore() throws IOException {
         // other client to intercept the server answers
         IRouletteV2Client clientV2 = new RouletteV2ClientImpl();
-        clientV2.loadStudent("jesus");
-        clientV2.loadStudent("judas");
-        assertEquals(2, clientV2.getNumberOfStudents());
-        clientV2.clearDataStore();
-        assertEquals(0, clientV2.getNumberOfStudents());
+        clientV2.loadStudent("cesar");
+        clientV2.loadStudent("cleopatra");
+
+        clientV2.listStudents();
+
     }
 
-    // response command after clear is valid
+    /**
+     * creates a client, loads 2 students, checks if number of students is 2, then clears and check if number of students is 0
+     * @throws IOException
+     */
+    @Test
+    @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
+    public void theListCommandShouldReturnTheCorrectAnswer() throws IOException {
+        // connexion via Socket
+        Socket clientSocket = new Socket("localhost", roulettePair.getServer().getPort());
+        BufferedReader fromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        PrintWriter toServer = new PrintWriter(clientSocket.getOutputStream());
+        // reading the first response
+        fromServer.readLine();
+
+        // clearing students
+        toServer.println(RouletteV2Protocol.CMD_CLEAR);
+        toServer.flush();
+        fromServer.readLine();
+
+        // loading
+        toServer.println(RouletteV2Protocol.CMD_LOAD);
+        toServer.flush();
+        if (! fromServer.readLine().equals(RouletteV2Protocol.RESPONSE_LOAD_START))
+        {
+            throw new IOException("error at LOAD command start : unexpected server Answer");
+        }
+        toServer.println("cesar");
+        toServer.flush();
+        toServer.println("cleopatra");
+        toServer.flush();
+        toServer.println(RouletteV2Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+        toServer.flush();
+        fromServer.readLine();
+
+        // check
+        toServer.println(RouletteV2Protocol.CMD_LIST);
+        toServer.flush();
+        String serverAnswer = fromServer.readLine();
+        assertEquals("{\"students\":[{\"fullname\":\"cesar\"},{\"fullname\":\"cleopatra\"}]}", serverAnswer);
+
+
+        // closing everything
+        fromServer.close();
+        toServer.close();
+        clientSocket.close();
+    }
+
+    /**
+     * clears and checks the server's answer
+     * @throws IOException
+     */
+    @Test
+    @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
+    public void theClearCommandShouldReturnTheCorrectAnswer() throws IOException {
+        // connexion via Socket
+        Socket clientSocket = new Socket("localhost", roulettePair.getServer().getPort());
+        BufferedReader fromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        PrintWriter toServer = new PrintWriter(clientSocket.getOutputStream());
+        // reading the first response
+        fromServer.readLine();
+
+        // command no 1
+        toServer.println(RouletteV2Protocol.CMD_CLEAR);
+        toServer.flush();
+
+        // checking the server answer
+        String serverResponse = fromServer.readLine();
+        assertEquals(RouletteV2Protocol.RESPONSE_CLEAR_DONE, serverResponse);
+
+
+        // closing everything
+        fromServer.close();
+        toServer.close();
+        clientSocket.close();
+    }
 
     /**
      * connects and loads 2 students, then checks the answer's status and number of new students
      * @throws IOException
      */
     @Test
-    @TestAuthor (githubId = "kkoPS")
-    public void theServerSendsAModifiedResponseAfterLoadingStudents() throws IOException {
+    @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
+    public void theLoadCommandShouldReturnTheCorrectStatusAndNumberOfNewStudents() throws IOException {
         // connexion via Socket
         Socket clientSocket = new Socket("localhost", roulettePair.getServer().getPort());
         BufferedReader fromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -91,15 +164,8 @@ public class RouletteV2kkoPSTest {
 
         // checking the server answer
         String serverResponse = fromServer.readLine();
-
         assertEquals("{\"status\":\"success\",\"numberOfNewStudents\":2}", serverResponse);
-        /* not possible for this test-scenario (will be incompatible with RES git workflow)
-            //JsonObjectMapper.parseJson();
-            LoadCommandV2Response responseDeserialized = JsonObjectMapper.parseJson(serverResponse, LoadCommandV2Response.class);
-            // check the status and the number of students added
-            assertEquals("succes", responseDeserialized.getStatus());
-            assertEquals(2, responseDeserialized.getNumberOfNewStudents());
-        */
+
 
 
         // closing everything
@@ -115,8 +181,8 @@ public class RouletteV2kkoPSTest {
       * @throws IOException
      */
     @Test
-    @TestAuthor (githubId = "kkoPS")
-    public void theByeCommandShouldReturnTheCorrectNumberOfCommandsInTheSession() throws IOException {
+    @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
+    public void theByeCommandShouldReturnTheCorrectStatusAndNumberOfCommandsInTheSession() throws IOException {
         // connexion via Socket
         Socket clientSocket = new Socket("localhost", roulettePair.getServer().getPort());
         BufferedReader fromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -162,13 +228,7 @@ public class RouletteV2kkoPSTest {
         // checks the answer
         assertEquals("{\"status\":\"success\",\"numberOfCommands\":5}", serverResponse);
 
-        /* same here : we need to use String equivalence checking
-            //JsonObjectMapper.parseJson();
-            ByeCommandV2Response temp = JsonObjectMapper.parseJson(serverResponse, ByeCommandV2Response.class);
-            // check the status and the number of students added
-            assertEquals("succes", temp.getStatus());
-            assertEquals(5, temp.getNumberOfCommands());
-        */
+
 
         // closing everything
         fromServer.close();
@@ -184,7 +244,7 @@ public class RouletteV2kkoPSTest {
      * @throws IOException
      */
     @Test
-    @TestAuthor (githubId = "kkoPS")
+    @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
     public void theInfoCommandShouldReturnTheCorrectProtocolVersionAndNumberOfStudents() throws IOException {
         // connexion via Socket
         Socket clientSocket = new Socket("localhost", roulettePair.getServer().getPort());
@@ -226,19 +286,12 @@ public class RouletteV2kkoPSTest {
         // checks the answer
         assertEquals("{\"protocolVersion\":\"2.0\",\"numberOfStudents\":3}", serverResponse);
 
-        /* same here : must check with strings
-            //JsonObjectMapper.parseJson();
-            InfoCommandResponse temp = JsonObjectMapper.parseJson(serverResponse, InfoCommandResponse.class);
-            // check the status and the number of students added
-            assertEquals(RouletteV2Protocol.VERSION, temp.getProtocolVersion());
-            assertEquals(3, temp.getNumberOfStudents());
-        */
+
         // closing everything
         fromServer.close();
         toServer.close();
         clientSocket.close();
 
     }
-
 
 }
