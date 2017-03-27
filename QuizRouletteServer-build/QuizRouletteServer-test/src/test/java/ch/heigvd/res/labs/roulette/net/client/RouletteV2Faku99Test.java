@@ -57,12 +57,6 @@ public class RouletteV2Faku99Test {
 
     @Test
     @TestAuthor(githubId = { "Daxidz", "faku99" })
-    public void serverShouldHaveCorrectPortNumber() {
-        assertEquals(2613, roulettePair.getServer().getPort());
-    }
-
-    @Test
-    @TestAuthor(githubId = { "Daxidz", "faku99" })
     public void serverShouldReturnCorrectVersionNumber() throws IOException {
         assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
     }
