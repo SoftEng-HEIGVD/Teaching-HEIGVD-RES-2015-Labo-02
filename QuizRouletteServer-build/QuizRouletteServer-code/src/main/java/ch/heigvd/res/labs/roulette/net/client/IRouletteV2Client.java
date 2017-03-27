@@ -1,5 +1,6 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import java.io.IOException;
 import java.util.List;
@@ -26,6 +27,6 @@ public interface IRouletteV2Client extends IRouletteV1Client {
    * @return the list of students currently in the store
    * @throws IOException 
    */
-  public List<Student> listStudents() throws IOException;
+  public List<Student> listStudents() throws IOException, EmptyStoreException;
 
 }

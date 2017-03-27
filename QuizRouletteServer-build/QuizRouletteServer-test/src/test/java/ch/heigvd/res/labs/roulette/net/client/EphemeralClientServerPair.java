@@ -2,10 +2,11 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
+import org.junit.rules.ExternalResource;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.rules.ExternalResource;
 
 /**
  *
