@@ -59,22 +59,22 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
             throw new IOException("Not connected to the server");
         }
 
-        os.append("LOAD" + System.lineSeparator());
+        os.append(RouletteV1Protocol.CMD_LOAD + System.lineSeparator());
         os.flush();
         LOG.info(is.readLine());
         os.append(fullname + System.lineSeparator());
-        os.append("ENDOFDATA" + System.lineSeparator());
+        os.append(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER + System.lineSeparator());
         os.flush();
         LOG.info(is.readLine());
     }
 
     @Override
     public void loadStudents(List<Student> students) throws IOException {
-        os.append("LOAD" + System.lineSeparator());
+        os.append(RouletteV1Protocol.CMD_LOAD + System.lineSeparator());
         for (Student s : students) {
             os.append(s.getFullname() + System.lineSeparator());
         }
-        os.append("ENDOFDATA" + System.lineSeparator());
+        os.append(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER + System.lineSeparator());
         os.flush();
     }
 
@@ -88,7 +88,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
             throw new EmptyStoreException();
         }
 
-        os.append("RANDOM" + System.lineSeparator());
+        os.append(RouletteV1Protocol.CMD_RANDOM + System.lineSeparator());
         os.flush();
         String line = is.readLine();
         LOG.info(line);
@@ -101,7 +101,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
             throw new IOException("Not connected to the server");
         }
 
-        os.append("INFO" + System.lineSeparator());
+        os.append(RouletteV1Protocol.CMD_INFO + System.lineSeparator());
         os.flush();
         String line = is.readLine();
         LOG.info(line);
@@ -110,7 +110,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public int getNumberOfStudents() throws IOException {
-        
         return getInfos().getNumberOfStudents();
     }
 
