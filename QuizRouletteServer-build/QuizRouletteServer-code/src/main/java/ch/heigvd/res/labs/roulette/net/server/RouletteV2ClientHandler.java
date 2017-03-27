@@ -1,11 +1,9 @@
 package ch.heigvd.res.labs.roulette.net.server;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
-import ch.heigvd.res.labs.roulette.net.protocol.ByeCommandResponse;
-import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
-import ch.heigvd.res.labs.roulette.net.protocol.LoadCommandResponse;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
+import ch.heigvd.res.labs.roulette.net.protocol.*;
 
 import java.io.*;
 import java.util.Arrays;
@@ -83,7 +81,19 @@ public class RouletteV2ClientHandler implements IClientHandler {
                     writer.println(JsonObjectMapper.toJson(loadCommandResponse));
                     writer.flush();
                     break;
-                
+
+                // 'RANDOM' command.
+                case RouletteV2Protocol.CMD_RANDOM:
+                    RandomCommandResponse randomCommandResponse = new RandomCommandResponse();
+                    try {
+                        randomCommandResponse.setFullname(store.pickRandomStudent().getFullname());
+                    } catch (EmptyStoreException e) {
+                        randomCommandResponse.setError("There is no student in the list, you cannot pick a random one.");
+                    }
+                    writer.println(JsonObjectMapper.toJson(randomCommandResponse));
+                    writer.flush();
+                    break;
+
                 // Unknown command.
                 default:
                     writer.println("Unknown command. Use HELP to see list of available commands.");
