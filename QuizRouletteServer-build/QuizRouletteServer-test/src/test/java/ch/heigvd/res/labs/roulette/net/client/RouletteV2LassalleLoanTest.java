@@ -57,7 +57,7 @@ public class RouletteV2LassalleLoanTest {
     public void theServerShouldReturnDataStoreCleared() throws IOException {
         IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
 
-        List<Student> listStudents = new ArrayList<Student>();
+        List<Student> listStudents = new ArrayList<>();
         Collections.addAll(listStudents, new Student("Tano Iannetta"), new Student("Loan Lassalle"),
                 new Student("Wojciech Myszkorowski"), new Student("Jérémie Zanone"));
 
@@ -72,7 +72,7 @@ public class RouletteV2LassalleLoanTest {
     public void theServerShouldSendTheListOfStudents() throws IOException {
         IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
 
-        List<Student> listStudentExpected = new ArrayList<Student>();
+        List<Student> listStudentExpected = new ArrayList<>();
         Collections.addAll(listStudentExpected, new Student("Tano Iannetta"),
                 new Student("Loan Lassalle"), new Student("Wojciech Myszkorowski"),
                 new Student("Jérémie Zanone"));
