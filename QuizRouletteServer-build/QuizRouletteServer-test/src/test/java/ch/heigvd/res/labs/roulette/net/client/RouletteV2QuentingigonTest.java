@@ -46,14 +46,7 @@ public class RouletteV2QuentingigonTest {
     }
 
     @Test
-    @TestAuthor(githubId = {"quentingigon"})
-    public void theServerShouldHaveTheCorrectDefaultPort() throws IOException {
-        int port = roulettePair.getServer().getPort();
-        assertEquals(2613, port);
-    }
-
-    @Test
-    @TestAuthor(githubId = {"quentingigon"})
+    @TestAuthor(githubId = {"quentingigon", "MathiasGilson"})
     public void theServerShouldListAllStudentsLoaded() throws IOException, EmptyStoreException {
         IRouletteV2Client client = new RouletteV2ClientImpl();
         int port = roulettePair.getServer().getPort();
@@ -68,7 +61,7 @@ public class RouletteV2QuentingigonTest {
     }
 
     @Test
-    @TestAuthor(githubId = {"quentingigon"})
+    @TestAuthor(githubId = {"quentingigon", "MathiasGilson"})
     public void theServerShouldContainAllStudentsLoaded() throws IOException, EmptyStoreException {
         IRouletteV2Client client = new RouletteV2ClientImpl();
         int port = roulettePair.getServer().getPort();
