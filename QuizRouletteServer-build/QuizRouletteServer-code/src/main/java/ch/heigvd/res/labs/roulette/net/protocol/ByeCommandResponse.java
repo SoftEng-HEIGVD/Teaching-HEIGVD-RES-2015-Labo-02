@@ -12,24 +12,24 @@ public class ByeCommandResponse {
     private String status;
 
     // Number of commands entered by the client.
-    private int nbCommands;
+    private int numberOfCommands;
 
     /**
      * Constructor.
      *
-     * @param nbCommands Number of commands entered by the client.
-     * @param status     Status of the command.
+     * @param status           Status of the command.
+     * @param numberOfCommands Number of commands entered by the client.
      */
-    public ByeCommandResponse(String status, int nbCommands) {
-        this.nbCommands = nbCommands;
+    public ByeCommandResponse(String status, int numberOfCommands) {
+        this.numberOfCommands = numberOfCommands;
         this.status = status;
     }
 
     /**
      * @return The number of commands entered by the client.
      */
-    public int getNbCommands() {
-        return nbCommands;
+    public int getNumberOfCommands() {
+        return numberOfCommands;
     }
 
     /**
@@ -42,10 +42,10 @@ public class ByeCommandResponse {
     /**
      * Sets the number of commands entered by the client.
      *
-     * @param nbCommands Number of commands entered by the client.
+     * @param numberOfCommands Number of commands entered by the client.
      */
-    public void setNbCommands(int nbCommands) {
-        this.nbCommands = nbCommands;
+    public void setNumberOfCommands(int numberOfCommands) {
+        this.numberOfCommands = numberOfCommands;
     }
 
     /**

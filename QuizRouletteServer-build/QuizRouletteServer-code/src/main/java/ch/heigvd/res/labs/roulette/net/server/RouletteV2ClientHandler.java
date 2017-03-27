@@ -4,6 +4,7 @@ import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.net.protocol.ByeCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.LoadCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 
 import java.io.*;
@@ -73,6 +74,16 @@ public class RouletteV2ClientHandler implements IClientHandler {
                     writer.flush();
                     break;
 
+                // 'LOAD' command.
+                case RouletteV2Protocol.CMD_LOAD:
+                    writer.println(RouletteV2Protocol.RESPONSE_LOAD_START);
+                    writer.flush();
+                    int studentsLoaded = store.importData(reader);
+                    LoadCommandResponse loadCommandResponse = new LoadCommandResponse(RouletteV2Protocol.STATUS_SUCCESS, studentsLoaded);
+                    writer.println(JsonObjectMapper.toJson(loadCommandResponse));
+                    writer.flush();
+                    break;
+                
                 // Unknown command.
                 default:
                     writer.println("Unknown command. Use HELP to see list of available commands.");
