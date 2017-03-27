@@ -10,6 +10,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.Test;
+import org.junit.Ignore;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -17,6 +18,7 @@ import org.junit.Test;
  *
  * @author Olivier Liechti
  */
+@Ignore
 public class RouletteV2GluthierTest {
 
     @Rule
