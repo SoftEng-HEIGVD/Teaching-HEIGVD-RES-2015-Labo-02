@@ -107,6 +107,9 @@ public class RouletteV2NewttTest
       BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
+      // Trash the welcome message from the server
+      reader.readLine();
+      
       // Load a student in the store
       client.loadStudent("Marcel");
       
