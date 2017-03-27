@@ -151,7 +151,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         return RouletteV1Protocol.VERSION;
     }
 
-    @Override
     public OutputStream getOutputStream() {
         return os;
     }
