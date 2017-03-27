@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
  *
  * @author Olivier Liechti
  * @author Yann Mahmoudi
+ * @author Marie Lemdjo
  */
 @Ignore
 public class RouletteV2McMoudiTest {
@@ -66,7 +67,7 @@ public class RouletteV2McMoudiTest {
 
   @Test
   @TestAuthor(githubId = "McMoudi")
-    public void theClientCanResetServerData() throws IOException{
+    public void theClientCanPopulateAndResetServerData() throws IOException{
       IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
       populate(client);
       assertEquals(client.getNumberOfStudents(),STUDENT_NUMBER); //check if students are well inserted
