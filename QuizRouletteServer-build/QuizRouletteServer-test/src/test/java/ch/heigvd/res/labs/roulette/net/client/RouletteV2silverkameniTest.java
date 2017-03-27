@@ -11,6 +11,7 @@ import ch.heigvd.schoolpulse.TestAuthor;
 import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -21,6 +22,7 @@ import org.junit.rules.ExpectedException;
  *
  * @author silver kameni & nguefack zacharie
  */
+@Ignore
 public class RouletteV2silverkameniTest {
 
     @Rule
