@@ -2,7 +2,6 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
@@ -10,9 +9,7 @@ import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -25,10 +22,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
   private Socket socket;
-  private BufferedReader bis;
-  private BufferedWriter bos;
+  private BufferedReader responseReader;
+  private PrintWriter requestWriter;
 
-  public RouletteV1ClientImpl(){
+  public RouletteV1ClientImpl() {
       socket = new Socket();
   }
 
@@ -36,33 +33,35 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   public void connect(String server, int port) throws IOException {
       LOG.info("Connecting to server...");
 
-      socket.connect(new InetSocketAddress(server,port));
+      socket.connect(new InetSocketAddress(server, port));
 
       try{
-          bis = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
-          bos = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(),"UTF-8"));
-
-      }catch (IOException e){
+          responseReader = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
+          requestWriter  = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(),"UTF-8"));
+      } catch (IOException e){
           e.printStackTrace();
       }
 
-      bis.readLine();
+      // Flush initial server message
+      responseReader.readLine();
 
       LOG.info("Connected !");
   }
 
   @Override
   public void disconnect() throws IOException {
-      bis.close();
-      bos.write("BYE\n");
-      bos.close();
+      requestWriter.write("BYE\n");
+
+      responseReader.close();
+      requestWriter.close();
       socket.close();
+
       LOG.info("Disconnected");
   }
 
   @Override
   public boolean isConnected() {
-      return socket.isConnected();
+      return socket != null && socket.isConnected();
   }
 
   @Override
@@ -70,36 +69,34 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
       LOG.info("Loading student...");
 
-      bos.write("LOAD\n");
-      bos.flush();
+      requestWriter.write("LOAD\n");
+      requestWriter.flush();
 
-      bis.readLine();
+      responseReader.readLine();
 
-      bos.write(fullname+"\n");
+      requestWriter.write(fullname+"\n");
 
-      bos.write("ENDOFDATA\n");
-      bos.flush();
+      requestWriter.write("ENDOFDATA\n");
+      requestWriter.flush();
 
-      bis.readLine();
-
-
+      responseReader.readLine();
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
 
       LOG.info("Loading students...");
-      bos.write("LOAD\n");
+      requestWriter.write("LOAD\n");
 
-      bis.readLine();
+      responseReader.readLine();
 
       for(Student student:students)
-          bos.write(student.getFullname()+"\n");
+          requestWriter.write(student.getFullname()+"\n");
 
-      bos.write("ENDOFDATA\n");
-      bos.flush();
+      requestWriter.write("ENDOFDATA\n");
+      requestWriter.flush();
 
-      bis.readLine();
+      responseReader.readLine();
 
   }
 
@@ -109,10 +106,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       LOG.info("Picking random student...");
       String response;
 
-      bos.write("RANDOM\n");
-      bos.flush();
+      requestWriter.write("RANDOM\n");
+      requestWriter.flush();
 
-      response = bis.readLine();
+      response = responseReader.readLine();
 
       RandomCommandResponse parsedResponse = JsonObjectMapper.parseJson(response,RandomCommandResponse.class);
 
@@ -129,10 +126,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
       String response;
 
-      bos.write("INFO\n");
-      bos.flush();
+      requestWriter.write("INFO\n");
+      requestWriter.flush();
 
-      response = bis.readLine();
+      response = responseReader.readLine();
 
       InfoCommandResponse parsedResponse = JsonObjectMapper.parseJson(response,InfoCommandResponse.class);
       return parsedResponse.getNumberOfStudents();
@@ -143,15 +140,13 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
       String response;
 
-      bos.write("INFO\n");
-      bos.flush();
+      requestWriter.write("INFO\n");
+      requestWriter.flush();
 
-      response = bis.readLine();
+      response = responseReader.readLine();
 
       InfoCommandResponse parsedResponse = JsonObjectMapper.parseJson(response,InfoCommandResponse.class);
       return parsedResponse.getProtocolVersion();
   }
-
-
 
 }
