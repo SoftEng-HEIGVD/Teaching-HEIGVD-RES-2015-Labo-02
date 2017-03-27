@@ -34,7 +34,7 @@ public class RouletteV2McMoudiTest {
   @Test
   @TestAuthor(githubId = "McMoudi")
   public void theServerShouldListenToTheProperPort() throws IOException {
-    assertEquals(roulettePair.getServer().getPort(), 2613); //FIXME no static port for v2 yet
+    assertEquals(roulettePair.getServer().getPort(), 2613); //FIXME no static port for v2 yet in RouletteV2Protocol
   }
 
   @Test
@@ -73,7 +73,22 @@ public class RouletteV2McMoudiTest {
   }
 
 
-  private List<Student> populate(IRouletteV2Client client) throws IOException{
+  @Test
+  @TestAuthor(githubId = "McMoudi")
+  public void theClientShouldBeConnectedWhenTestStarts() {
+    assertTrue(roulettePair.getClient().isConnected());
+  }
+
+  @Test
+  @TestAuthor(githubId = "McMoudi")
+  public void theClientDisconnectsProperly() throws IOException {
+      IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
+
+      client.disconnect();
+      assertFalse(client.isConnected());
+  }
+
+  private List<Student> populate(IRouletteV2Client client) throws IOException {
     List<Student> studentList = new ArrayList<>();
 
     for (char c = 0; c < STUDENT_NUMBER;++c){
