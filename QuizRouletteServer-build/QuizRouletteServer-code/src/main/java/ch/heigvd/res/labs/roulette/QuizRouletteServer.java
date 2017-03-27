@@ -29,7 +29,7 @@ public class QuizRouletteServer
    {
       System.setProperty("java.util.logging.SimpleFormatter.format", "%5$s %n");
       // TODO Change the version here to be RouletteV2Protocol.VERSION
-      RouletteServer server = new RouletteServer(RouletteV1Protocol.DEFAULT_PORT, RouletteV2Protocol.VERSION);
+      RouletteServer server = new RouletteServer(RouletteV2Protocol.DEFAULT_PORT, RouletteV2Protocol.VERSION);
       try
       {
          server.startServer();

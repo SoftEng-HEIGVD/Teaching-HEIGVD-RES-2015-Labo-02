@@ -70,7 +70,7 @@ public class RouletteV2ClientHandler implements IClientHandler
                writer.flush();
                break;
 
-            case RouletteV1Protocol.CMD_LOAD: //TODO relecture, semble marche
+            case RouletteV1Protocol.CMD_LOAD: //TODO relecture, semble marcher
                writer.println(RouletteV1Protocol.RESPONSE_LOAD_START);
                writer.flush();
                store.importData(reader);
