@@ -14,7 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import ch.heigvd.res.labs.roulette.abass_mahdavi.MyClass;
+
 
 /**
  *
