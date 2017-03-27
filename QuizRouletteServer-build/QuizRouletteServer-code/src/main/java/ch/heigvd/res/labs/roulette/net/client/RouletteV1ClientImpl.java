@@ -34,19 +34,15 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public void connect(String server, int port) throws IOException {
-
-        final String s = server;
-        final int p = port;
-
         try {
-            clientSocket = new Socket(s, p);
+            clientSocket = new Socket(server, port);
             is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             os = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
         } catch (IOException ex) {
             Logger.getLogger(RouletteV1ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        // Skip the welcom message
+        // Skip the welcome message
         is.readLine();
     }
 
@@ -69,6 +65,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         if (clientSocket == null) {
             return false;
         }
+        
         return clientSocket.isConnected();
     }
 
@@ -77,7 +74,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         os.println(RouletteV1Protocol.CMD_LOAD);
         os.flush();
         is.readLine();
+        
         os.println(fullname);
+        
         os.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
         os.flush();
         is.readLine();
@@ -88,32 +87,28 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         os.println(RouletteV1Protocol.CMD_LOAD);
         os.flush();
         is.readLine();
+        
         for (Student s : students) {
             os.println(s.getFullname());
         }
+        
         os.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
         os.flush();
         is.readLine();
-
-        // print data?
     }
 
     @Override
     public Student pickRandomStudent() throws EmptyStoreException, IOException {
-        if (getNumberOfStudents() == 0) {
-            throw new EmptyStoreException();
-        }
-
         os.println(RouletteV1Protocol.CMD_RANDOM);
         os.flush();
+        
+        RandomCommandResponse res = JsonObjectMapper.parseJson(is.readLine(), RandomCommandResponse.class);
 
-        String line = is.readLine();
-
-        if (line.isEmpty()) {
+        if (!res.getError().isEmpty()) {
             throw new EmptyStoreException();
         }
-
-        return Student.fromJson(line);
+        
+        return Student.fromJson(res.getFullname());
     }
 
     @Override
@@ -121,8 +116,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         os.println(RouletteV1Protocol.CMD_INFO);
         os.flush();
 
-        InfoCommandResponse infoCommandResponse = JsonObjectMapper.parseJson(is.readLine(), InfoCommandResponse.class);
-        return infoCommandResponse.getNumberOfStudents();
+        InfoCommandResponse res = JsonObjectMapper.parseJson(is.readLine(), InfoCommandResponse.class);
+        return res.getNumberOfStudents();
     }
 
     @Override
