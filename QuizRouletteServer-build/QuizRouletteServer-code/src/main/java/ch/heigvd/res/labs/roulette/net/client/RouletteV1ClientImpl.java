@@ -29,21 +29,21 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
     //create a client socket 
-    Socket myClientSocket;
+   private Socket myClientSocket;
     // we need to create a boolean initialise on false to specify that we are connected
-    boolean connected = false;
+   private boolean connected = false;
     //create a buffer reader
-    BufferedReader bf;
+   private BufferedReader bf;
     // create an print writer;
-    PrintWriter pw;
+   private PrintWriter pw;
     //create a list of student to load all students 
-    List<Student> myStudentList = new ArrayList<>();
+   private List<Student> myStudentList = new ArrayList<>();
 
     @Override
     public void connect(String server, int port) throws IOException {
         myClientSocket = new Socket(server, port);
-        bf = new BufferedReader(new InputStreamReader(myClientSocket.getInputStream()));
-        pw = new PrintWriter(new OutputStreamWriter(myClientSocket.getOutputStream()));
+        bf = new BufferedReader(new InputStreamReader(myClientSocket.getInputStream(), "UTF-8"));
+        pw = new PrintWriter(new OutputStreamWriter(myClientSocket.getOutputStream(), "UTF-8"));
         connected = true;
         bf.readLine(); // read the first message off server 
     }
@@ -65,6 +65,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public void loadStudent(String fullname) throws IOException {
+        if(!connected) return;
         myStudentList.add(new Student(fullname)); // load each student to the list
         loadStudents(myStudentList); // call loadStudents method and send our list
 
@@ -72,6 +73,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public void loadStudents(List<Student> students) throws IOException {
+         if(!connected) return;
         if (students == null || students.isEmpty()) // return if our list is empty or not existing  
         {
             return;
@@ -92,6 +94,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public Student pickRandomStudent() throws EmptyStoreException, IOException {
+        if(!connected) return null;
         pw.println(RouletteV1Protocol.CMD_RANDOM);
         pw.flush();
         RandomCommandResponse responseRandom = JsonObjectMapper.parseJson(bf.readLine(), RandomCommandResponse.class);
@@ -103,6 +106,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public int getNumberOfStudents() throws IOException {
+         
         pw.println(RouletteV1Protocol.CMD_INFO);
         pw.flush();
         return myStudentList.size(); // return size of our student list
@@ -110,6 +114,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public String getProtocolVersion() throws IOException {
+        
         pw.print(RouletteV1Protocol.CMD_INFO);
         pw.flush();
         return RouletteV1Protocol.VERSION; // return version of our protocol
