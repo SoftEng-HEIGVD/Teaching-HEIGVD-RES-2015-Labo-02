@@ -88,6 +88,14 @@ public class RouletteV2McMoudiTest {
       assertFalse(client.isConnected());
   }
 
+  @Test
+  @TestAuthor(githubId = "McMoudi")
+  public void theServerShouldReturnAnEmptyListWhenTestStart() throws IOException {
+      IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
+
+      assertTrue(client.listStudents().isEmpty());
+  }
+
   private List<Student> populate(IRouletteV2Client client) throws IOException {
     List<Student> studentList = new ArrayList<>();
 
