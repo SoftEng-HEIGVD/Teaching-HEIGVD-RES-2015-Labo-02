@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
@@ -25,6 +26,7 @@ import org.junit.rules.ExpectedException;
  *
  * @author Nathan
  */
+@Ignore
 public class RouletteV2Blade7foldTest {
     
     @Rule
