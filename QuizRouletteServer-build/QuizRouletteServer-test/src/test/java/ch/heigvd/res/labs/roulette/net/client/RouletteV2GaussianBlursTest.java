@@ -3,6 +3,7 @@ package ch.heigvd.res.labs.roulette.net.client;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,12 +14,14 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+
 /**
  * This class contains automated tests to validate the client and the server
  * implementation of the Roulette Protocol (version 2)
  *
  * @author Arnold von Bauer Gauss
  */
+@Ignore
 public class RouletteV2GaussianBlursTest {
 
     @Rule

@@ -3,6 +3,7 @@ package ch.heigvd.res.labs.roulette.net.client;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -20,6 +21,7 @@ import static org.junit.Assert.*;
  * @author Olivier Liechti
  * @author Yann Mahmoudi
  */
+@Ignore
 public class RouletteV2McMoudiTest {
 
   @Rule
