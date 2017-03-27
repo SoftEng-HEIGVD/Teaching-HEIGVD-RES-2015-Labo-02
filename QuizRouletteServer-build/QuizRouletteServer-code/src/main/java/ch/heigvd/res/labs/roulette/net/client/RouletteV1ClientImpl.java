@@ -6,11 +6,8 @@ import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+
+import java.io.*;
 import java.net.Socket;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,48 +18,170 @@ import java.util.logging.Logger;
  * 
  * @author Olivier Liechti
  */
-public class RouletteV1ClientImpl implements IRouletteV1Client {
+public class RouletteV1ClientImpl implements IRouletteV1Client
+{
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
+  protected BufferedReader reader;
+  protected PrintWriter writer;
+  protected Socket skt;
+
   @Override
-  public void connect(String server, int port) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public void connect(String server, int port) throws IOException
+  {
+    //configuration du socket
+    skt = new Socket(server, port);
+    writer = new PrintWriter(skt.getOutputStream());
+    InputStreamReader inpStrm = new InputStreamReader(skt.getInputStream());
+    reader = new BufferedReader(inpStrm);
+
+    //lecture du message du serveur
+    reader.readLine();
+
   }
 
   @Override
-  public void disconnect() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public void disconnect() throws IOException
+  {
+      if(skt.isConnected())
+      {
+        writer.println(RouletteV1Protocol.CMD_BYE);
+        writer.flush();
+
+        skt.close();
+        writer.close();
+        reader.close();
+      }
+      else
+      {
+         throw  new IOException("Already disconnected");
+      }
   }
 
   @Override
-  public boolean isConnected() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public boolean isConnected()
+  {
+      if(skt != null)
+          return (skt.isConnected() && skt != null && !skt.isClosed());
+      else
+          return false;
   }
 
   @Override
-  public void loadStudent(String fullname) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public void loadStudent(String fullname) throws IOException
+  {
+    if(skt.isConnected())
+    {
+      writer.println(RouletteV1Protocol.CMD_LOAD);
+      writer.flush();
+      if(!reader.readLine().equals(RouletteV1Protocol.RESPONSE_LOAD_START))
+      {
+        throw new IOException("Problem with server answer");
+      }
+
+      writer.println(fullname);
+      writer.flush();
+      writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+      writer.flush();
+      if(!reader.readLine().equals(RouletteV1Protocol.RESPONSE_LOAD_DONE))
+      {
+          throw new IOException("Problem with server answer");
+      }
+    }
+    else
+    {
+       throw  new IOException("Not connected");
+    }
+
   }
 
   @Override
-  public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public void loadStudents(List<Student> students) throws IOException
+  {
+    if(skt.isConnected())
+    {
+      writer.println(RouletteV1Protocol.CMD_LOAD);
+      writer.flush();
+      if(!reader.readLine().equals(RouletteV1Protocol.RESPONSE_LOAD_START))
+      {
+        throw new IOException("Problem with server answer");
+      }
+
+      for(Student st : students)
+        writer.println(st.getFullname());
+
+      writer.flush();
+      writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+      writer.flush();
+      if(!reader.readLine().equals(RouletteV1Protocol.RESPONSE_LOAD_DONE))
+      {
+        throw new IOException("Problem with server answer");
+      }
+    }
+    else
+    {
+      throw  new IOException("Not connected");
+    }
   }
 
   @Override
-  public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public Student pickRandomStudent() throws EmptyStoreException, IOException
+  {
+    if(skt.isConnected())
+    {
+      writer.println(RouletteV1Protocol.CMD_RANDOM);
+      writer.flush();
+
+      RandomCommandResponse randResp = JsonObjectMapper.parseJson(reader.readLine(), RandomCommandResponse.class);
+
+      if (randResp.getError() != null)
+      {
+        throw new EmptyStoreException();
+      }
+
+      return new Student(randResp.toString());
+    }
+    else
+    {
+      throw new IOException("Not connected");
+    }
   }
 
   @Override
-  public int getNumberOfStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public int getNumberOfStudents() throws IOException
+  {
+     if(skt.isConnected())
+     {
+        writer.println(RouletteV1Protocol.CMD_INFO);
+        writer.flush();
+
+        InfoCommandResponse randResp = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
+
+        return randResp.getNumberOfStudents();
+     }
+     else
+     {
+        throw  new IOException("Not connected");
+     }
   }
 
   @Override
-  public String getProtocolVersion() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public String getProtocolVersion() throws IOException
+  {
+     if(skt.isConnected())
+     {
+        writer.println(RouletteV1Protocol.CMD_INFO);
+        writer.flush();
+
+       InfoCommandResponse randResp = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
+
+       return randResp.getProtocolVersion();
+     }
+     else
+     {
+       throw  new IOException("Not connected");
+     }
   }
 
 
