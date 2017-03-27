@@ -25,7 +25,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
     private Socket clientSocket;
-    BufferedWriter os;
+    PrintWriter os;
     BufferedReader is;
 
     /**
@@ -37,7 +37,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     @Override
     public void connect(String server, int port) throws IOException {
         clientSocket = new Socket(server, port);
-        os = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+        os = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
         is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
         // Read welcome message
@@ -75,8 +75,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
      */
     private void send(String rp) throws IOException {
         // Send string argument to the server
-        os.write(rp);
-        os.newLine();
+        os.println(rp);
         os.flush();
     }
 
