@@ -116,6 +116,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
                     writer.flush();
                     break;
             }
+            writer.flush();
         }
     }
 
