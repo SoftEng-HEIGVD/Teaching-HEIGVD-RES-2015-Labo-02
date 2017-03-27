@@ -1,6 +1,7 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
+import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
@@ -10,8 +11,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,6 +26,7 @@ import org.junit.rules.ExpectedException;
  * implementation of the Roulette Protocol (version 2)
  *
  * @author Mathieu Monteverde
+ * @author Chaymae Mbarki
  */
 @Ignore
 public class RouletteV2MathieumonteverdeTest {
@@ -31,18 +36,6 @@ public class RouletteV2MathieumonteverdeTest {
 
    @Rule
    public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
-
-   @Test
-   @TestAuthor(githubId = "mathieumonteverde")
-   public void theRouletteServerShouldRunDuringTests() {
-      assertTrue(roulettePair.getServer().isRunning());
-   }
-   
-   @Test
-   @TestAuthor(githubId = "mathieumonteverde")
-   public void  theRouletteClientShouldBeConnectedAtTheBeginningOfTheTest() {
-      assertTrue(roulettePair.getClient().isConnected());
-   }
    
    @Test
    @TestAuthor(githubId = "mathieumonteverde")
@@ -104,5 +97,73 @@ public class RouletteV2MathieumonteverdeTest {
       assertEquals(0, client.getNumberOfStudents());
       
    }
+   
+   @Test
+   @TestAuthor(githubId = "mathieumonteverde")
+   public void theServerShouldListTheData() throws Exception {// Connect to the server
+      Socket socket = new Socket("localhost", 2613);
+      PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"));
+      BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
+      
+      // Read first line
+      in.readLine();
+      
+      // Load some students
+      out.println(RouletteV2Protocol.CMD_LOAD);
+      // Read response
+      in.readLine();
+      
+      out.println("john doe");
+      out.println("bill smith");
+      out.flush();
+      
+      out.println(RouletteV2Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+      
+      // Read Response
+      in.readLine();
+      
+      out.println(RouletteV2Protocol.CMD_LIST);
+      out.flush();
+      
+      String result = in.readLine();
+      assertEquals("{\"students\":[{\"fullname\":\"john doe\"},{\"fullname\":\"bill smith\"}]}", result);
+      
+   }
+   
+   @Test
+   @TestAuthor(githubId = "mathieumonteverde")
+   public void theRouletteClientShouldListTheData() throws Exception{
+      RouletteV2ClientImpl client = (RouletteV2ClientImpl) roulettePair.getClient();
+      client.loadStudent("John Doe1");
+      client.loadStudent("John Doe2");
+      client.loadStudent("John Doe3"); 
+      
+      
+      Student s1 = new Student("John Doe1");
+      Student s2 = new Student("John Doe2");
+      Student s3 = new Student("John Doe3");
+      
+      List<Student> myList = Arrays.asList(s1,s2,s3);
+      List<Student> clientList =  client.listStudents();
+      
+      Collections.sort(myList, new Comparator<Student>() {
+         @Override
+         public int compare(Student o1, Student o2) {
+            return o1.getFullname().compareToIgnoreCase(o2.getFullname());
+         }
+         
+      });
+      
+      Collections.sort(clientList, new Comparator<Student>() {
+         @Override
+         public int compare(Student o1, Student o2) {
+            return o1.getFullname().compareToIgnoreCase(o2.getFullname());
+         }
+         
+      });
+              
+      assertEquals(myList, clientList); 
+   }
+
 
 }
