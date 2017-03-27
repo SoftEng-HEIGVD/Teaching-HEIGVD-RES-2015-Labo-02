@@ -21,10 +21,6 @@ import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
-/**
- *
- * @author brofm_000
- */
 public class RouletteV2MoufbluTest
 {
 
