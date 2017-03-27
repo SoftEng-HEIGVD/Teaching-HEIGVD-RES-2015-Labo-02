@@ -1,14 +1,27 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
+import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
+import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
+import ch.heigvd.schoolpulse.TestAuthor;
+
+import java.io.*;
+import java.net.Socket;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
+
 
 /**
  * This class contains automated tests to validate the client and the server
  * implementation of the Roulette Protocol (version 2)
  *
- * @author Olivier Liechti, Mika Pagani
+ * @author Olivier Liechti
+ * @author Mika Pagani
+ * @author Valentin Finini
  */
 public class RouletteV2MikijonieTest {
 
@@ -65,7 +78,7 @@ public class RouletteV2MikijonieTest {
   @Test
   @TestAuthor(githubId = "SoftEng-HEIGVD")
   public void theServerShouldCountStudents() throws IOException {
-    IRouletteV1Client client = roulettePair.getClient();
+    IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     assertEquals(0, client.getNumberOfStudents());
     client.loadStudent("sacha");
     assertEquals(1, client.getNumberOfStudents());
@@ -78,35 +91,35 @@ public class RouletteV2MikijonieTest {
   @Test
   @TestAuthor(githubId = {"wasadigi", "mikijonie"})
   public void theServerShouldSendAnErrorResponseWhenRandomIsCalledAndThereIsNoStudent() throws IOException, EmptyStoreException {
-    IRouletteV1Client client = roulettePair.getClient();
+    IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     exception.expect(EmptyStoreException.class);
     client.pickRandomStudent();
   }
 
   @Test
-  @TestAuthor(github = "mikijonie")
+  @TestAuthor(githubId = "mikijonie")
   public void theServerShouldDeleteAllStudentAfterClear() throws IOException {
-    IRouletteV1Client client = roulettePair.getClient();
+    IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     client.loadStudent("sacha");
     client.loadStudent("olivier");
     client.loadStudent("fabienne");
     assertEquals(3, client.getNumberOfStudents());
-    client.sendClear();
+    client.clearDataStore();
     assertEquals(0, client.getNumberOfStudents());
   }
 
   @Test
-  @TestAuthor(github = "mikijonie")
-  public void theServerShouldBeCountingTheNumberOfCommandsOfTheSession() throws IOException {
-    IRouletteV1Client client = roulettePair.getClient();
+  @TestAuthor(githubId = "Farenjihn")
+  public void theServerShouldReturnAListOfStudents() throws IOException {
+    IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     client.loadStudent("sacha");
     client.loadStudent("olivier");
     client.loadStudent("fabienne");
-    client.sendClear();
 
-    //Pour améliorer on pourrait appeller chaqune des commandes possibles
-
-    assertEquals(4, client.getNumberOfCommands());
+    assertTrue(client.listStudents().size() == 3);
+    assertTrue(client.listStudents().contains(new Student("sacha")));
+    assertTrue(client.listStudents().contains(new Student("olivier")));
+    assertTrue(client.listStudents().contains(new Student("fabienne")));
   }
 }
 
