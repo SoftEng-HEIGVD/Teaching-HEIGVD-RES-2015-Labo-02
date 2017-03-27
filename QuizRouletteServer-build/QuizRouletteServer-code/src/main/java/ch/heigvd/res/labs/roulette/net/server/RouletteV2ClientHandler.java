@@ -3,6 +3,7 @@ package ch.heigvd.res.labs.roulette.net.server;
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
+import ch.heigvd.res.labs.roulette.data.StudentsList;
 import ch.heigvd.res.labs.roulette.net.protocol.*;
 
 import java.io.*;
@@ -59,6 +60,13 @@ public class RouletteV2ClientHandler implements IClientHandler {
                     writer.flush();
                     break;
 
+                // 'CLEAR' command.
+                case RouletteV2Protocol.CMD_CLEAR:
+                    store.clear();
+                    writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
+                    writer.flush();
+                    break;
+
                 // 'HELP' command.
                 case RouletteV2Protocol.CMD_HELP:
                     writer.println("Available commands: " + Arrays.toString(RouletteV2Protocol.SUPPORTED_COMMANDS));
@@ -69,6 +77,14 @@ public class RouletteV2ClientHandler implements IClientHandler {
                 case RouletteV2Protocol.CMD_INFO:
                     InfoCommandResponse infoCommandResponse = new InfoCommandResponse(RouletteV2Protocol.VERSION, store.getNumberOfStudents());
                     writer.println(JsonObjectMapper.toJson(infoCommandResponse));
+                    writer.flush();
+                    break;
+
+                // 'LIST' command.
+                case RouletteV2Protocol.CMD_LIST:
+                    StudentsList studentsList = new StudentsList();
+                    studentsList.setStudents(store.listStudents());
+                    writer.println(JsonObjectMapper.toJson(studentsList));
                     writer.flush();
                     break;
 
