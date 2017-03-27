@@ -24,19 +24,19 @@ public class RouletteV1GluthierTest {
   public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV1Protocol.VERSION);
 
   @Test
-  @TestAuthor(githubId = "wasadigi")
+  @TestAuthor(githubId = "gluthier")
   public void theTestRouletteServerShouldRunDuringTests() throws IOException {
     assertTrue(roulettePair.getServer().isRunning());
   }
 
   @Test
-  @TestAuthor(githubId = "wasadigi")
+  @TestAuthor(githubId = "gluthier")
   public void theTestRouletteClientShouldBeConnectedWhenATestStarts() throws IOException {
     assertTrue(roulettePair.getClient().isConnected());
   }
 
   @Test
-  @TestAuthor(githubId = "wasadigi")
+  @TestAuthor(githubId = "gluthier")
   public void itShouldBePossibleForARouletteClientToConnectToARouletteServer() throws Exception {
     int port = roulettePair.getServer().getPort();
     IRouletteV1Client client = new RouletteV1ClientImpl();
@@ -46,13 +46,13 @@ public class RouletteV1GluthierTest {
   }
   
   @Test
-  @TestAuthor(githubId = "wasadigi")
+  @TestAuthor(githubId = "gluthier")
   public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
     assertEquals(RouletteV1Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
   }
 
   @Test
-  @TestAuthor(githubId = "wasadigi")
+  @TestAuthor(githubId = "gluthier")
   public void theServerShouldHaveZeroStudentsAtStart() throws IOException {
     int port = roulettePair.getServer().getPort();
     IRouletteV1Client client = new RouletteV1ClientImpl();
@@ -62,7 +62,7 @@ public class RouletteV1GluthierTest {
   }
 
   @Test
-  @TestAuthor(githubId = {"wasadigi", "SoftEng-HEIGVD"})
+  @TestAuthor(githubId = {"gluthier", "SoftEng-HEIGVD"})
   public void theServerShouldStillHaveZeroStudentsAtStart() throws IOException {
     assertEquals(0, roulettePair.getClient().getNumberOfStudents());
   }
@@ -81,7 +81,7 @@ public class RouletteV1GluthierTest {
   }
 
   @Test
-  @TestAuthor(githubId = "wasadigi")
+  @TestAuthor(githubId = "gluthier")
   public void theServerShouldSendAnErrorResponseWhenRandomIsCalledAndThereIsNoStudent() throws IOException, EmptyStoreException {
     IRouletteV1Client client = roulettePair.getClient();
     exception.expect(EmptyStoreException.class);
