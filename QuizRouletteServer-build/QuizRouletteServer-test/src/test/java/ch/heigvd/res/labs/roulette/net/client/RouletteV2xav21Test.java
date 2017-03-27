@@ -81,23 +81,4 @@ public class RouletteV2xav21Test {
         assertEquals(paul, students.get(1).getFullname());
         assertEquals(yvan, students.get(2).getFullname());
     }
-
-    @Test
-    @TestAuthor(githubId = {"xav21", "GOthGir"})
-    public void theServerShouldReturnSuccessAndCommandsNumberAfterBye() throws IOException {
-        Socket client = new Socket("localhost", roulettePair.getServer().getPort());
-        PrintWriter pWriter = new PrintWriter(client.getOutputStream());
-        BufferedReader bReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
-        pWriter.write(RouletteV2Protocol.CMD_INFO + "\n");
-        pWriter.flush();
-
-        pWriter.write(RouletteV2Protocol.CMD_HELP + "\n");
-        pWriter.flush();
-
-        pWriter.write(RouletteV2Protocol.CMD_BYE + "\n");
-        pWriter.flush();
-
-        assertEquals("{\"status\":\"success\",\"numberOfCommands\":3}", bReader.readLine());
-    }
 }
