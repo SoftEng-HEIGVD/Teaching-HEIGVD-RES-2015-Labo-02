@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -30,13 +32,13 @@ public class RouletteV2qrzellerTest {
 
     @Test
     @TestAuthor(githubId = "qrzeller")
-    public void checkTheServerParameter() throws IOException{
+    public void checkTheServerParameter() throws IOException {
 
-        assert roulettePair.getServer().getPort() == RouletteV2Protocol.DEFAULT_PORT
-               &&RouletteV2Protocol.DEFAULT_PORT == 2613
+        assert roulettePair.getServer().getPort() == RouletteV2Protocol.DEFAULT_PORT &&
+                RouletteV2Protocol.DEFAULT_PORT == 2613
                 : "The server should have the correct port...";
 
-        assert roulettePair.getClient().getProtocolVersion() == RouletteV2Protocol.VERSION:
+        assert roulettePair.getClient().getProtocolVersion().equals(RouletteV2Protocol.VERSION) :
                 "The protocol version should be V2";
     }
 
@@ -45,19 +47,21 @@ public class RouletteV2qrzellerTest {
     @TestAuthor(githubId = "qrzeller")
     public void theServerShouldNotHaveStudentAndAfterClean() throws IOException {
 
-        assert roulettePair.getClient().getNumberOfStudents() == 0:"After clear the DB must be clean";
-
         IRouletteV2Client client = (RouletteV2ClientImpl) roulettePair.getClient();
 
         client.clearDataStore();//clear empty
 
+        //Add Students
         client.loadStudent("123 21");
         client.loadStudent("Abc De");
         client.loadStudent("Jean-mich dupuis|@#¼||");
 
         client.clearDataStore();
 
-        assert client.getNumberOfStudents() == 0:"After clear the DB must be clean";
+        //check if the list of student and the number of client in the DB is indeed empty
+        assert client.getNumberOfStudents() == 0 : "After clear the DB must be clean";
+        assert client.listStudents().size() == 0 : "The list must be empty";
+
         client.clearDataStore();//clear already cleared
     }
 
@@ -75,7 +79,16 @@ public class RouletteV2qrzellerTest {
 
         client.loadStudents(handMadeStudent);
         List<Student> students = client.listStudents();
-        assert students.equals(handMadeStudent):
-                "Student are not equals";
+
+        assert students.size() == handMadeStudent.size() : "size does not match";
+
+        for (int i = 0; i < students.size(); i++) {
+
+            assert students.get(i).getFullname()
+                    .equals(
+                            handMadeStudent.get(i).getFullname()) :
+                    "Student are not equals";
+        }
+
     }
 }
