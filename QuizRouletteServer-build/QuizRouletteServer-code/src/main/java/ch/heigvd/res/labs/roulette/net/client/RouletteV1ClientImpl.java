@@ -37,7 +37,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
       try{
           responseReader = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
-          requestWriter  = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(),"UTF-8"));
+          requestWriter  = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(),"UTF-8")));
       } catch (IOException e){
           e.printStackTrace();
       }
