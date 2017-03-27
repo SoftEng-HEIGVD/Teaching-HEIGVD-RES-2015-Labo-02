@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 @Ignore
 public class RouletteV2QuentingigonTest {
 
-<<<<<<< HEAD
   @Rule
   public ExpectedException exception = ExpectedException.none();
 
