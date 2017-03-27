@@ -93,61 +93,6 @@ public class RouletteV2Luca15Test {
 
     @Test
     @TestAuthor(githubId = "luca15")
-    public void theRouletteClientShouldGetStatusOfLoadCommand() throws IOException {
-        int port = roulettePair.getServer().getPort();
-        RouletteV2ClientImpl client = new RouletteV2ClientImpl();
-        client.connect("localhost", port);
-
-        client.loadStudent("Luca Sivillica");
-
-        assertEquals("success", client.getStatusOfLoadCommand());
-    }
-
-    @Test
-    @TestAuthor(githubId = "luca15")
-    public void theRouletteClientShouldGetNumberOfNewStudentsOfLoadCommand() throws IOException {
-        int port = roulettePair.getServer().getPort();
-        RouletteV2ClientImpl client = new RouletteV2ClientImpl();
-        client.connect("localhost", port);
-
-        List<Student> students = new ArrayList<>();
-        students.add(new Student("Luca Sivillica"));
-        students.add(new Student("Indiana Jones"));
-        students.add(new Student("James Bond"));
-        client.loadStudents(students);
-
-        assertEquals(3, client.getNumberOfNewStudents());
-    }
-
-    @Test
-    @TestAuthor(githubId = "luca15")
-    public void theRouletteClientShouldGetStatusOfByeCommand() throws IOException {
-        int port = roulettePair.getServer().getPort();
-        RouletteV2ClientImpl client = new RouletteV2ClientImpl();
-        client.connect("localhost", port);
-
-        client.disconnect();
-
-        assertEquals("success", client.getStatusOfByeCommand());
-    }
-
-    @Test
-    @TestAuthor(githubId = "luca15")
-    public void theRouletteClientShouldGetNumberOfCommandsOfByeCommand() throws IOException, EmptyStoreException {
-        int port = roulettePair.getServer().getPort();
-        RouletteV2ClientImpl client = new RouletteV2ClientImpl();
-        client.connect("localhost", port);
-
-        client.loadStudent("Luca Sivillica");
-        client.getProtocolVersion(); // Use INFO command
-        client.pickRandomStudent(); // Use RANDOM commmand
-        client.disconnect();
-
-        assertEquals(4, client.getNumberOfCommands());
-    }
-
-    @Test
-    @TestAuthor(githubId = "luca15")
     public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
         assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
     }
