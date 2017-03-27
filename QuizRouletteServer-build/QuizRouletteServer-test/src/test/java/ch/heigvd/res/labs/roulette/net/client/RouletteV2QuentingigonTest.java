@@ -1,0 +1,74 @@
+package ch.heigvd.res.labs.roulette.net.client;
+
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
+import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
+import ch.heigvd.schoolpulse.TestAuthor;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+
+/**
+ * This class contains automated tests to validate the client and the server
+ * implementation of the Roulette Protocol (version 1)
+ *
+ * @author Olivier Liechti
+ */
+@Ignore
+public class RouletteV2QuentingigonTest {
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Rule
+    public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
+
+    @Test
+    @TestAuthor(githubId = {"quentingigon", "MathiasGilson"})
+    public void theServerShouldHaveZeroStudentsAfterAClear() throws IOException {
+        IRouletteV2Client client = new RouletteV2ClientImpl();
+        int port = roulettePair.getServer().getPort();
+
+        client.connect("localhost", port);
+
+        client.loadStudent("sacha");
+        client.loadStudent("olivier");
+        client.loadStudent("fabienne");
+        client.clearDataStore();
+
+        assertEquals(0, client.getNumberOfStudents());
+    }
+
+    @Test
+    @TestAuthor(githubId = {"quentingigon"})
+    public void theServerShouldHaveTheCorrectDefaultPort() throws IOException {
+        int port = roulettePair.getServer().getPort();
+        assertEquals(2613, port);
+    }
+
+    @Test
+    @TestAuthor(githubId = {"quentingigon"})
+    public void theServerShouldListAllStudentsLoaded() throws IOException, EmptyStoreException {
+        IRouletteV2Client client = new RouletteV2ClientImpl();
+        int port = roulettePair.getServer().getPort();
+
+        client.connect("localhost", port);
+
+        client.loadStudent("sacha");
+        client.loadStudent("olivier");
+        client.loadStudent("fabienne");
+
+        assertEquals(client.listStudents().size(), client.getNumberOfStudents());
+    }
+
+    @Test
+    @TestAuthor(githubId = {"quentingigon"})
+    public void theServerShouldGiveTheCorrectVersionNumber() throws IOException {
+        assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
+    }
+
+}
