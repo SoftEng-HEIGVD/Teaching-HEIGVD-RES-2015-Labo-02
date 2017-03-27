@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
  * implementation of the Roulette Protocol (version 2)
  *
  * @author Luca Sivillica
+ * @author Dany Tchente
  */
 public class RouletteV2Luca15Test {
 
