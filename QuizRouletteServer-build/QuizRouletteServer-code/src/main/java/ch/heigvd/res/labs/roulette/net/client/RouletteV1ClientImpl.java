@@ -26,18 +26,18 @@ import java.util.logging.Logger;
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
-    private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
     //create a client socket 
-   private Socket myClientSocket;
+   Socket myClientSocket;
     // we need to create a boolean initialise on false to specify that we are connected
-   private boolean connected = false;
+   boolean connected = false;
     //create a buffer reader
-   private BufferedReader bf;
+   BufferedReader bf;
     // create an print writer;
-   private PrintWriter pw;
+   PrintWriter pw;
     //create a list of student to load all students 
-   private List<Student> myStudentList = new ArrayList<>();
+   List<Student> myStudentList = new ArrayList<>();
 
     @Override
     public void connect(String server, int port) throws IOException {
