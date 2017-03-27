@@ -20,7 +20,7 @@ public class RouletteV2KevinmoreiradTest
     @Rule
     public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
 
-    @Ignore
+
     @Test
     @TestAuthor(githubId = "kevinmoreirad")
     public void serverHasToCountStudents() throws IOException
@@ -35,7 +35,7 @@ public class RouletteV2KevinmoreiradTest
 
     }
 
-    @Ignore
+
     @Test
     @TestAuthor(githubId = "kevinmoreirad")
     public void serverHasToClearCorrectly() throws IOException
@@ -50,7 +50,7 @@ public class RouletteV2KevinmoreiradTest
         clt.clearDataStore();
         assertEqals(0, clt.getNumberOfStudents());
     }
-    @Ignore
+
     @Test
     @TestAuthor(githubId = "kevinmoreirad")
     public void serverHasToGiveGoodVersion() throws IOException, IOException
