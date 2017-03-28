@@ -1,9 +1,22 @@
 package ch.heigvd.res.labs.roulette.net.server;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
+import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
+import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.ListCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class implements the Roulette protocol (version 2).
@@ -71,8 +84,8 @@ public class RouletteV2ClientHandler implements IClientHandler {
           break;
 
         case RouletteV2Protocol.CMD_LIST:
-          ListCommandResponse response = new ListCommandResponse(store.listStudents());
-          writer.println(JsonObjectMapper.toJson(response));
+          ListCommandResponse responseList = new ListCommandResponse(store.listStudents());
+          writer.println(JsonObjectMapper.toJson(responseList));
           writer.flush();
           break;
 
