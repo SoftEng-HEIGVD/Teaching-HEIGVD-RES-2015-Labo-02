@@ -23,37 +23,38 @@ import java.util.logging.Logger;
  * @author Olivier Liechti
  */
 public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRouletteV2Client {
-    
-    Socket clientSocket = super.getSocket();
-    BufferedReader is = super.getBufferedReader();
-    PrintWriter os = super.getPrintWriter();
+ 
+
+    public RouletteV2ClientImpl() {
+        super();
+    }
     
     @Override
     public void clearDataStore() throws IOException {
-        os.println(RouletteV2Protocol.CMD_CLEAR);
-        os.flush();
-        is.readLine();
+        getPrintWriter().println(RouletteV2Protocol.CMD_CLEAR);
+        getPrintWriter().flush();
+        getBufferedReader().readLine();
     }
 
     @Override
     public List<Student> listStudents() throws IOException {
-        os.println(RouletteV2Protocol.CMD_CLEAR);
-        os.flush();
+        getPrintWriter().println(RouletteV2Protocol.CMD_CLEAR);
+        getPrintWriter().flush();
         
-        ListCommandResponse res = JsonObjectMapper.parseJson(is.readLine(), ListCommandResponse.class);
+        ListCommandResponse res = JsonObjectMapper.parseJson(getBufferedReader().readLine(), ListCommandResponse.class);
         return res.getStudents();
     }
     
     @Override
     public void disconnect() throws IOException {
-        if (clientSocket.isConnected()) {
-            os.println(RouletteV1Protocol.CMD_BYE);
-            os.flush();
-            is.readLine();
+        if (getClientSocket().isConnected()) {
+            getPrintWriter().println(RouletteV1Protocol.CMD_BYE);
+            getPrintWriter().flush();
+            getBufferedReader().readLine();
 
-            clientSocket.close();
-            is.close();
-            os.close();
+            getClientSocket().close();
+            getBufferedReader().close();
+            getPrintWriter().close();
         } else {
             System.err.println("Can't disconnected (already disconnected)");
         }

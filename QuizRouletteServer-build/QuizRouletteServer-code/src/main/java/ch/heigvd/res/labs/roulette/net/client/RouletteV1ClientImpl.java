@@ -32,6 +32,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     private BufferedReader is = null;
     private PrintWriter os = null;
 
+    public Socket getClientSocket() {
+        return clientSocket;
+    }
     
     public Socket getSocket() {
         return clientSocket;
