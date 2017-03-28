@@ -26,20 +26,20 @@ public class RouletteV2BasileChatillonTest {
     public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
     
     @Test
-    @TestAuthor(githubId = "BasileChatillon")
+    @TestAuthor(githubId = {"BasileChatillon", "Rhod3"})
     public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
         assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
     }
     
     @Test
-    @TestAuthor(githubId = "BasileChatillon")
-    public void theServerShouldHaveCorrectDefalutPort() throws IOException {
+    @TestAuthor(githubId = {"BasileChatillon", "Rhod3"})
+    public void theServerShouldHaveCorrectDefaultPort() throws IOException {
         // test if it is the right version of the protocol
         assertEquals(RouletteV2Protocol.DEFAULT_PORT, roulettePair.getServer().getPort());
     }
     
     @Test
-    @TestAuthor(githubId = "BasileChatillon")
+    @TestAuthor(githubId = {"BasileChatillon", "Rhod3"})
     public void theServerShouldBeAbleToClearHisData() throws IOException {
         // getting the client
         IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
@@ -58,7 +58,7 @@ public class RouletteV2BasileChatillonTest {
     }
     
     @Test
-    @TestAuthor(githubId = "BasileChatillon")
+    @TestAuthor(githubId = {"BasileChatillon", "Rhod3"})
     public void theServerShouldBeAbleToReturnAListOfHisData() throws IOException {
         // creation of the list of student
         List<Student> tmp = new LinkedList<>();
@@ -77,7 +77,5 @@ public class RouletteV2BasileChatillonTest {
             //For each strudent, we compare their full name
             assertTrue(Answer.get(i).getFullname().equals(tmp.get(i).getFullname()));
         }
-        
     }
-    
 }
