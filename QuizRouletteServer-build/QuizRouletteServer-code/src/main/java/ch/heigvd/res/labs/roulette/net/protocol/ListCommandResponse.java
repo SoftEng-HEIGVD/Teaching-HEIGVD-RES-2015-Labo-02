@@ -7,8 +7,7 @@ import java.util.List;
 public class ListCommandResponse {
     private List<Student> students;
     
-    public ListCommandResponse(){
-    }
+
     
     public ListCommandResponse(List<Student> students){
         this.students = students;
