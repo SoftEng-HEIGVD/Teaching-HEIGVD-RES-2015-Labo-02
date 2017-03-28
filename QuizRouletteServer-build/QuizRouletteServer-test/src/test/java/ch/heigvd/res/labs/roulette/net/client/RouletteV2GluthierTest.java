@@ -18,7 +18,6 @@ import org.junit.Ignore;
  *
  * @author Olivier Liechti
  */
-@Ignore
 public class RouletteV2GluthierTest {
 
     @Rule

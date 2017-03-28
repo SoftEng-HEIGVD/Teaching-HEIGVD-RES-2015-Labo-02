@@ -22,4 +22,8 @@ public class ListCommandResponse {
     public ListCommandResponse(List<Student> students) {
         this.students = students;
     }
+    
+    public List<Student> getStudents() {
+        return students;
+    }
 }

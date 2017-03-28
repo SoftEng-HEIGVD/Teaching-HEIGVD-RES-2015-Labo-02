@@ -32,6 +32,19 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     private BufferedReader is = null;
     private PrintWriter os = null;
 
+    
+    public Socket getSocket() {
+        return clientSocket;
+    }
+    
+    public BufferedReader getBufferedReader() {
+        return is;
+    }
+    
+    public PrintWriter getPrintWriter() {
+        return os;
+    }
+    
     @Override
     public void connect(String server, int port) throws IOException {
         try {
