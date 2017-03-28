@@ -136,4 +136,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       return response.getProtocolVersion();
    }
 
+   protected PrintWriter out() {
+      return out;
+   }
+   
+   protected BufferedReader in() {
+      return in;
+   }
 }

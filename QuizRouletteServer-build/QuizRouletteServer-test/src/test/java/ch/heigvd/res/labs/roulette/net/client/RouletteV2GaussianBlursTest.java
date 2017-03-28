@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import org.junit.Ignore;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -19,6 +20,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Arnold von Bauer Gauss
  */
+@Ignore
 public class RouletteV2GaussianBlursTest {
 
     @Rule

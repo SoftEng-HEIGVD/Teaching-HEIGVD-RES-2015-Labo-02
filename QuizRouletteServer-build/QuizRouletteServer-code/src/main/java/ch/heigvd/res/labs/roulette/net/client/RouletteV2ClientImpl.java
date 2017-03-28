@@ -10,13 +10,17 @@ import java.util.List;
 /**
  * This class implements the client side of the protocol specification (version 2).
  *
- * @author Olivier Liechti
+ * @author Olivier Liecht, modified by Mathieu Monteverde
  */
 public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRouletteV2Client {
 
   @Override
   public void clearDataStore() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     
+     
+     
+     
+     
   }
 
   @Override
