@@ -26,9 +26,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
   // We create a Client Socket and its input and output to communicate with the server
-  private Socket clientSocket = null;
-  private BufferedReader br = null;
-  private PrintWriter pw = null;
+  // The vars are protected and not private because we need them in the RouletteV2ClientImpl.java file
+  protected Socket clientSocket = null;
+  protected BufferedReader br = null;
+  protected PrintWriter pw = null;
 
   @Override
   public void connect(String server, int port) throws IOException {
