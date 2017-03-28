@@ -1,9 +1,22 @@
 package ch.heigvd.res.labs.roulette.net.server;
 
+import ch.heigvd.res.labs.roulette.net.protocol.ListCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
+import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
+import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class implements the Roulette protocol (version 2).
@@ -17,9 +30,12 @@ public class RouletteV2ClientHandler implements IClientHandler {
 
   private final IStudentsStore store;
 
+  private int numberOfCommands;
+
 
   public RouletteV2ClientHandler(IStudentsStore store) {
     this.store = store;
+    numberOfCommands=0;
   }
 
 
@@ -35,6 +51,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
     boolean done = false;
     while (!done && ((command = reader.readLine()) != null)) {
       LOG.log(Level.INFO, "COMMAND: {0}", command);
+      numberOfCommands++;
       switch (command.toUpperCase()) {
         case RouletteV2Protocol.CMD_RANDOM:
           RandomCommandResponse rcResponse = new RandomCommandResponse();
@@ -50,8 +67,8 @@ public class RouletteV2ClientHandler implements IClientHandler {
           writer.println("Commands: " + Arrays.toString(RouletteV2Protocol.SUPPORTED_COMMANDS));
           break;
         case RouletteV2Protocol.CMD_INFO:
-          InfoCommandResponse response = new InfoCommandResponse(RouletteV2Protocol.VERSION, store.getNumberOfStudents());
-          writer.println(JsonObjectMapper.toJson(response));
+          InfoCommandResponse responseInfo = new InfoCommandResponse(RouletteV2Protocol.VERSION, store.getNumberOfStudents());
+          writer.println(JsonObjectMapper.toJson(responseInfo));
           writer.flush();
           break;
         case RouletteV2Protocol.CMD_LOAD:
@@ -71,8 +88,8 @@ public class RouletteV2ClientHandler implements IClientHandler {
           break;
 
         case RouletteV2Protocol.CMD_LIST:
-          ListCommandResponse response = new ListCommandResponse(store.listStudents());
-          writer.println(JsonObjectMapper.toJson(response));
+          ListCommandResponse responseList = new ListCommandResponse(store.listStudents());
+          writer.println(JsonObjectMapper.toJson(responseList));
           writer.flush();
           break;
 
