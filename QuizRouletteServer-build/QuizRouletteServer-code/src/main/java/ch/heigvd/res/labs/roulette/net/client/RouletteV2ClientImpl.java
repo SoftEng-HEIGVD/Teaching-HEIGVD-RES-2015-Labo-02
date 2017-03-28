@@ -17,17 +17,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class implements the client side of the protocol specification (version
- * 2).
+ * This class implements the client side of the protocol specification (version 2).
  *
  * @author Olivier Liechti
  */
 public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRouletteV2Client {
- 
-
-    public RouletteV2ClientImpl() {
-        super();
-    }
     
     @Override
     public void clearDataStore() throws IOException {
@@ -35,10 +29,10 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
         getPrintWriter().flush();
         getBufferedReader().readLine();
     }
-
+    
     @Override
     public List<Student> listStudents() throws IOException {
-        getPrintWriter().println(RouletteV2Protocol.CMD_CLEAR);
+        getPrintWriter().println(RouletteV2Protocol.CMD_LIST);
         getPrintWriter().flush();
         
         ListCommandResponse res = JsonObjectMapper.parseJson(getBufferedReader().readLine(), ListCommandResponse.class);
@@ -51,7 +45,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
             getPrintWriter().println(RouletteV1Protocol.CMD_BYE);
             getPrintWriter().flush();
             getBufferedReader().readLine();
-
+            
             getClientSocket().close();
             getBufferedReader().close();
             getPrintWriter().close();
@@ -59,5 +53,5 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
             System.err.println("Can't disconnected (already disconnected)");
         }
     }
-
+    
 }

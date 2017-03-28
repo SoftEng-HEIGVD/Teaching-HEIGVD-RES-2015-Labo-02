@@ -13,6 +13,11 @@ public class InfoCommandResponse {
   private int numberOfStudents;
 
   public InfoCommandResponse() {
+      /* TODO
+      numberOfStudents n'est pas forcement définit.
+      Et du coup, quand on passe dans ce constructeur et qu'on essaye getNumberOfStudents
+      et ben ca merde et ca fait un nullPointerException. 
+      */
   }
 
   public InfoCommandResponse(String protocolVersion, int numberOfStudents) {
