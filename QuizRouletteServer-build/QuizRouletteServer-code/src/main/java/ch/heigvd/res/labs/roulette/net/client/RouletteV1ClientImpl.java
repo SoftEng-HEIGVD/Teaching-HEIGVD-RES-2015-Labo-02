@@ -31,11 +31,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
    private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
-   private String readServerResponse() throws IOException {
+   protected String readServerResponse() throws IOException {
       return in.readLine();
    }
 
-   private void sendDataToServer(String data) {
+   protected void sendDataToServer(String data) {
       // write data (or command) to the server
       out.println(data);
       // Flush the writer to ensure it is immediatly sent
@@ -142,5 +142,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
    
    protected BufferedReader in() {
       return in;
+   }
+   
+   protected Socket socket() {
+      return socket;
    }
 }
