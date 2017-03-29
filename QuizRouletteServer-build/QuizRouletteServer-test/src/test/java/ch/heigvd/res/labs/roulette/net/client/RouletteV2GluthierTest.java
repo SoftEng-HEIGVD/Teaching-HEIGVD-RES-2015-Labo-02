@@ -1,5 +1,6 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
@@ -38,13 +39,23 @@ public class RouletteV2GluthierTest {
     @TestAuthor(githubId = "gluthier")
     public void theServerShouldHaveNoZeroStudentAfterLoad() throws IOException {
         IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
-        assertEquals(0, client.getNumberOfStudents()); // OK
+        assertEquals(0, client.getNumberOfStudents());
         client.loadStudent("sacha");
-        assertEquals(1, client.getNumberOfStudents()); // FAIL
-        /*
-        Exception in client handler: No serializer found for class ch.heigvd.res.labs.roulette.net.protocol.LoadCommandResponse 
-        and no properties discovered to create BeanSerializer (to avoid exception, disable SerializationFeature.FAIL_ON_EMPTY_BEANS) ) 
-         */
+        assertEquals(1, client.getNumberOfStudents());
+        client.loadStudent("sacha");
+        assertEquals(2, client.getNumberOfStudents());
+        client.loadStudent("sacha");
+        assertEquals(3, client.getNumberOfStudents());
+        client.loadStudent("sacha");
+        assertEquals(4, client.getNumberOfStudents());
+        client.loadStudent("sacha");
+        assertEquals(5, client.getNumberOfStudents());
+        client.loadStudent("sacha");
+        assertEquals(6, client.getNumberOfStudents());
+        client.loadStudent("sacha");
+        assertEquals(7, client.getNumberOfStudents());
+        client.loadStudent("sacha");
+        assertEquals(8, client.getNumberOfStudents());
     }
     
     @Test

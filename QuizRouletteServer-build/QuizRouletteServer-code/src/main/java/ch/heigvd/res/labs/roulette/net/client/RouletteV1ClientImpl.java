@@ -59,7 +59,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     
     @Override
     public void connect(String server, int port) throws IOException {
-        System.out.println("ch.heigvd.res.labs.roulette.net.client.RouletteV1ClientImpl.connect()");
         try {
             clientSocket = new Socket(server, port);
             is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -74,7 +73,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public void disconnect() throws IOException {
-        System.out.println("ch.heigvd.res.labs.roulette.net.client.RouletteV1ClientImpl.disconnect()");
         if (clientSocket.isConnected()) {
             os.println(RouletteV1Protocol.CMD_BYE);
             os.flush();
@@ -98,20 +96,15 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     @Override
     public void loadStudent(String fullname) throws IOException {
-        System.out.println("ch.heigvd.res.labs.roulette.net.client.RouletteV1ClientImpl.loadStudent("+fullname+")");
-        
-        System.out.println(" > " + RouletteV1Protocol.CMD_LOAD);
         os.println(RouletteV1Protocol.CMD_LOAD);
         os.flush();
-        System.out.println(" < " + is.readLine());
+        is.readLine();
         
-        System.out.println(" > " + fullname);
         os.println(fullname);
         
-        System.out.println(" > " + RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
         os.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
         os.flush();
-        System.out.println(" < " + is.readLine()); // NULL
+        is.readLine();
     }
 
     @Override

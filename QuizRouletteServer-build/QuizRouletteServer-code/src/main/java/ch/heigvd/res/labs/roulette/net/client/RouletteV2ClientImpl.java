@@ -35,10 +35,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
         getPrintWriter().println(RouletteV2Protocol.CMD_LIST);
         getPrintWriter().flush();
         
-        String tmp = getBufferedReader().readLine();
-        System.out.println(tmp); // return null
-        
-        ListCommandResponse res = JsonObjectMapper.parseJson(tmp, ListCommandResponse.class);
+        ListCommandResponse res = JsonObjectMapper.parseJson(getBufferedReader().readLine(), ListCommandResponse.class);
         return res.getStudents();
     }
         
