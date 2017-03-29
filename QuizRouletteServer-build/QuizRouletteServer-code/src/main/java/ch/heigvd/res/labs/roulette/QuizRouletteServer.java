@@ -1,6 +1,5 @@
 package ch.heigvd.res.labs.roulette;
 
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
 import java.io.IOException;

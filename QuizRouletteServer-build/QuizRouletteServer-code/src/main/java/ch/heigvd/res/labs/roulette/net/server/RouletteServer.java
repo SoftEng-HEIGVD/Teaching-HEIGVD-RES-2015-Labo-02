@@ -2,7 +2,6 @@ package ch.heigvd.res.labs.roulette.net.server;
 
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.StudentsStoreImpl;
-import ch.heigvd.res.labs.roulette.net.client.IRouletteV1Client;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import java.io.IOException;

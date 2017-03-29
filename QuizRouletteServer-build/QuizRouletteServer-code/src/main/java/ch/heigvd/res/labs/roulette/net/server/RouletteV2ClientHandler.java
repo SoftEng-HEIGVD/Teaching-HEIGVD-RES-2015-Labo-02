@@ -9,7 +9,6 @@ import ch.heigvd.res.labs.roulette.net.protocol.ListCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.LoadCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
-import static ch.heigvd.res.labs.roulette.net.server.RouletteV1ClientHandler.LOG;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
