@@ -5,14 +5,36 @@
  */
 package ch.heigvd.res.labs.roulette.net.protocol;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  *
- * @author Gabriel
+ * @author Gabriel Luthier
+ * @author Maxime Guillod
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoadCommandResponse {
     
     private String status;
     private int numberOfNewStudents;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getNumberOfNewStudents() {
+        return numberOfNewStudents;
+    }
+
+    public void setNumberOfNewStudents(int numberOfNewStudents) {
+        this.numberOfNewStudents = numberOfNewStudents;
+    }
+    
+    
     
     public LoadCommandResponse() {
     }

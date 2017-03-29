@@ -26,10 +26,14 @@ public class EphemeralClientServerPair extends ExternalResource {
         System.out.println("ch.heigvd.res.labs.roulette.net.client.EphemeralClientServerPair.before()");
         server = new RouletteServer(protocolVersion);
         server.startServer();
-        if (RouletteV1Protocol.VERSION.equals(protocolVersion)) {
-            client = new RouletteV1ClientImpl();
-        } else {
-            client = new RouletteV2ClientImpl();
+        
+        switch(protocolVersion) {
+            case "1.0":
+                client = new RouletteV1ClientImpl();
+                break;
+            case "2.0":
+                client = new RouletteV2ClientImpl();
+                break;
         }
         client.connect("localhost", server.getPort());
     }

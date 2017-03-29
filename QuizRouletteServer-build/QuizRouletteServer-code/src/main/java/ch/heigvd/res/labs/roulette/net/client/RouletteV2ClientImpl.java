@@ -35,23 +35,11 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
         getPrintWriter().println(RouletteV2Protocol.CMD_LIST);
         getPrintWriter().flush();
         
-        ListCommandResponse res = JsonObjectMapper.parseJson(getBufferedReader().readLine(), ListCommandResponse.class);
+        String tmp = getBufferedReader().readLine();
+        System.out.println(tmp); // return null
+        
+        ListCommandResponse res = JsonObjectMapper.parseJson(tmp, ListCommandResponse.class);
         return res.getStudents();
     }
-    
-    @Override
-    public void disconnect() throws IOException {
-        if (getClientSocket().isConnected()) {
-            getPrintWriter().println(RouletteV1Protocol.CMD_BYE);
-            getPrintWriter().flush();
-            getBufferedReader().readLine();
-            
-            getClientSocket().close();
-            getBufferedReader().close();
-            getPrintWriter().close();
-        } else {
-            System.err.println("Can't disconnected (already disconnected)");
-        }
-    }
-    
+        
 }
