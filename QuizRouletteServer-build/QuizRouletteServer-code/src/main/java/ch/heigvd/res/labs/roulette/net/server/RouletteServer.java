@@ -2,6 +2,7 @@ package ch.heigvd.res.labs.roulette.net.server;
 
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.StudentsStoreImpl;
+import ch.heigvd.res.labs.roulette.net.client.IRouletteV1Client;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import java.io.IOException;
@@ -81,13 +82,23 @@ public class RouletteServer {
      * @param protocolVersion
    */
   public RouletteServer(String protocolVersion) {
-    this.listenPort = 2613;
-    this.protocolVersion = protocolVersion;
+      this.listenPort = -1 ; 
+      switch(protocolVersion) {
+          case "1.0":
+              this.listenPort = RouletteV1Protocol.DEFAULT_PORT;
+              break;
+          case "2.0":
+              this.listenPort = RouletteV2Protocol.DEFAULT_PORT;
+              break;
+          default:
+              System.err.println("Version unknow");
+      }
+      this.protocolVersion = protocolVersion;
   }
 
   public void startServer() throws IOException {
     if (serverSocket == null || serverSocket.isBound() == false) {
-      if (listenPort == 2613) {
+      if (listenPort != -1) {
         bindOnKnownPort(listenPort);
       } else {
         bindOnEphemeralPort();
