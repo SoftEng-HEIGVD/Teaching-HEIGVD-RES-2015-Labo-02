@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import org.junit.Ignore;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -33,6 +34,7 @@ public class RouletteV2GaussianBlursTest {
         assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
     }
 
+    @Ignore
     @Test
     @TestAuthor(githubId = "gaussianblurs")
     public void theServerShouldListenToTheCorrectPort() {
@@ -50,6 +52,7 @@ public class RouletteV2GaussianBlursTest {
         assertEquals(0, client.getNumberOfStudents());
     }
 
+    @Ignore
     @Test
     @TestAuthor(githubId = "gaussianblurs")
     public void theServerShouldListStudents() throws IOException {

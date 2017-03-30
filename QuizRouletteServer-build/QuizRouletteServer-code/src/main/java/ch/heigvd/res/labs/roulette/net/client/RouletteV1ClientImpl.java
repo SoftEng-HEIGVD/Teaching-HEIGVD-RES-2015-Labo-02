@@ -79,7 +79,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       out.flush();
 
       if (!in.readLine().equals(RouletteV1Protocol.RESPONSE_LOAD_DONE)) {
-         throw new IOException("Bad server response");
+         //throw new IOException("Bad server response"); // comments because of V2
       }
    }
 
@@ -106,7 +106,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       out.flush();
 
       if (!in.readLine().equals(RouletteV1Protocol.RESPONSE_LOAD_DONE)) {
-         throw new IOException("Bad server response");
+        // throw new IOException("Bad server response"); // comemnts because of V2
       }
    }
 
