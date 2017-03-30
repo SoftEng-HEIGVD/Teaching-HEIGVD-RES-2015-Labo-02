@@ -29,7 +29,7 @@ public class ByeCommandResponse {
         return numberOfCommands;
     }
 
-    public void setNbCommands(int numberOfCommands) {
+    public void setNumberOfCommands(int numberOfCommands) {
         this.numberOfCommands = numberOfCommands;
     }
 }
