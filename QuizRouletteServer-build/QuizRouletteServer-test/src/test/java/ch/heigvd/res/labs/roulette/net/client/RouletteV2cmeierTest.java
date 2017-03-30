@@ -1,7 +1,10 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.QuizRouletteServer;
 import ch.heigvd.res.labs.roulette.data.Student;
+import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
+import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
 import ch.heigvd.schoolpulse.TestAuthor;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -34,8 +37,11 @@ public class RouletteV2cmeierTest {
   @Test
   @TestAuthor(githubId = {"c-meier", "danpa32"})
   public void theServerShouldHaveTheRightPort() throws IOException {
-    int port = roulettePair.getServer().getPort();
-    assertEquals(2613, port);
+    RouletteServer server = new RouletteServer(RouletteV2Protocol.DEFAULT_PORT, RouletteV2Protocol.VERSION);
+
+    server.startServer();
+
+    assertEquals(2613, server.getPort());
   }
 
   @Test
