@@ -31,7 +31,6 @@ public class RouletteV2Grem25Test {
    @Rule
    public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
 
-   @Ignore
    @Test
    @TestAuthor(githubId = "Grem25")
    public void theStudentsListFromServerMustMatch() throws IOException, Throwable {
@@ -49,8 +48,7 @@ public class RouletteV2Grem25Test {
          assertTrue(test.contains(s));
       }
    }
-
-   @Ignore
+   
    @Test
    @TestAuthor(githubId = "Grem25")
    public void studentsMustBeEmptyAfterClear() throws IOException, Throwable {
@@ -64,7 +62,6 @@ public class RouletteV2Grem25Test {
 
    }
 
-   @Ignore
    @Test
    @TestAuthor(githubId = "Grem25")
    public void theResponseAfterByeIsCorrect() throws IOException, Throwable {
@@ -82,7 +79,6 @@ public class RouletteV2Grem25Test {
 
    }
 
-   @Ignore
    @Test
    @TestAuthor(githubId = "CoolPolishGuy")
    public void correctNumberStudentsInStore() throws IOException {
@@ -96,7 +92,6 @@ public class RouletteV2Grem25Test {
 
    }
 
-   @Ignore
    @Test
    @TestAuthor(githubId = "CoolPolishGuy")
    public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
