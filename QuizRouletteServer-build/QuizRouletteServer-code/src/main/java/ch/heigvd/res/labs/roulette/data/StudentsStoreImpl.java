@@ -52,14 +52,14 @@ public class StudentsStoreImpl implements IStudentsStore {
   }
 
   @Override
-  public void importData(BufferedReader reader) throws IOException {
+  public int importData(BufferedReader reader) throws IOException {
     LOG.log(Level.INFO, "Importing data from input reader of type {0}", reader.getClass());
     List<Student> studentsToAdd = new ArrayList<>();
     String record;
     boolean endReached = false;
     while (!endReached && (record = reader.readLine()) != null) {
       if (record.equalsIgnoreCase(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER)) {
-        LOG.log(Level.INFO, "End of stream reached. New students have been added to the store. How many? We'll tell you when the lab is complete...");
+        LOG.log(Level.INFO, "End of stream reached. New students have been added to the store. ");
         endReached = true;
       } else {
         LOG.log(Level.INFO, "Adding student {0} to the store.", record);
@@ -70,6 +70,8 @@ public class StudentsStoreImpl implements IStudentsStore {
       students.addAll(studentsToAdd);
     }
     LOG.log(Level.INFO, "There are now {0} students in the store.", getNumberOfStudents());
+    
+    return studentsToAdd.size();
   }
 
 }
