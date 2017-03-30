@@ -99,6 +99,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
 
         // Read DATA LOADED message
+        endLoad();
+    }
+
+    protected void endLoad() throws IOException {
+        // Read DATA LOADED message
         is.readLine();
     }
 
@@ -125,7 +130,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
 
         // Read DATA LOADED message
-        is.readLine();
+        endLoad();
     }
 
     /**
