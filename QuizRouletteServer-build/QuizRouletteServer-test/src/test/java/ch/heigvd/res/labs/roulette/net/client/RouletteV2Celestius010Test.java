@@ -1,10 +1,8 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
-import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
