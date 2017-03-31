@@ -70,23 +70,23 @@ public class RouletteV2ClientHandler implements IClientHandler
                writer.flush();
                break;
 
-            case RouletteV1Protocol.CMD_LOAD: //TODO relecture, semble marcher
+            case RouletteV1Protocol.CMD_LOAD:
                writer.println(RouletteV1Protocol.RESPONSE_LOAD_START);
                writer.flush();
                store.importData(reader);
-               LoadCommandResponse reply = new LoadCommandResponse("success", store.getNumberOfStudents());
+               LoadCommandResponse reply = new LoadCommandResponse(RouletteV2Protocol.SUCCESS, store.getNumberOfStudents());
                writer.println(JsonObjectMapper.toJson(reply));
                writer.flush();
                break;
 
-            case RouletteV1Protocol.CMD_BYE: //TODO relecture, semble marcher
-               ByeCommandResponse bye = new ByeCommandResponse("success", numberOfCommands);
+            case RouletteV1Protocol.CMD_BYE:
+               ByeCommandResponse bye = new ByeCommandResponse(RouletteV2Protocol.SUCCESS, numberOfCommands);
                writer.println(JsonObjectMapper.toJson(bye));
                writer.flush();
                done = true;
                break;
 
-            case RouletteV2Protocol.CMD_LIST: //TODO relecture, semble marcher
+            case RouletteV2Protocol.CMD_LIST:
                StudentsList list = new StudentsList();
                list.addAll(store.listStudents());
 
@@ -94,7 +94,7 @@ public class RouletteV2ClientHandler implements IClientHandler
                writer.flush();
                break;
 
-            case RouletteV2Protocol.CMD_CLEAR: //TODO relecture, semble marcher
+            case RouletteV2Protocol.CMD_CLEAR:
                store.clear();
                writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
                writer.flush();
