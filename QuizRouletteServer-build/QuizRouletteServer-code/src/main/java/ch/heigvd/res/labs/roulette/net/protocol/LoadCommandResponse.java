@@ -1,7 +1,12 @@
 package ch.heigvd.res.labs.roulette.net.protocol;
 
 /**
- * Created by matthieu on 3/25/17.
+ * This class is used to serialize/deserialize the response sent by the server
+ * when processing the "LOAD" command defined in the v2 protocol specification. 
+ * The JsonObjectMapper utility class can use this class.
+ *
+ * @author Matthieu Chatelan
+ * @author Lara Chauffoureaux
  */
 public class LoadCommandResponse
 {

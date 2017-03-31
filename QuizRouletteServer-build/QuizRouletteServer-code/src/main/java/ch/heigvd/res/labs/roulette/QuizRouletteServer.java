@@ -14,6 +14,8 @@ import java.util.logging.Logger;
  * in the protocol).
  *
  * @author Olivier Liechti
+ * @author Matthieu Chatelan
+ * @author Lara Chauffoureaux
  */
 public class QuizRouletteServer
 {
@@ -28,7 +30,8 @@ public class QuizRouletteServer
    public static void main(String[] args) throws IOException
    {
       System.setProperty("java.util.logging.SimpleFormatter.format", "%5$s %n");
-      // TODO Change the version here to be RouletteV2Protocol.VERSION
+      
+      // Don't forget to change the protocol version here if needed
       RouletteServer server = new RouletteServer(RouletteV2Protocol.DEFAULT_PORT, RouletteV2Protocol.VERSION);
       try
       {

@@ -21,6 +21,8 @@ import java.util.logging.Logger;
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client
 {
+   // This previously private fields are now protected to allow the specification
+   // "RouletteV2ClientImpl" to use this from inheritance
    protected Socket socket = null;
    protected BufferedReader reader;
    protected PrintWriter writer;
@@ -90,7 +92,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
       writer.println("ENDOFDATA");
       writer.flush();
 
-      // Trash the server's reply (useless for us)
+      // Trash the server's reply
+      // We choose to not use it in our client implementation
       reader.readLine();
    }
 
@@ -120,6 +123,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
       writer.println("ENDOFDATA");
       writer.flush();
 
+      // Trash the reply from the server
+      // We choose to not use it in our client implementation
       reader.readLine();
    }
 
