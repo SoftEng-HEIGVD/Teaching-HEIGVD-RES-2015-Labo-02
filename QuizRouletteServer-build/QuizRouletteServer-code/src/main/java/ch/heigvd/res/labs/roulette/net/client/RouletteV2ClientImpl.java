@@ -68,6 +68,8 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
         byeCommandResponse = JsonObjectMapper.parseJson(
                 readLine(), ByeCommandResponse.class);
 
+        System.out.println(lastStringResponse);
+        
         //Close everything 
         outputWriter.close();
         inputReader.close();

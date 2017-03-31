@@ -5,6 +5,7 @@ import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,9 +18,13 @@ import org.junit.rules.ExpectedException;
  *
  * These tests are partly based on the tests made for the V1 protocol
  *
- * As these tests will be used by every student, we could not test things
- * that are not precisely written in the specification (for exemple, do we have
- * to use a "ByeCommandResponse" ?)
+ * As these tests will be used by every student, we could not test things that
+ * are not precisely written in the specification (for exemple, do we have to
+ * use a "ByeCommandResponse" ?)
+ *
+ * These tests have been modified to test our new implementation of the server
+ *
+ * @version 0.2
  * @author Remi, Aurelie
  */
 public class RouletteV2remij1Test {
@@ -123,21 +128,67 @@ public class RouletteV2remij1Test {
         assertEquals(2, client.getNumberOfStudents());
         client.loadStudent("fabienne");
         assertEquals(3, client.getNumberOfStudents());
-        
+
         List<Student> students = client.listStudents();
         assertEquals("sacha", students.get(0).getFullname());
         assertEquals("olivier", students.get(1).getFullname());
         assertEquals("fabienne", students.get(2).getFullname());
     }
-    
+
     @Test
     @TestAuthor(githubId = {"remij1", "aurelielevy"})
-    public void theDefaultPortShouldBe2613(){
+    public void theDefaultPortShouldBe2613() {
         assertEquals(RouletteV2Protocol.DEFAULT_PORT, 2613);
-        
+
         /* Note : the port really used by the server could not be tests,
          * because it is possible that it's already used.
-        */
+         */
     }
 
+    @Test
+    @TestAuthor(githubId = {"remij1", "aurelielevy"})
+    public void theServerShouldReturnAnExceptionForTheNumberOfCommandsDone() throws IOException, Exception {
+        RouletteV2ClientImpl client = (RouletteV2ClientImpl) roulettePair.getClient();
+
+        client.loadStudent("Marie");
+        client.listStudents();
+
+        exception.expect(Exception.class);
+        client.getNumberOfCommands();
+    }
+
+    @Test
+    @TestAuthor(githubId = {"remij1", "aurelielevy"})
+    public void theServerShouldReturnTheNumberOfCommand() throws IOException, Exception {
+        RouletteV2ClientImpl client = (RouletteV2ClientImpl) roulettePair.getClient();
+
+        client.loadStudent("Marie");
+        client.listStudents();
+
+        client.disconnect();
+
+        int nbOfCommands = client.getNumberOfCommands();
+        client.connect("localhost", roulettePair.getServer().getPort());
+        
+        //Disconnecting is a command
+        assertEquals(3, nbOfCommands);
+    }
+
+    @Test
+    @TestAuthor(githubId = {"remij1", "aurelielevy"})
+    public void theServerShouldReturnTheNumberOfAddedStudents() throws IOException {
+        RouletteV2ClientImpl client = (RouletteV2ClientImpl) roulettePair.getClient();
+
+        client.loadStudent("Marie");
+        assertEquals(1, client.getNumberOfStudentsAdded());
+        
+        LinkedList<Student> students = new LinkedList<>();
+        students.add(new Student("Marie"));
+        students.add(new Student("Jacques"));
+        
+        client.loadStudents(students);
+        assertEquals(2, client.getNumberOfStudentsAdded());
+    }
+    
+    
 }
