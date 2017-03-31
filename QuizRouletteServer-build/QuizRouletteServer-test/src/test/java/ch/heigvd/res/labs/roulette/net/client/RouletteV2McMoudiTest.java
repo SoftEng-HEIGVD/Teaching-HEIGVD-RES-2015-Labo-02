@@ -2,6 +2,7 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
+import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
 import ch.heigvd.schoolpulse.TestAuthor;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -37,7 +38,9 @@ public class RouletteV2McMoudiTest {
   @Test
   @TestAuthor(githubId = "McMoudi")
   public void theServerShouldListenToTheProperPort() throws IOException {
-    assertEquals(roulettePair.getServer().getPort(), 2613); //FIXME no static port for v2 yet in RouletteV2Protocol
+    RouletteServer rs = new RouletteServer(2613,RouletteV2Protocol.VERSION);
+    rs.startServer();
+    assertEquals(rs.getPort(), 2613); //FIXME no static port for v2 yet in RouletteV2Protocol
   }
 
   @Test
@@ -50,7 +53,7 @@ public class RouletteV2McMoudiTest {
   @Test
   @TestAuthor(githubId = "McMoudi")
   public void theClientShouldBeAbleToConnect() throws IOException {
-    IRouletteV2Client c = (IRouletteV2Client) roulettePair.getClient();
+    IRouletteV2Client c = new RouletteV2ClientImpl();
     assertFalse(c.isConnected());
     c.connect("localhost",roulettePair.getServer().getPort());
     assertTrue(c.isConnected());
