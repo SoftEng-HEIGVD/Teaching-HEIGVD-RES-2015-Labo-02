@@ -32,6 +32,18 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     protected Socket socket;
     protected PrintWriter outputWriter;
     protected BufferedReader inputReader;
+    
+    //Used to keep a trace of the last line recieved from the server
+    protected String lastStringResponse;
+    
+    /* 
+     * Using this instead of the readLine() method of inputReader is usefull to
+     * to keep a trace of the last String received.
+     */
+    protected String readLine() throws IOException{
+        this.lastStringResponse = inputReader.readLine();
+        return lastStringResponse;
+    }
 
     /**
      * Establishes a connection with the server, given its IP address or DNS
@@ -51,7 +63,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
                 socket.getInputStream(), Charset.forName("UTF-8")));
 
         //Ignore the first line received from the server
-        inputReader.readLine();
+        readLine();
     }
 
     /**
@@ -102,8 +114,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         outputWriter.flush();
 
         //Ignore server's informations 
-        inputReader.readLine(); //Info
-        inputReader.readLine(); //Load done
+        readLine(); //Info
+        readLine(); //Load done
     }
 
     /**
@@ -124,8 +136,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         outputWriter.flush();
 
         //Ignore server's informations 
-        inputReader.readLine(); //Info
-        inputReader.readLine(); //Load done        
+        readLine(); //Info
+        readLine(); //Load done        
     }
 
     /**
@@ -143,7 +155,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
         //Wait and parse the response
         RandomCommandResponse response = JsonObjectMapper.parseJson(
-                inputReader.readLine(), RandomCommandResponse.class);
+                readLine(), RandomCommandResponse.class);
 
         //If the error is not empty, an error has occured
         if (!response.getError().isEmpty()) {
@@ -168,7 +180,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
         //Wait and parse the response
         InfoCommandResponse response = JsonObjectMapper.parseJson(
-                inputReader.readLine(), InfoCommandResponse.class);
+                readLine(), InfoCommandResponse.class);
 
         //Return the number of students
         return response.getNumberOfStudents();
@@ -188,7 +200,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
         //Wait and parse the response
         InfoCommandResponse response
-                = JsonObjectMapper.parseJson(inputReader.readLine(), InfoCommandResponse.class);
+                = JsonObjectMapper.parseJson(readLine(), InfoCommandResponse.class);
 
         //Return the protocol version
         return response.getProtocolVersion();
