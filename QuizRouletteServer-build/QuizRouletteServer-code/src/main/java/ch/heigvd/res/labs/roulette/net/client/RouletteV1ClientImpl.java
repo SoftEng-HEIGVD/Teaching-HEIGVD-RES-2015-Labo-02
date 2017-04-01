@@ -5,6 +5,7 @@ import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -22,8 +23,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
   private Socket socket;
-  private BufferedReader responseReader;
-  private PrintWriter requestWriter;
+  protected BufferedReader responseReader;
+  protected PrintWriter requestWriter;
 
   public RouletteV1ClientImpl() {
       socket = new Socket();
@@ -69,14 +70,14 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
       LOG.info("Loading student...");
 
-      requestWriter.write("LOAD\n");
+      requestWriter.write(RouletteV1Protocol.CMD_LOAD + System.lineSeparator());
       requestWriter.flush();
 
       responseReader.readLine();
 
       requestWriter.write(fullname+"\n");
 
-      requestWriter.write("ENDOFDATA\n");
+      requestWriter.write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER + System.lineSeparator());
       requestWriter.flush();
 
       responseReader.readLine();
@@ -86,14 +87,15 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   public void loadStudents(List<Student> students) throws IOException {
 
       LOG.info("Loading students...");
-      requestWriter.write("LOAD\n");
+      requestWriter.write(RouletteV1Protocol.CMD_LOAD + System.lineSeparator());
+      requestWriter.flush();
 
       responseReader.readLine();
 
       for(Student student:students)
           requestWriter.write(student.getFullname()+"\n");
 
-      requestWriter.write("ENDOFDATA\n");
+      requestWriter.write(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER + System.lineSeparator());
       requestWriter.flush();
 
       responseReader.readLine();
@@ -106,7 +108,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       LOG.info("Picking random student...");
       String response;
 
-      requestWriter.write("RANDOM\n");
+      requestWriter.write(RouletteV1Protocol.CMD_RANDOM + System.lineSeparator());
       requestWriter.flush();
 
       response = responseReader.readLine();
@@ -126,7 +128,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
       String response;
 
-      requestWriter.write("INFO\n");
+      requestWriter.write(RouletteV1Protocol.CMD_INFO + System.lineSeparator()P);
       requestWriter.flush();
 
       response = responseReader.readLine();
@@ -140,7 +142,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
       String response;
 
-      requestWriter.write("INFO\n");
+      requestWriter.write(RouletteV1Protocol.CMD_INFO + System.lineSeparator());
       requestWriter.flush();
 
       response = responseReader.readLine();
