@@ -6,6 +6,8 @@ import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
+
+import javax.sound.sampled.Line;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,44 +27,80 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
+  private Socket clientSocket;
+
+  protected BufferedReader reader;
+  protected PrintWriter writer;
+
   @Override
   public void connect(String server, int port) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    clientSocket = new Socket(server, port);
+    reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+    reader.readLine();
   }
 
   @Override
   public void disconnect() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    writer.flush();
+    clientSocket.close();
   }
 
   @Override
   public boolean isConnected() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return clientSocket != null && !clientSocket.isClosed();
   }
 
   @Override
   public void loadStudent(String fullname) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    writer.println(RouletteV1Protocol.CMD_LOAD);
+    writer.println(fullname);
+    writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+    writer.flush();
+    reader.readLine();
+    reader.readLine();
   }
 
   @Override
   public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    writer.println(RouletteV1Protocol.CMD_LOAD);
+    for(Student student : students)
+      writer.println(student.getFullname());
+    writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+    writer.flush();
+    reader.readLine();
+    reader.readLine();
   }
 
   @Override
   public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    writer.println(RouletteV1Protocol.CMD_RANDOM);
+    writer.flush();
+    String line = reader.readLine();
+    RandomCommandResponse response = JsonObjectMapper.parseJson(line, RandomCommandResponse.class);
+    String error = response.getError();
+    if(error != null)
+      throw new EmptyStoreException();
+    String fullname = response.getFullname();
+    return new Student(fullname);
   }
 
   @Override
   public int getNumberOfStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    writer.println(RouletteV1Protocol.CMD_INFO);
+    writer.flush();
+    String line = reader.readLine();
+    InfoCommandResponse response = JsonObjectMapper.parseJson(line, InfoCommandResponse.class);
+    return response.getNumberOfStudents();
   }
 
   @Override
   public String getProtocolVersion() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    writer.println(RouletteV1Protocol.CMD_INFO);
+    writer.flush();
+    String line = reader.readLine();
+    InfoCommandResponse response = JsonObjectMapper.parseJson(line, InfoCommandResponse.class);
+    return response.getProtocolVersion();
   }
 
 
