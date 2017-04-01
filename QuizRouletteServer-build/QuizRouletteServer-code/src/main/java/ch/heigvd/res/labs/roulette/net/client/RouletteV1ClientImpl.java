@@ -10,6 +10,7 @@ import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -42,10 +43,18 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     }
 
     @Override
-    public void disconnect() throws IOException {
-        reader.close();
-        writer.close();
-        socket.close();
+    public void disconnect() {
+        try {
+            reader.close();
+            writer.close();
+            socket.close();
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, null, e);
+        }
+
+        reader = null;
+        writer = null;
+        socket = null;
 
         LOG.info("Disconnected from server.");
     }
