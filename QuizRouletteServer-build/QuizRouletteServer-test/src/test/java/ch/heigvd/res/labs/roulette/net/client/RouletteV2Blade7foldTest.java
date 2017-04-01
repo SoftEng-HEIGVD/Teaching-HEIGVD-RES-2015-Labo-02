@@ -7,26 +7,18 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.data.StudentsList;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
 import java.io.IOException;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.rules.ExpectedException;
 
 /**
  *
  * @author Nathan
  */
-@Ignore
 public class RouletteV2Blade7foldTest {
     
     @Rule
@@ -41,10 +33,12 @@ public class RouletteV2Blade7foldTest {
     public void theMethodShouldClearCorrectlyTheStudentsInTheServer() throws IOException {
         System.out.println("Clear Data Store");
         IRouletteV2Client instance = (IRouletteV2Client) roulettePair2.getClient();
+        
         instance.loadStudent("JeSaisPas");
         instance.loadStudent("QuelNom");
         instance.loadStudent("MettreIci");
         instance.clearDataStore();
+        
         List<Student> result = instance.listStudents();
         assertTrue(result.isEmpty());
     }
@@ -58,6 +52,7 @@ public class RouletteV2Blade7foldTest {
     public void theServerShouldReturnTheCorrectListOfStudents() throws IOException {
         System.out.println("List Students");
         IRouletteV2Client instance = (IRouletteV2Client) roulettePair2.getClient();
+        
         StudentsList sl = new StudentsList();
         List<Student> expResult = sl.getStudents();
         List<Student> result = instance.listStudents();
@@ -83,6 +78,7 @@ public class RouletteV2Blade7foldTest {
     @TestAuthor(githubId = "Blade7fold")
     public void theServerShouldReturnTheCorrectNumberOFStudents() throws IOException {
         IRouletteV2Client usingINFO = (IRouletteV2Client) roulettePair2.getClient();
+        
         int nbOfStudents = roulettePair2.getClient().getNumberOfStudents();
         int result = usingINFO.getNumberOfStudents();
         assertEquals(nbOfStudents, result);
