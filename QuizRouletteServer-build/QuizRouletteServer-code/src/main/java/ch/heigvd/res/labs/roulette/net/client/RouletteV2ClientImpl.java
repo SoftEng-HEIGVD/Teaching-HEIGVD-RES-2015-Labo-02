@@ -41,8 +41,6 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
   }
 
   protected void endLoad() throws IOException {
-    // Read DATA LOADED message
-    super.endLoad();
     LoadCommandResponse lcr = JsonObjectMapper.parseJson(is.readLine(), LoadCommandResponse.class);
     if(lcr.getStatus().equalsIgnoreCase("success")) {
       LOG.log(Level.INFO, "Added successfully 0 students");
