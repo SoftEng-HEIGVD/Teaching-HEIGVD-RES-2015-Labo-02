@@ -78,18 +78,29 @@ public class RouletteServer {
   /**
    * Constructor used to create a server that will accept connections on an
    * ephemeral port
+     * @param protocolVersion
    */
   public RouletteServer(String protocolVersion) {
-    this.listenPort = -1;
-    this.protocolVersion = protocolVersion;
+      this.listenPort = -1 ; 
+      switch(protocolVersion) {
+          case "1.0":
+              this.listenPort = RouletteV1Protocol.DEFAULT_PORT;
+              break;
+          case "2.0":
+              this.listenPort = RouletteV2Protocol.DEFAULT_PORT;
+              break;
+          default:
+              System.err.println("Version unknow");
+      }
+      this.protocolVersion = protocolVersion;
   }
 
   public void startServer() throws IOException {
     if (serverSocket == null || serverSocket.isBound() == false) {
-      if (listenPort == -1) {
-        bindOnEphemeralPort();
-      } else {
+      if (listenPort != -1) {
         bindOnKnownPort(listenPort);
+      } else {
+        bindOnEphemeralPort();
       }
     }
 
