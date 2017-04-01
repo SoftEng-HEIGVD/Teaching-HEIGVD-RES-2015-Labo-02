@@ -55,13 +55,13 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
     /**
      * closing of socket in V2 : this time we expect an answer
-     * TODO : refactor with V1, because the processing dosen't change, only the answer.
+     * TODO : refactor with V1, because the processing doesn't change, only the answer.
      *
      * @throws IOException
      */
     @Override
     public void disconnect() throws IOException {
-        // "asking" to disconect
+        // "asking" to disconnect
         toServer.println(RouletteV2Protocol.CMD_BYE);
         toServer.flush();
 
