@@ -24,7 +24,7 @@ public class RouletteV2ClientHandler implements IClientHandler
    final static Logger LOG = Logger.getLogger(RouletteV2ClientHandler.class.getName());
 
    private final IStudentsStore store;
-   private int numberOfCommands = 0; // Used to count the number of commands
+   private int numberOfCommands = 0;               // Counter used to count the number of commands
 
    public RouletteV2ClientHandler(IStudentsStore store)
    {
@@ -44,7 +44,7 @@ public class RouletteV2ClientHandler implements IClientHandler
       boolean done = false;
       while (!done && ((command = reader.readLine()) != null))
       {
-         // Increment for each line considered as a command (thus not student seizure) 
+         // Increment the counter when a command is entered (not during the load process)
          numberOfCommands++;
 
          LOG.log(Level.INFO, "COMMAND: {0}", command);
@@ -77,15 +77,15 @@ public class RouletteV2ClientHandler implements IClientHandler
                writer.println(RouletteV1Protocol.RESPONSE_LOAD_START);
                writer.flush();
                store.importData(reader);
-               
-               // Creation /Jsonification of a LoadCommandResponse object before sending it
+
+               // Creation and rendering a Json of a LoadCommandResponse object before sending it
                LoadCommandResponse reply = new LoadCommandResponse(RouletteV2Protocol.SUCCESS, store.getNumberOfStudents());
                writer.println(JsonObjectMapper.toJson(reply));
                writer.flush();
                break;
 
             case RouletteV1Protocol.CMD_BYE: // Modified since v1
-               // Creation / Jsonification of a ByeCommandResponse object before sending it
+               // Creation and rendering a Json of a ByeCommandResponse object before sending it
                ByeCommandResponse bye = new ByeCommandResponse(RouletteV2Protocol.SUCCESS, numberOfCommands);
                writer.println(JsonObjectMapper.toJson(bye));
                writer.flush();
@@ -97,7 +97,7 @@ public class RouletteV2ClientHandler implements IClientHandler
                StudentsList list = new StudentsList();
                list.addAll(store.listStudents());
 
-               // Jsonification before sending it
+               // Rendering of a Json before sending it
                writer.println(JsonObjectMapper.toJson(list));
                writer.flush();
                break;

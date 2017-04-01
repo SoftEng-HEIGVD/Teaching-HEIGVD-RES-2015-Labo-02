@@ -30,7 +30,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       writer.flush();
 
       // Trash the reply from the server
-      // We choose to not use it in our client implementation
+      // We choose to not use it in our client implementation (not asked in the requirements)
       reader.readLine();
    }
 
