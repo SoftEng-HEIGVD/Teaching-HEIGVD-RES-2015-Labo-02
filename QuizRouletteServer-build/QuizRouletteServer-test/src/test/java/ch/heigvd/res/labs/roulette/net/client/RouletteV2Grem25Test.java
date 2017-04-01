@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -97,5 +96,5 @@ public class RouletteV2Grem25Test {
    public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
       assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
    }
-
+   
 }

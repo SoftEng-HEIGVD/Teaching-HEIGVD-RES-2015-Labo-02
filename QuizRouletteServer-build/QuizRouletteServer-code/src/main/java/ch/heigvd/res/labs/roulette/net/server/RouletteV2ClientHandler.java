@@ -47,7 +47,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
          LOG.log(Level.INFO, "COMMAND: {0}", command);
          nbOfCommands++;
          switch (command.toUpperCase()) {
-            case RouletteV2Protocol.CMD_RANDOM: // no changes
+            case RouletteV2Protocol.CMD_RANDOM: // no changes from V1
                RandomCommandResponse rcResponse = new RandomCommandResponse();
                try {
                   rcResponse.setFullname(store.pickRandomStudent().getFullname());
@@ -57,10 +57,10 @@ public class RouletteV2ClientHandler implements IClientHandler {
                writer.println(JsonObjectMapper.toJson(rcResponse));
                writer.flush();
                break;
-            case RouletteV2Protocol.CMD_HELP: // no changes
+            case RouletteV2Protocol.CMD_HELP: // no changes from V1
                writer.println("Commands: " + Arrays.toString(RouletteV2Protocol.SUPPORTED_COMMANDS));
                break;
-            case RouletteV2Protocol.CMD_INFO: // no changes
+            case RouletteV2Protocol.CMD_INFO: // no changes from V1
                InfoCommandResponse response = new InfoCommandResponse(RouletteV2Protocol.VERSION, store.getNumberOfStudents());
                writer.println(JsonObjectMapper.toJson(response));
                writer.flush();
