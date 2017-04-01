@@ -52,8 +52,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
 
       // Terminate the connection with the server
       writer.println("BYE");
+      writer.flush();
 
       // Close the socket on the client side
+      reader.close();
+      writer.close();
       socket.close();
    }
 
@@ -63,13 +66,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
       LOG.log(Level.FINE, "Checking whether the client is connected to the server or not");
 
       if (socket != null)
-      {
-         return socket.isBound();
-      }
+         return !socket.isClosed();
       else
-      {   
-          return false;
-      }
+         return false;
    }
 
    @Override
@@ -141,7 +140,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client
       RandomCommandResponse response = JsonObjectMapper.parseJson(reader.readLine(), RandomCommandResponse.class);
 
       // If there is no error, return a new Student with the name received
-      if (response.getError().equals(""))
+      if (response.getError() == null)
       {
          return new Student(response.getFullname());
       }

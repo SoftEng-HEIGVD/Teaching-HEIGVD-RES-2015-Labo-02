@@ -161,7 +161,12 @@ public class RouletteServer
     */
    public int getPort()
    {
-      return serverSocket.getLocalPort();
+      if (serverSocket == null)
+      {
+         return listenPort;
+      }
+      else
+         return serverSocket.getLocalPort();
    }
 
    /**

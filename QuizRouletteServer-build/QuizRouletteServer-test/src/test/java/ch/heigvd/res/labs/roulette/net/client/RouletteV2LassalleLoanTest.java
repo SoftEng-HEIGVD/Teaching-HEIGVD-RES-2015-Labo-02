@@ -100,9 +100,6 @@ public class RouletteV2LassalleLoanTest {
                 new Student("Jérémie Zanone"));
 
        client.loadStudents(listStudents);
-       System.out.println("TEST");
-       System.out.println(client.pickRandomStudent());
-       System.out.println("APRES TEST");
        assertNotNull(client.pickRandomStudent());
     }
 
