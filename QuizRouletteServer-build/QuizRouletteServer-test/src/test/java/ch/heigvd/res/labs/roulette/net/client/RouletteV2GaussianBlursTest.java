@@ -11,7 +11,6 @@ import org.junit.rules.ExpectedException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Ignore;
 
 import static org.junit.Assert.assertEquals;
 
@@ -39,6 +38,7 @@ public class RouletteV2GaussianBlursTest {
     @TestAuthor(githubId = "gaussianblurs")
     public void theServerShouldListenToTheCorrectPort() {
         RouletteServer server = new RouletteServer(RouletteV2Protocol.DEFAULT_PORT, RouletteV2Protocol.VERSION);
+       System.out.println(server.getPort());
         assertEquals(RouletteV2Protocol.DEFAULT_PORT, server.getPort());
     }
 

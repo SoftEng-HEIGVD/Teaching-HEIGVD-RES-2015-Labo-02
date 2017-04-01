@@ -99,8 +99,11 @@ public class RouletteV2LassalleLoanTest {
                 new Student("Loan Lassalle"), new Student("Wojciech Myszkorowski"),
                 new Student("Jérémie Zanone"));
 
-        client.loadStudents(listStudents);
-        assertNotNull(client.pickRandomStudent());
+       client.loadStudents(listStudents);
+       System.out.println("TEST");
+       System.out.println(client.pickRandomStudent());
+       System.out.println("APRES TEST");
+       assertNotNull(client.pickRandomStudent());
     }
 
     @Test
