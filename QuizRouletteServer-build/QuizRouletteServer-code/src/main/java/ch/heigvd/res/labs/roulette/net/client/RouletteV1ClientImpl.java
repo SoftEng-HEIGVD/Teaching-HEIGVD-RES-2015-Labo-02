@@ -160,4 +160,15 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     return info.getProtocolVersion();
   }
 
+  /* Usefull for the daughter's class */
+  public void write(String towrite) {
+    writer.println(towrite);
+    writer.flush();
+  }
+
+  /* Usefull for the daughter's class */
+  public String read() throws  IOException {
+    return reader.readLine();
+  }
+
 }
