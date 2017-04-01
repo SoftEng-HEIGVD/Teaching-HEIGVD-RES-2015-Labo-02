@@ -40,7 +40,7 @@ public class RouletteV2Blade7foldTest {
     @TestAuthor(githubId = "Blade7fold")
     public void theMethodShouldClearCorrectlyTheStudentsInTheServer() throws IOException {
         System.out.println("Clear Data Store");
-        RouletteV2ClientImpl instance = new RouletteV2ClientImpl();
+        IRouletteV2Client instance = (IRouletteV2Client) roulettePair2.getClient();
         instance.loadStudent("JeSaisPas");
         instance.loadStudent("QuelNom");
         instance.loadStudent("MettreIci");
@@ -57,7 +57,7 @@ public class RouletteV2Blade7foldTest {
     @TestAuthor(githubId = "Blade7fold")
     public void theServerShouldReturnTheCorrectListOfStudents() throws IOException {
         System.out.println("List Students");
-        RouletteV2ClientImpl instance = new RouletteV2ClientImpl();
+        IRouletteV2Client instance = (IRouletteV2Client) roulettePair2.getClient();
         StudentsList sl = new StudentsList();
         List<Student> expResult = sl.getStudents();
         List<Student> result = instance.listStudents();
@@ -82,7 +82,7 @@ public class RouletteV2Blade7foldTest {
     @Test
     @TestAuthor(githubId = "Blade7fold")
     public void theServerShouldReturnTheCorrectNumberOFStudents() throws IOException {
-        RouletteV2ClientImpl usingINFO = new RouletteV2ClientImpl();
+        IRouletteV2Client usingINFO = (IRouletteV2Client) roulettePair2.getClient();
         int nbOfStudents = roulettePair2.getClient().getNumberOfStudents();
         int result = usingINFO.getNumberOfStudents();
         assertEquals(nbOfStudents, result);
