@@ -85,7 +85,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
    */
   @Override
   public boolean isConnected() {
-    return socket != null && socket.isConnected();
+    return socket != null && socket.isClosed();
   }
 
   /**
