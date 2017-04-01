@@ -16,17 +16,64 @@ import java.util.logging.Logger;
  * modified by abass mahdavi
  */
 public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRouletteV2Client {
-    
+
     final static Logger LOG = Logger.getLogger(RouletteV1ClientHandler.class.getName());
 
-  @Override
-  public void clearDataStore() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public void clearDataStore() throws IOException {
+        writer.println(RouletteV2Protocol.CMD_CLEAR);
+        writer.flush();
+        if (reader != null) {
+            reader.readLine();
 
-  @Override
-  public List<Student> listStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-  
+        } else {
+            throw new IOException();
+        }
+    }
+
+    @Override
+    public List<Student> listStudents() throws IOException {
+        StudentsList result;
+        String response;
+        writer.println(RouletteV2Protocol.CMD_LIST);
+        writer.flush();
+        if (reader != null) {
+            response = reader.readLine();
+            try {
+                result = JsonObjectMapper.parseJson(response, StudentsList.class);
+                return result.getStudents();
+            } catch (IOException e) {
+                throw new IOException();
+            }
+        } else {
+            throw new IOException();
+        }
+    }
+    
+    
+    public String getByeMessage()throws IOException{        
+        writer.println(RouletteV2Protocol.CMD_BYE);
+        writer.flush();
+        if (reader != null) {
+            return reader.readLine();
+            
+        } else {
+            throw new IOException();
+        }       
+    }
+
+    @Override
+    public void loadStudent(String fullname) throws IOException {
+        super.loadStudent(fullname);
+        if (reader != null) {
+            reader.readLine();
+        }
+    }
+    
+    @Override
+    public String getProtocolVersion() throws IOException {        
+        return RouletteV2Protocol.VERSION;
+    }
+    
+    
 }
