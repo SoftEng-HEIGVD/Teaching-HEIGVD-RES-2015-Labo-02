@@ -75,8 +75,6 @@ public class RouletteV2ClientHandler implements IClientHandler {
             LOG.log(Level.SEVERE, "Could not import students");
           }
 
-          writer.println(RouletteV2Protocol.RESPONSE_LOAD_DONE);
-
           loadResponse.setNumberOfNewStudents(store.getNumberOfStudents() - nbStudents);
           loadResponse.setStatus(status);
           writer.println(JsonObjectMapper.toJson(loadResponse));
