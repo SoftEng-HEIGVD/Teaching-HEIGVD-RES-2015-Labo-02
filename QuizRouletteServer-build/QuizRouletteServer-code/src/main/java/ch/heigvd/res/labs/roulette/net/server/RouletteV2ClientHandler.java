@@ -6,7 +6,8 @@ import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
-
+import ch.heigvd.res.labs.roulette.data.StudentsList;
+import ch.heigvd.res.labs.roulette.net.protocol.*;
 import java.io.*;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -24,6 +25,8 @@ public class RouletteV2ClientHandler implements IClientHandler {
   private static String CHARSET = "UTF-8";
 
   private final IStudentsStore store;
+
+  private int numberOfCommands = 0;
 
   public RouletteV2ClientHandler(IStudentsStore store) {
     this.store = store;
@@ -72,13 +75,47 @@ public class RouletteV2ClientHandler implements IClientHandler {
         case RouletteV2Protocol.CMD_LOAD:
           writer.println(RouletteV2Protocol.RESPONSE_LOAD_START);
           writer.flush();
-          store.importData(reader);
-          writer.println(RouletteV2Protocol.RESPONSE_LOAD_DONE);
+
+          LoadCommandResponse loadResponse;
+          String status;
+          int numberOfNewStudents = 0;
+
+          try {
+            numberOfNewStudents = store.importData(reader);
+            status = "success";
+
+          } catch (IOException e) {
+            status = "failure";
+
+          }
+
+          loadResponse = new LoadCommandResponse(status, numberOfNewStudents);
+
+          writer.println(JsonObjectMapper.toJson(loadResponse));
           writer.flush();
           break;
 
         case RouletteV2Protocol.CMD_BYE:
           done = true;
+
+          ByeCommandResponse byeResponse = new ByeCommandResponse("success", numberOfCommands + 1);
+          writer.println(JsonObjectMapper.toJson(byeResponse));
+          writer.flush();
+          break;
+
+        case RouletteV2Protocol.CMD_CLEAR:
+          store.clear();
+          writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
+          writer.flush();
+
+          break;
+
+        case RouletteV2Protocol.CMD_LIST:
+          StudentsList studentsList = new StudentsList();
+          studentsList.setStudents(store.listStudents());
+
+          writer.println(JsonObjectMapper.toJson(studentsList));
+          writer.flush();
           break;
 
         default:
@@ -87,6 +124,8 @@ public class RouletteV2ClientHandler implements IClientHandler {
           break;
       }
       writer.flush();
+
+      ++numberOfCommands;
     }
   }
 
