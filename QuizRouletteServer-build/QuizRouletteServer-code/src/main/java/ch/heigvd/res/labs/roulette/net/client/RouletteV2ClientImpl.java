@@ -33,8 +33,10 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
         printWriter.println(RouletteV2Protocol.CMD_LIST);
         printWriter.flush();
         
-        StudentsList stList = new StudentsList();
-        List<Student> expResult = stList.getStudents();
+        String result = bufferedReader.readLine();
+        StudentsList answer = JsonObjectMapper.parseJson(result, StudentsList.class);
+        
+        List<Student> expResult = answer.getStudents();
         
         return expResult;
   }
