@@ -29,8 +29,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   private static String CHARSET = "UTF-8";
 
   private Socket clientSocket;
-  private BufferedReader reader;
-  private PrintWriter writer;
+  protected BufferedReader reader;
+  protected PrintWriter writer;
 
   @Override
   public void connect(String server, int port) throws IOException {
