@@ -13,7 +13,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Ignore;
+
 
 /**
  * Tests for V2 protocol
