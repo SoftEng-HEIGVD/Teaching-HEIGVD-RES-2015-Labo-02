@@ -47,7 +47,7 @@ public class RouletteV2Grem25Test {
          assertTrue(test.contains(s));
       }
    }
-   
+
    @Test
    @TestAuthor(githubId = "Grem25")
    public void studentsMustBeEmptyAfterClear() throws IOException, Throwable {
@@ -96,5 +96,5 @@ public class RouletteV2Grem25Test {
    public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
       assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
    }
-   
+
 }
