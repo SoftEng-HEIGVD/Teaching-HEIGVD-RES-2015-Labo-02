@@ -26,7 +26,6 @@ import org.junit.rules.ExpectedException;
  *
  * @author Nathan
  */
-@Ignore
 public class RouletteV2Blade7foldTest {
     
     @Rule
