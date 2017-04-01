@@ -14,6 +14,7 @@ import java.util.logging.Logger;
  *
  * @author Olivier Liechti
  * modified by abass mahdavi
+ * note: some code duplication between v1 and v2 to be improved if time left
  */
 public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRouletteV2Client {
 
