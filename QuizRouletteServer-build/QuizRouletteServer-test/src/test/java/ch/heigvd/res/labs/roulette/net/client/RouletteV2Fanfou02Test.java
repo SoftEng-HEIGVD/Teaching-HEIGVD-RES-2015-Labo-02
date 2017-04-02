@@ -40,6 +40,7 @@ public class RouletteV2Fanfou02Test {
     @Test
     @TestAuthor(githubId = "Fanfou02")
     public void theServerShouldReturnTheCorrectPortNumber() throws IOException {
+
         assertEquals(RouletteV2Protocol.DEFAULT_PORT, roulettePair.getServer().getPort());
     }
     @Test
