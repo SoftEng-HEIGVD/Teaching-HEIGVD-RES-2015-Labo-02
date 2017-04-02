@@ -37,13 +37,6 @@ public class RouletteV2Fanfou02Test {
         assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
     }
 
-    @Test
-    @TestAuthor(githubId = "Fanfou02")
-    public void theServerShouldReturnTheCorrectPortNumber() throws IOException {
-
-        assertEquals(RouletteV2Protocol.DEFAULT_PORT, roulettePair.getServer().getPort());
-    }
-    @Test
     @TestAuthor(githubId = "psrochat")
     public void itShouldBePossibleToClearDataStore() throws IOException {
 
