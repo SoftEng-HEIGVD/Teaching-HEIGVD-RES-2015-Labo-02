@@ -31,9 +31,7 @@ public class EphemeralClientServerV2Pair extends ExternalResource {
   protected void before() throws Throwable {
     server = new RouletteServer(protocolVersion);
     server.startServer();
-    if (RouletteV2Protocol.VERSION.equals(protocolVersion)) {
-      client = new RouletteV2ClientImpl();
-    } 
+    client = new RouletteV2ClientImpl();
     client.connect("localhost", server.getPort());
   }
 
@@ -55,7 +53,7 @@ public class EphemeralClientServerV2Pair extends ExternalResource {
     return server;
   }
 
-  public IRouletteV1Client getClient() {
+  public IRouletteV2Client getClient() {
     return client;
   }
     
