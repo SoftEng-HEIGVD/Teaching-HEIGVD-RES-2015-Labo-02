@@ -1,5 +1,9 @@
 package ch.heigvd.res.labs.roulette.net.protocol;
 
+import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
+
+import java.io.IOException;
+
 /**
  * This class is used to serialize/deserialize the response sent by the server
  * when processing the "INFO" command defined in the protocol specification. The
@@ -34,6 +38,10 @@ public class InfoCommandResponse {
 
   public void setNumberOfStudents(int numberOfStudents) {
     this.numberOfStudents = numberOfStudents;
+  }
+
+  public static InfoCommandResponse fromJson(String json) throws IOException {
+    return JsonObjectMapper.parseJson(json, InfoCommandResponse.class);
   }
 
 }

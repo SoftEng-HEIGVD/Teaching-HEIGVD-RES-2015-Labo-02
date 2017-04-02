@@ -1,7 +1,10 @@
 package ch.heigvd.res.labs.roulette.net.protocol;
 
+import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import java.io.IOException;
 
 /**
  * This class is used to serialize/deserialize the response sent by the server
@@ -35,6 +38,10 @@ public class RandomCommandResponse {
 
   public void setFullname(String fullname) {
     this.fullname = fullname;
+  }
+
+  public static RandomCommandResponse fromJson(String json) throws IOException {
+    return JsonObjectMapper.parseJson(json, RandomCommandResponse.class);
   }
 
 }
