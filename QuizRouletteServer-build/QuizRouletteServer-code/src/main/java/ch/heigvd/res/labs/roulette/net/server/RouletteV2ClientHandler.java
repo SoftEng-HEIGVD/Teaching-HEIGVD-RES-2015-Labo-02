@@ -12,8 +12,10 @@ import java.io.OutputStream;
  */
 public class RouletteV2ClientHandler implements IClientHandler {
 
+  private final IStudentsStore store;
+
   public RouletteV2ClientHandler(IStudentsStore store) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of gen  
+    this.store = store;
   }
 
   @Override

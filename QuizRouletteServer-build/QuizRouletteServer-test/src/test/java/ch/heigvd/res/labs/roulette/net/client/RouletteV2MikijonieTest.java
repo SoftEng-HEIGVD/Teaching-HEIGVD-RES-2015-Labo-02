@@ -79,7 +79,6 @@ public class RouletteV2MikijonieTest {
   @Test
   @TestAuthor(githubId = "SoftEng-HEIGVD")
   public void theServerShouldCountStudents() throws IOException {
-
     IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     assertEquals(0, client.getNumberOfStudents());
     client.loadStudent("sacha");
@@ -93,7 +92,6 @@ public class RouletteV2MikijonieTest {
   @Test
   @TestAuthor(githubId = {"wasadigi", "mikijonie"})
   public void theServerShouldSendAnErrorResponseWhenRandomIsCalledAndThereIsNoStudent() throws IOException, EmptyStoreException {
-
     IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     exception.expect(EmptyStoreException.class);
     client.pickRandomStudent();
