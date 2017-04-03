@@ -69,6 +69,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
                     break;
                 }
                 case RouletteV2Protocol.CMD_RANDOM: // no changes from V1
+                {
                     RandomCommandResponse rcResponse = new RandomCommandResponse();
                     try {
                         rcResponse.setFullname(store.pickRandomStudent().getFullname());
@@ -78,15 +79,21 @@ public class RouletteV2ClientHandler implements IClientHandler {
                     toClient.println(JsonObjectMapper.toJson(rcResponse));
                     toClient.flush();
                     break;
+                }
                 case RouletteV2Protocol.CMD_HELP: // no changes from V1
+                {
                     toClient.println("Commands: " + Arrays.toString(RouletteV1Protocol.SUPPORTED_COMMANDS));
                     break;
+                }
                 case RouletteV2Protocol.CMD_INFO: // changes in V2
+                {
                     InfoCommandResponse infoResponse = new InfoCommandResponse(RouletteV2Protocol.VERSION, store.getNumberOfStudents());
                     toClient.println(JsonObjectMapper.toJson(infoResponse));
                     toClient.flush();
                     break;
+                }
                 case RouletteV2Protocol.CMD_LOAD: // changes in V2
+                {
                     // students loaded must be counted
                     toClient.println(RouletteV2Protocol.RESPONSE_LOAD_START); // same as V1
                     toClient.flush();
@@ -101,7 +108,9 @@ public class RouletteV2ClientHandler implements IClientHandler {
                     toClient.println(JsonObjectMapper.toJson(lcv2r));
                     toClient.flush();
                     break;
+                }
                 case RouletteV2Protocol.CMD_BYE: // changes in V2
+                {
                     // an answer must be sent, we'll use the ByeCommandV2Response class
                     ByeCommandV2Response bcv2r = new ByeCommandV2Response("success", numberOfCommands);
 
@@ -109,10 +118,12 @@ public class RouletteV2ClientHandler implements IClientHandler {
                     toClient.flush();
                     done = true;
                     break;
-                default:
+                }
+                default: {
                     toClient.println("Huh? please use HELP if you don't know what commands are available.");
                     toClient.flush();
                     break;
+                }
             }
             toClient.flush();
         }

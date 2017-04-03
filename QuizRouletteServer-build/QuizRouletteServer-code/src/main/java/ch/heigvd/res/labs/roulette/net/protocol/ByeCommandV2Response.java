@@ -9,6 +9,7 @@ package ch.heigvd.res.labs.roulette.net.protocol;
  * where 12 is the number of commands sent by the client during the session.,
  *
  * @author Camilo Pineda Serna
+ * @author Antoine Nourazar
  */
 public class ByeCommandV2Response {
     private String status;

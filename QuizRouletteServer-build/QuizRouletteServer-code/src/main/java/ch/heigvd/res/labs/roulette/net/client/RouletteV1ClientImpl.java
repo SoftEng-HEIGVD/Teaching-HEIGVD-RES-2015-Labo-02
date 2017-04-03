@@ -74,13 +74,14 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         toServer.flush();
         // pas de reponse du serveur
         //System.out.println(fromServer.readLine());
+        // could be split for refactoring
 
         toServer.close();
         fromServer.close();
         clientSocket.close();
         clientSocket = null;
 
-        System.out.println("closing of the client socket.");
+        //System.out.println("closing of the client socket.");
     }
 
     /**
@@ -113,7 +114,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     /**
      * dialogs (cf protocol) with the server to input a list of students into the server
      * checks the answers of the server and expects the correct message to continue.
-     * Otherwise it will return.
+     * Otherwise it will throw an error.
      *
      * @param students
      * @throws IOException

@@ -5,6 +5,7 @@ package ch.heigvd.res.labs.roulette.net.protocol;
  *
  * @author Olivier Liechti
  * @author Camilo Pineda Serna
+ * @author Antoine Nourazar
  */
 public class RouletteV2Protocol extends RouletteV1Protocol {
 

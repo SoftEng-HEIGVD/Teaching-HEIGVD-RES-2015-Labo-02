@@ -138,12 +138,15 @@ public class RouletteServer {
   }
 
   /**
-   * Getter for the TCP port number used by the server socket.
+   * // Getter for the TCP port number used by the server socket.
+   * Not any more : this test
+   * RouletteV2GaussianBlursTest.theServerShouldListenToTheCorrectPort(RouletteV2GaussianBlursTest.java:43)
+   * forces us to change this method. We still think the test isn't properly implemented and it should start the server
    *
    * @return the port on which client connection requests are accepted
    */
   public int getPort() {
-    return serverSocket.getLocalPort();
+    return listenPort;// return serverSocket.getLocalPort();
   }
 
   /**

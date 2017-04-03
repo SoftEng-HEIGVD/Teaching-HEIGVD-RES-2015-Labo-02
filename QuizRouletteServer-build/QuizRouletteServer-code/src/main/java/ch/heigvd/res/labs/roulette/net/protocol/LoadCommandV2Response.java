@@ -8,6 +8,7 @@ package ch.heigvd.res.labs.roulette.net.protocol;
  * Example of response in the V2 protocol : {"status":"success","numberOfNewStudents":3},
  * where 3 is the number of student lines sent by the client.
  *
+ * @author Antoine Nourazar
  * @author Camilo Pineda Serna
  */
 public class LoadCommandV2Response {
