@@ -1,6 +1,8 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
+import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
 import ch.heigvd.schoolpulse.TestAuthor;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,20 +45,28 @@ public class RouletteV2kkoPSTest {
     }
 
     /**
-     * creates a client, loads 2 students, checks if number of students is 2, then clears and check if number of students is 0
+     * creates a server and a client,
+     * loads 2 students, checks if number of students is 2,
+     * then clears and check if number of students is 0
+     * closes and stops everything
+     *
      * @throws IOException
      */
-    @Ignore
     @Test
     @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
     public void noMoreStudentsInServerAfterCallingMethodClearDataStore() throws IOException {
         // other client to intercept the server answers
         IRouletteV2Client clientV2 = new RouletteV2ClientImpl();
-        clientV2.loadStudent("cesar");
-        clientV2.loadStudent("cleopatra");
-
-        clientV2.listStudents();
-
+        RouletteServer tempServer = new RouletteServer(RouletteV2Protocol.DEFAULT_PORT, RouletteV2Protocol.VERSION);
+        tempServer.startServer();
+        clientV2.connect("localhost", RouletteV2Protocol.DEFAULT_PORT);
+        clientV2.loadStudent("jesus");
+        clientV2.loadStudent("poutre");
+        assertEquals(2, clientV2.getNumberOfStudents());
+        clientV2.clearDataStore();
+        assertEquals(0, clientV2.getNumberOfStudents());
+        clientV2.disconnect();
+        tempServer.stopServer();
     }
 
     /**

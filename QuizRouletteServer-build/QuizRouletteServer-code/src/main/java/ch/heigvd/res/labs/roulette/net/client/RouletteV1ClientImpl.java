@@ -6,7 +6,6 @@ import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -79,6 +78,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         toServer.close();
         fromServer.close();
         clientSocket.close();
+        clientSocket = null;
 
         System.out.println("closing of the client socket.");
     }
@@ -90,14 +90,13 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
      */
     @Override
     public boolean isConnected() {
-        return clientSocket.isConnected();
+        return clientSocket != null && clientSocket.isConnected();
     }
 
     /**
      * Changes : loadStudent will call loadStudentS
-     *
+     * <p>
      * This method calls loadStudents(..) with a list having one student
-     *
      *
      * @param fullname the student's full name
      * @throws IOException
@@ -152,6 +151,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     /**
      * V1 for the end of the loadStudents method
      * don't forget to set the protected access rights
+     *
      * @throws IOException
      */
     protected void endLoadStudents() throws IOException {
@@ -186,7 +186,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         String serverResponse = fromServer.readLine();
         RandomCommandResponse temp = JsonObjectMapper.parseJson(serverResponse, RandomCommandResponse.class);
         // if the error is not empty, throw exception
-        if (!temp.getError().equals("")) {
+        if (temp.getError() != null) {
             throw new EmptyStoreException();
         }
         else {
@@ -216,6 +216,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     /**
      * negotiates with the server to fetch the protocol version
      * Uses the InfoCommandRespons class
+     *
      * @return
      * @throws IOException
      */

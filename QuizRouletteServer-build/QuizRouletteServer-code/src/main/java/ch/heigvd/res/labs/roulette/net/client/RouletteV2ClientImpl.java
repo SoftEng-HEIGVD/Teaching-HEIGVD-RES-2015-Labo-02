@@ -78,6 +78,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
         toServer.close();
         fromServer.close();
         clientSocket.close();
+        clientSocket = null;
     }
 
 
