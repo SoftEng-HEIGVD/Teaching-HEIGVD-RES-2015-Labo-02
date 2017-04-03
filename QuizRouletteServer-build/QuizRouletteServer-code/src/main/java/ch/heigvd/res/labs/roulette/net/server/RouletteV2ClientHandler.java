@@ -39,8 +39,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
   public RouletteV2ClientHandler(IStudentsStore store) {
     this.store = store;
     numberOfCommands=0;
-     reader = new BufferedReader(new InputStreamReader(is));
-     writer = new PrintWriter(new OutputStreamWriter(os));
+
   }
 
   void sendToClient(String s){
@@ -51,6 +50,8 @@ public class RouletteV2ClientHandler implements IClientHandler {
 
   @Override
   public void handleClientConnection(InputStream is, OutputStream os) throws IOException {
+    reader = new BufferedReader(new InputStreamReader(is));
+    writer = new PrintWriter(new OutputStreamWriter(os));
 
     sendToClient("Hello. Online HELP is available. Will you find it?");
 
@@ -101,20 +102,16 @@ public class RouletteV2ClientHandler implements IClientHandler {
           break;
         case RouletteV2Protocol.CMD_CLEAR:
           store.clear();
-          sendToClient();
-          writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
-          writer.flush();
+          sendToClient(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
           break;
 
         case RouletteV2Protocol.CMD_LIST:
           ListCommandResponse responseList = new ListCommandResponse(store.listStudents());
-          writer.println(JsonObjectMapper.toJson(responseList));
-          writer.flush();
+          sendToClient(JsonObjectMapper.toJson(responseList));
           break;
 
         default:
-          writer.println("Huh? please use HELP if you don't know what commands are available.");
-          writer.flush();
+          sendToClient("Huh? please use HELP if you don't know what commands are available.");
           break;
       }
     }
