@@ -31,7 +31,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
         // fetches answer
         String serverResponse = fromServer.readLine();
-        if (!serverResponse.equals(RouletteV2Protocol.CMD_CLEAR)) {
+        if (!serverResponse.equals(RouletteV2Protocol.RESPONSE_CLEAR_DONE)) {
             // System.out.println("Error while clearing data : unexpected server answer.");
             throw new IOException("Error while clearing data : unexpected server answer.");
         }
@@ -48,9 +48,6 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
         String serverAnswer = fromServer.readLine();
         StudentsList students = JsonObjectMapper.parseJson(serverAnswer,StudentsList.class);
         return students.getStudents();
-
-
-
     }
 
     /**
@@ -85,44 +82,52 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
 
 
+//    /**
+//     * dialoging (cf protocol) with the server to input a student into the server
+//     * checks the answers of the server and expects the correct message to continue.
+//     * Otherwise it will return.
+//     * This method should return a boolean
+//     *
+//     * this V2 version throws an exception if the answer of the server is unsatisfactory
+//     *  TODO : !!!!!!!!!!!! INVERT nested call with loadStudentSSSS(list)
+//     *  it will be more efficient, proper usage of loadCommandReponse can be used and it wont count many single students commands
+//     *  TODO : refactor with V1, because the processing dosen't change, only the answer.
+//     *
+//     * @param fullname the student's full name
+//     * @throws IOException
+//     */
+//    @Override
+//    public void loadStudent(String fullname) throws IOException {
+//        // ask to load data
+//        toServer.println(RouletteV2Protocol.CMD_LOAD);
+//        toServer.flush();
+//        // wait for answer
+//        String serverResponse = fromServer.readLine();
+//        //check the answer
+//        if (serverResponse.equals(RouletteV2Protocol.RESPONSE_LOAD_START)) {
+//            // write if ok
+//            toServer.println(fullname);
+//            toServer.flush();
+//            toServer.println(RouletteV2Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+//            toServer.flush();
+//        }
+//        else {
+//            // problem
+//            //System.out.println("server didn't allow to load data");
+//            //return;
+//            throw new IOException("error while loading a Student : unexpected server answer.");
+//        }
+//
+//        // wait for acknowledgement from server
+//        endLoadStudents();
+//    }
+
     /**
-     * dialoging (cf protocol) with the server to input a student into the server
-     * checks the answers of the server and expects the correct message to continue.
-     * Otherwise it will return.
-     * This method should return a boolean
-     *
-     * this V2 version throws an exception if the answer of the server is unsatisfactory
-     *  TODO : !!!!!!!!!!!! INVERT nested call with loadStudentSSSS(list)
-     *  it will be more efficient, proper usage of loadCommandReponse can be used and it wont count many single students commands
-     *  TODO : refactor with V1, because the processing dosen't change, only the answer.
-     *
-     * @param fullname the student's full name
+     * don't forget to let the super class access this method -> protected
      * @throws IOException
      */
-    @Override
-    public void loadStudent(String fullname) throws IOException {
-        // ask to load data
-        toServer.println(RouletteV2Protocol.CMD_LOAD);
-        toServer.flush();
-        // wait for answer
+    protected void endLoadStudents() throws IOException {
         String serverResponse = fromServer.readLine();
-        //check the answer
-        if (serverResponse.equals(RouletteV2Protocol.RESPONSE_LOAD_START)) {
-            // write if ok
-            toServer.println(fullname);
-            toServer.flush();
-            toServer.println(RouletteV2Protocol.CMD_LOAD_ENDOFDATA_MARKER);
-            toServer.flush();
-        }
-        else {
-            // problem
-            //System.out.println("server didn't allow to load data");
-            //return;
-            throw new IOException("error while loading a Student : unexpected server answer.");
-        }
-
-        // wait for acknowledgement from server
-        serverResponse = fromServer.readLine();
         LoadCommandV2Response lcrV2 = JsonObjectMapper.parseJson(serverResponse, LoadCommandV2Response.class);
         if (lcrV2.getStatus().equals("success")) {
             // allright
@@ -133,6 +138,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
             // problem
             System.out.println("server didn't acknowledge the load of data");
             return;
+//            throw new IOException("error at end of loadStudents V2 : unexpected server answer");
         }
     }
 
