@@ -19,7 +19,5 @@ public class RouletteV2WasadigiTest {
 
   @Rule
   public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
-
-
   
 }
