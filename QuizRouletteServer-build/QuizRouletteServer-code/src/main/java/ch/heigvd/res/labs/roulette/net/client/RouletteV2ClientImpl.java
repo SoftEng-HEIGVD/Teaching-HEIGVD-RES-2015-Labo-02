@@ -26,6 +26,8 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
   public void disconnect() throws IOException {
      sendDataToServer(RouletteV2Protocol.CMD_BYE);
      
+     String response = readServerResponse();
+     
      /*
      TODO: Read the server response
      

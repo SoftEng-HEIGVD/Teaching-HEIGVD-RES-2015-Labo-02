@@ -12,13 +12,22 @@ import ch.heigvd.res.labs.roulette.data.Student;
  * @author mathieu
  */
 public class ListCommandResponse {
-   private final Student[] students;
+   private Student[] students;
+   
+   public ListCommandResponse() {}
+   
+   public void setStudents(Student[] students) {
+      this.students = students;
+   }
    
    public ListCommandResponse(Student[] students) {
       this.students = students;
    }
    
    public Student[] getStudents() {
+      if (students == null)
+         return null;
+      
       return students.clone();
    }
 }
