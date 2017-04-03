@@ -143,6 +143,10 @@ public class RouletteServer {
    * @return the port on which client connection requests are accepted
    */
   public int getPort() {
+    if (serverSocket == null) {
+      return RouletteV2Protocol.DEFAULT_PORT;
+    }
+
     return serverSocket.getLocalPort();
   }
 
