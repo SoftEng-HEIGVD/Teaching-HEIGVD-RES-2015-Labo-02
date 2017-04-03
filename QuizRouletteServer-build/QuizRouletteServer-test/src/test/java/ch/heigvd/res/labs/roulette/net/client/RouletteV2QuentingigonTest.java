@@ -10,6 +10,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -72,9 +76,18 @@ public class RouletteV2QuentingigonTest {
     client.loadStudent("olivier");
     client.loadStudent("fabienne");
 
-    assertTrue(client.listStudents().contains(new Student("sasha")));
-    assertTrue(client.listStudents().contains(new Student("olivier")));
-    assertTrue(client.listStudents().contains(new Student("fabienne")));
+    List<Student> list = client.listStudents();
+    ArrayList<String> stack = new ArrayList<>();
+    stack.add("sacha");
+    stack.add("olivier");
+    stack.add("fabienne");
+
+    for (Student student: list) {
+      if(stack.contains(student.getFullname()))
+        stack.remove(student.getFullname());
+    }
+
+    assertTrue(stack.isEmpty());
   }
 
   @Test

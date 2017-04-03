@@ -22,6 +22,8 @@ public class StudentListResponse {
 
     private List<Student> students;
 
+    public StudentListResponse(){}
+
     public StudentListResponse(List<Student> students) {
         this.students = students;
     }

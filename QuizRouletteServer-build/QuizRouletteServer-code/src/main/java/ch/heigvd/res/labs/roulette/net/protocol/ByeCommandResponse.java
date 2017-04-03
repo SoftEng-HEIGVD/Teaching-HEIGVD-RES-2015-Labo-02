@@ -8,6 +8,8 @@ public class ByeCommandResponse {
     private String status;
     private int nbCommands;
 
+    public ByeCommandResponse(){}
+
     public ByeCommandResponse(String status, int commands) {
         this.status = status;
         this.nbCommands = commands;

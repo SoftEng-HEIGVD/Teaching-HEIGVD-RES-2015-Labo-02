@@ -46,7 +46,9 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
         sendRequestToServer(RouletteV2Protocol.CMD_BYE);
 
-        ByeCommandResponse byeResponse = JsonObjectMapper.parseJson(getServerResponse(),
+        String res = getServerResponse();
+
+        ByeCommandResponse byeResponse = JsonObjectMapper.parseJson(res,
             ByeCommandResponse.class);
         clientSocket.close();
         LOG.info("status:" + byeResponse.getStatus() + ",numberOfCommands:" + byeResponse.getNbCommands());
@@ -64,8 +66,9 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
         // notify the server that transmission is done
         sendRequestToServer(RouletteV2Protocol.CMD_LOAD_ENDOFDATA_MARKER);
 
+        String res = getServerResponse();
         // get server response
-        LoadCommandResponse loadResponse = JsonObjectMapper.parseJson(getServerResponse(), LoadCommandResponse.class);
+        LoadCommandResponse loadResponse = JsonObjectMapper.parseJson(res, LoadCommandResponse.class);
 
         LOG.info("status:" + loadResponse.getStatus() + ",numberOfNewStudents:" + loadResponse.getNewStudents());
     }

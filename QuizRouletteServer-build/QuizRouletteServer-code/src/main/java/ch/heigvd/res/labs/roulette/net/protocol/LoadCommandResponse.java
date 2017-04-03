@@ -8,6 +8,8 @@ public class LoadCommandResponse {
     private String status;
     private int newStudents;
 
+    public LoadCommandResponse() {}
+
     public LoadCommandResponse(String status, int newStudents) {
         this.status = status;
         this.newStudents = newStudents;
