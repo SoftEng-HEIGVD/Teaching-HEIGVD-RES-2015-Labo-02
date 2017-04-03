@@ -5,6 +5,7 @@ import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -91,8 +92,14 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         os.flush();
         String line = is.readLine();
         LOG.info(line);
-        Student student = JsonObjectMapper.parseJson(line, Student.class);
-        return student;
+        
+        RandomCommandResponse randomResponse = JsonObjectMapper.parseJson(line, RandomCommandResponse.class);
+
+        if (randomResponse.getFullname() == null && !randomResponse.getError().isEmpty()) {
+            throw new EmptyStoreException();
+        }
+
+        return new Student(randomResponse.getFullname());
     }
 
     private InfoCommandResponse getInfos() throws IOException {
