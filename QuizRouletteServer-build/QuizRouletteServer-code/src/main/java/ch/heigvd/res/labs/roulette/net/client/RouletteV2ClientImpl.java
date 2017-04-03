@@ -20,8 +20,12 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
   @Override
   public void clearDataStore() throws IOException {
+
+    /* Sends command */
     writer.println(RouletteV2Protocol.CMD_CLEAR);
     writer.flush();
+
+    /* Read answer from server */
     String answer = reader.readLine();
     if (!answer.equals(RouletteV2Protocol.RESPONSE_CLEAR_DONE)) {
       System.out.println("Error while clearing data");
@@ -30,9 +34,15 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
   @Override
   public List<Student> listStudents() throws IOException {
+
+    /* Sends command */
     writer.println(RouletteV2Protocol.CMD_LIST);
     writer.flush();
+
+    /* Read answer form server */
     String answer = reader.readLine();
+
+    /* Uses json class to parse arguments */
     ListCommandResponse students = JsonObjectMapper.parseJson(answer, ListCommandResponse.class);
     return students.getStudents();
   }
@@ -56,6 +66,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
     writer.println(RouletteV2Protocol.CMD_LOAD_ENDOFDATA_MARKER);
     writer.flush();
 
+    /* Answer from server */
     reader.readLine();
 
   }
@@ -93,13 +104,18 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
   @Override
   public void disconnect() throws IOException {
+
+    /* Sanity checks */
     if (socket == null || !isConnected()) {
       return;
     }
 
+    /* Sends command */
     writer.println(RouletteV1Protocol.CMD_BYE);
     writer.flush();
 
+
+    /* Answer from server */
     reader.readLine();
 
     /* Close connexion */
