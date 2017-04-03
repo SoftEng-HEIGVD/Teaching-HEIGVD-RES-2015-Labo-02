@@ -27,7 +27,6 @@ public class RouletteV2X4l1b1Test {
     private PrintWriter writer = null;
     private BufferedReader reader = null;
 
-
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
