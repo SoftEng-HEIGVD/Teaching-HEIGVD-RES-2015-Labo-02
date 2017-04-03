@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
+import ch.heigvd.res.labs.roulette.data.StudentsList;
 import ch.heigvd.res.labs.roulette.net.protocol.*;
 
 /**
@@ -45,6 +46,11 @@ public class RouletteV2ClientHandler implements IClientHandler {
           writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
           writer.flush();
           break;
+        case RouletteV2Protocol.CMD_LIST:
+          StudentsList list = new StudentsList();
+          list.setStudents(store.listStudents());
+          writer.println(JsonObjectMapper.toJson(list)); writer.flush();
+          break;
         case RouletteV1Protocol.CMD_RANDOM:
           RandomCommandResponse rcResponse = new RandomCommandResponse();
           try {
@@ -64,10 +70,17 @@ public class RouletteV2ClientHandler implements IClientHandler {
           writer.flush();
           break;
         case RouletteV1Protocol.CMD_LOAD:
-          writer.println(RouletteV1Protocol.RESPONSE_LOAD_START);
-          writer.flush();
+          //store the previous number of students
+          int previousNumStudent = store.getNumberOfStudents();
+          //Say user can start writing names
+          writer.println(RouletteV2Protocol.RESPONSE_LOAD_START); writer.flush();
+
           store.importData(reader);
-          writer.println(RouletteV1Protocol.RESPONSE_LOAD_DONE);
+          int numberOfStudentAdded = store.getNumberOfStudents() - previousNumStudent;
+          //create the object serializable
+          LoadV2CommandResponse loadResp  = new LoadV2CommandResponse("success" , numberOfStudentAdded+"");
+          //send the serialized object in json form to client
+          writer.println(JsonObjectMapper.toJson(loadResp));
           writer.flush();
           break;
         case RouletteV1Protocol.CMD_BYE:
