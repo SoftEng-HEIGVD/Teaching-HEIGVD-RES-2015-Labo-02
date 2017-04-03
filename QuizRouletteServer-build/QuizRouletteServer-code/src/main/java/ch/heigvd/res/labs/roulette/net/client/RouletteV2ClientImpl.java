@@ -3,6 +3,7 @@ package ch.heigvd.res.labs.roulette.net.client;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.data.StudentsList;
+import ch.heigvd.res.labs.roulette.net.protocol.ListCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -26,16 +27,10 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
   @Override
   public List<Student> listStudents() throws IOException {
+    outToServer.writeBytes(RouletteV2Protocol.CMD_LIST + "\n");
+    outToServer.flush();
 
-    List students = new LinkedList<Student>();
-
-    int size = getNumberOfStudents();
-
-    outToServer.writeBytes(RouletteV2Protocol.CMD_LIST + '\n');
-    for(int i = 0; i < size; i++) {
-      students.add(new Student(inFromServer.readLine()));
-    }
-
-    return students;
+    ListCommandResponse responseList = JsonObjectMapper.parseJson(inFromServer.readLine(), ListCommandResponse.class);
+    return responseList.getStudents();
   }
 }

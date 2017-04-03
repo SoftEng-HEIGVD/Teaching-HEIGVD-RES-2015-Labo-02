@@ -37,6 +37,7 @@ public class RouletteV2Fanfou02Test {
         assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
     }
 
+    @Test
     @TestAuthor(githubId = "psrochat")
     public void itShouldBePossibleToClearDataStore() throws IOException {
 

@@ -6,6 +6,7 @@ import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.net.protocol.*;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,7 +74,9 @@ public class RouletteV2ClientHandler implements IClientHandler {
           break;
         case RouletteV2Protocol.CMD_LIST:
           ListCommandResponse responseList = new ListCommandResponse(store.listStudents());
-          writer.println(JsonObjectMapper.toJson(responseList));
+          String json = JsonObjectMapper.toJson(responseList);
+          Charset.forName("UTF-8").encode(json);
+          writer.println(json);
           writer.flush();
           break;
         case RouletteV2Protocol.CMD_CLEAR:
