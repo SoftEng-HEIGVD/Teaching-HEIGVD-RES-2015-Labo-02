@@ -14,6 +14,7 @@ import java.util.logging.Logger;
  * memory (no persistent storage).
  *
  * @author Olivier Liechti
+ * @author modified by Gallouche & dipietroa
  */
 public class StudentsStoreImpl implements IStudentsStore {
 
@@ -52,7 +53,7 @@ public class StudentsStoreImpl implements IStudentsStore {
   }
 
   @Override
-  public void importData(BufferedReader reader) throws IOException {
+  public int importData(BufferedReader reader) throws IOException {
     LOG.log(Level.INFO, "Importing data from input reader of type {0}", reader.getClass());
     List<Student> studentsToAdd = new ArrayList<>();
     String record;
@@ -70,6 +71,7 @@ public class StudentsStoreImpl implements IStudentsStore {
       students.addAll(studentsToAdd);
     }
     LOG.log(Level.INFO, "There are now {0} students in the store.", getNumberOfStudents());
+    return studentsToAdd.size();
   }
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
  * manage student data, whether in memory or persistent storage.
  *
  * @author Olivier Liechti
+ * @author modified by Gallouche & dipietroa
  */
 public interface IStudentsStore {
 
@@ -54,6 +55,6 @@ public interface IStudentsStore {
    * @param reader where we read student data from
    * @throws IOException
    */
-  public void importData(BufferedReader reader) throws IOException;
+  public int importData(BufferedReader reader) throws IOException;
 
 }
