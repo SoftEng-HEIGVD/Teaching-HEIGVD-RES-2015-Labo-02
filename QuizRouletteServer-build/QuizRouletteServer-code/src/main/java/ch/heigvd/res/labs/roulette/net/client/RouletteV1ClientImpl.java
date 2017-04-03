@@ -41,7 +41,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     /* Connexion to a server with a specific port */
     socket = new Socket(server, port);
-    reader = new BufferedReader( new InputStreamReader(socket.getInputStream()));
+    reader = new BufferedReader( new InputStreamReader(socket.getInputStream(), "UTF-8"));
     writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 
     /* We read the welcome message */
