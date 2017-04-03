@@ -8,11 +8,9 @@ import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.ListResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.LoadResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import static ch.heigvd.res.labs.roulette.net.server.RouletteV1ClientHandler.LOG;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,16 +23,14 @@ import java.util.logging.Level;
 /**
  * This class implements the Roulette protocol (version 2).
  *
- * @author Olivier Liechti
+ * @author Guillaume Milani
  */
 public class RouletteV2ClientHandler implements IClientHandler {
 
-    private final RouletteV1ClientHandler v1ClientHandler;
     private final IStudentsStore store;
     private int nbCommands = 0;
 
     public RouletteV2ClientHandler(IStudentsStore store) {
-        v1ClientHandler = new RouletteV1ClientHandler(store);
         this.store = store;
     }
 
@@ -96,10 +92,14 @@ public class RouletteV2ClientHandler implements IClientHandler {
                     int numberOfNewStudents = store.getNumberOfStudents();
                     writer.println(RouletteV2Protocol.RESPONSE_LOAD_START);
                     writer.flush();
-                    store.importData(reader);
-
-                    numberOfNewStudents = store.getNumberOfStudents() - numberOfNewStudents;
-                    LoadResponse loadResponse = new LoadResponse("success", numberOfNewStudents);
+                    LoadResponse loadResponse;
+                    try {
+                        store.importData(reader);
+                        numberOfNewStudents = store.getNumberOfStudents() - numberOfNewStudents;
+                        loadResponse = new LoadResponse("success", numberOfNewStudents);
+                    } catch (IOException e) {
+                        loadResponse = new LoadResponse("failure", 0);
+                    }
                     writer.println(JsonObjectMapper.toJson(loadResponse));
                     writer.flush();
                     break;
