@@ -29,24 +29,28 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
   private Socket socket = new Socket();
-  BufferedReader reader;
-  PrintWriter writer;
+  protected BufferedReader reader;
+  protected PrintWriter writer;
 
   @Override
   public void connect(String server, int port) throws IOException {
+
+    if (isConnected()) {
+      return;
+    }
+
     /* Connexion to a server with a specific port */
     socket = new Socket(server, port);
     reader = new BufferedReader( new InputStreamReader(socket.getInputStream()));
     writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 
     /* We read the welcome message */
-    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
     reader.readLine();
   }
 
   @Override
   public void disconnect() throws IOException {
-    if (socket == null || socket.isClosed()) {
+    if (socket == null || !isConnected()) {
       return;
     }
 
@@ -57,11 +61,13 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     reader.close();
     writer.close();
     socket.close();
+
+    socket = null;
   }
 
   @Override
   public boolean isConnected() {
-    return socket.isConnected();
+    return socket != null && socket.isConnected();
   }
 
   @Override
@@ -109,13 +115,17 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     for (Student s : students) {
       writer.println(s.getFullname());
       writer.flush();
-      reader.readLine();
     }
 
     /* End of command */
     writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
     writer.flush();
-    reader.readLine();
+
+    String response = reader.readLine();
+
+    if (!response.equals(RouletteV1Protocol.RESPONSE_LOAD_DONE)) {
+      System.out.println("Error at the end of process ");
+    }
   }
 
   @Override
@@ -143,7 +153,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     writer.flush();
 
     /* Gets answer from the json class */
-    InfoCommandResponse info = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
+    String a = reader.readLine();
+    InfoCommandResponse info = JsonObjectMapper.parseJson(a, InfoCommandResponse.class);
 
     return info.getNumberOfStudents();
   }

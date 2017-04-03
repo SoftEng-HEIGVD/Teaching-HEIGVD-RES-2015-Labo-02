@@ -1,20 +1,24 @@
 package ch.heigvd.res.labs.roulette.net.protocol;
 
 /**
- * Created by Blue Spring on 27.03.2017.
+ * This class is used to serialize/deserialize the response sent by the server
+ * when processing the "LOAD" command defined in the protocol specification. The
+ * JsonObjectMapper utility class can use this class.
+ *
+ * @authors Ludovic Richard, Luana Martelli
  */
 public class LoadCommandResponse {
 
-    private int numberOfStudents;
     private String status;
+    private int numberOfNewStudents;
 
     public LoadCommandResponse(String status, int numberOfStudents) {
         this.status = status;
-        this.numberOfStudents = numberOfStudents;
+        this.numberOfNewStudents = numberOfStudents;
     }
 
-    public int getNumberOfStudents() {
-        return numberOfStudents;
+    public int getNumberOfNewStudents() {
+        return numberOfNewStudents;
     }
 
     public String getStatus() {

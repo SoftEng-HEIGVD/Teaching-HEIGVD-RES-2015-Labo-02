@@ -1,12 +1,16 @@
 package ch.heigvd.res.labs.roulette.net.protocol;
 
 /**
- * Created by Blue Spring on 27.03.2017.
+ * This class is used to serialize/deserialize the response sent by the server
+ * when processing the "BYE" command defined in the protocol specification. The
+ * JsonObjectMapper utility class can use this class.
+ *
+ * @authors Ludovic Richard, Luana Martelli
  */
 public class ByeCommandResponse {
 
-    private int numberOfCommands;
     private String status;
+    private int numberOfCommands;
 
     public ByeCommandResponse(String status, int numberOfCommands) {
         this.status = status;
