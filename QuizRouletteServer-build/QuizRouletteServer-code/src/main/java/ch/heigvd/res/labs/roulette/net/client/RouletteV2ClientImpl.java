@@ -93,6 +93,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       return JsonObjectMapper.parseJson(result, InfoCommandResponse.class);
    }
    
+   @Override
    public void disconnect() throws IOException {
       if (isConnected()) {
         printWriter.println(RouletteV2Protocol.CMD_BYE);
