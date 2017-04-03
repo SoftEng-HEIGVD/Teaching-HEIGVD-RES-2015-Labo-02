@@ -39,9 +39,7 @@ public class RouletteV2GaussianBlursTest {
     @TestAuthor(githubId = "gaussianblurs")
     public void theServerShouldListenToTheCorrectPort() throws IOException {
         RouletteServer server = new RouletteServer(RouletteV2Protocol.DEFAULT_PORT, RouletteV2Protocol.VERSION);
-        server.startServer();
         assertEquals(RouletteV2Protocol.DEFAULT_PORT, server.getPort());
-        server.stopServer();
     }
 
     @Test
