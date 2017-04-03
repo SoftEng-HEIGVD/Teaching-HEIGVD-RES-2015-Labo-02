@@ -25,7 +25,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
   public List<Student> listStudents() throws IOException {
       sendToServer(RouletteV2Protocol.CMD_LIST);
       ListCommandResponse response = JsonObjectMapper.parseJson(in.readLine(), ListCommandResponse.class);
-      return response.getStudentList();
+      return response.getStudents();
   }
   
 }
