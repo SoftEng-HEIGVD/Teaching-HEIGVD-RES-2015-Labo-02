@@ -37,8 +37,11 @@ public class RouletteV2ClientHandler implements IClientHandler {
 
     String command = "";
     boolean done = false;
+    int numberOfCommands = 0;
     while (!done && ((command = reader.readLine()) != null)){
       LOG.log(Level.INFO,"COMMAND: {0}", command);
+      numberOfCommands++;//store the number of command of the current session
+      //default --> handle bad command by decrementing
 
       switch (command.toUpperCase()) {
         case RouletteV2Protocol.CMD_CLEAR:
@@ -47,46 +50,61 @@ public class RouletteV2ClientHandler implements IClientHandler {
           writer.flush();
           break;
         case RouletteV2Protocol.CMD_LIST:
-          StudentsList list = new StudentsList();
-          list.setStudents(store.listStudents());
-          writer.println(JsonObjectMapper.toJson(list)); writer.flush();
+          StudentsList list = new StudentsList();//object of student list
+          list.setStudents(store.listStudents());//get the list of student in the object
+          writer.println(JsonObjectMapper.toJson(list)); writer.flush();//print and serialize
           break;
-        case RouletteV1Protocol.CMD_RANDOM:
+        case RouletteV2Protocol.CMD_RANDOM: //same as v1, send a random student
           RandomCommandResponse rcResponse = new RandomCommandResponse();
           try {
-            rcResponse.setFullname(store.pickRandomStudent().getFullname());
+            rcResponse.setFullname(store.pickRandomStudent().getFullname());//use the randomCommandResponse object to serialise
           } catch (EmptyStoreException ex) {
             rcResponse.setError("There is no student, you cannot pick a random one");
           }
           writer.println(JsonObjectMapper.toJson(rcResponse));
           writer.flush();
           break;
-        case RouletteV1Protocol.CMD_HELP:
-          writer.println("Commands: " + Arrays.toString(RouletteV1Protocol.SUPPORTED_COMMANDS));
+        case RouletteV2Protocol.CMD_HELP:
+          //write the supported command of the v2 protocol
+          writer.println("Commands: " + Arrays.toString(RouletteV2Protocol.SUPPORTED_COMMANDS));
+          writer.flush();
           break;
-        case RouletteV1Protocol.CMD_INFO:
-          InfoCommandResponse response = new InfoCommandResponse(RouletteV1Protocol.VERSION, store.getNumberOfStudents());
+        case RouletteV1Protocol.CMD_INFO: //get the info fot the v2 protocol, the number of student and the protocol version
+          InfoCommandResponse response = new InfoCommandResponse(RouletteV2Protocol.VERSION, store.getNumberOfStudents());
           writer.println(JsonObjectMapper.toJson(response));
           writer.flush();
           break;
-        case RouletteV1Protocol.CMD_LOAD:
+        case RouletteV2Protocol.CMD_LOAD:
           //store the previous number of students
           int previousNumStudent = store.getNumberOfStudents();
           //Say user can start writing names
           writer.println(RouletteV2Protocol.RESPONSE_LOAD_START); writer.flush();
 
-          store.importData(reader);
+          try {
+            store.importData(reader);
+          } catch (IOException e){
+            //Fail response not specified by protocol, assume fail and 0
+            writer.println(JsonObjectMapper.toJson(new LoadV2CommandResponse("fail","0")));
+            writer.flush();
+          }
           int numberOfStudentAdded = store.getNumberOfStudents() - previousNumStudent;
           //create the object serializable
-          LoadV2CommandResponse loadResp  = new LoadV2CommandResponse("success" , numberOfStudentAdded+"");
+          LoadV2CommandResponse loadResp  = new LoadV2CommandResponse(RouletteV2Protocol.RESPONSE_SUCCESS_LOWERCASE
+                  , numberOfStudentAdded+"");
           //send the serialized object in json form to client
           writer.println(JsonObjectMapper.toJson(loadResp));
           writer.flush();
           break;
-        case RouletteV1Protocol.CMD_BYE:
+        case RouletteV2Protocol.CMD_BYE:
+          //the object to be parseed by json: assume sucessfull, and send the number of commands
+          ByeV2CommandResponse byeResp = new ByeV2CommandResponse(RouletteV2Protocol.RESPONSE_SUCCESS_LOWERCASE,Integer.toString(numberOfCommands));
+          //send in json form
+          writer.println(JsonObjectMapper.toJson(byeResp));writer.flush();
           done = true;
           break;
         default:
+          //a bad command is not a command
+          numberOfCommands--;
           writer.println("Huh? please use HELP if you don't know what commands are available. (V2)");
           writer.flush();
           break;
