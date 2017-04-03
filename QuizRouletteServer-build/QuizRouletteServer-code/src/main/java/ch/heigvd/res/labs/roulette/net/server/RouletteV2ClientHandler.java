@@ -45,11 +45,11 @@ public class RouletteV2ClientHandler implements IClientHandler {
         writer.println("Hello. Online HELP is available. Will you find it?");
         writer.flush();
         
-        numberOfCommands++;
 
         String command;
         boolean done = false;
         while (!done && ((command = reader.readLine()) != null)) {
+            numberOfCommands++;
             LOG.log(Level.INFO, "COMMAND: {0}", command);
             switch (command.toUpperCase()) {
                 case RouletteV2Protocol.CMD_RANDOM:

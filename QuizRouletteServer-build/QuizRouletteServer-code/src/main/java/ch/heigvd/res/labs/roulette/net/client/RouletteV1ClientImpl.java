@@ -87,8 +87,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         if (clientSocket == null) {
             return false;
         }
-        
-        return clientSocket.isConnected();
+        return clientSocket.isConnected() && !clientSocket.isClosed();
     }
 
     @Override
@@ -126,10 +125,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         
         RandomCommandResponse res = JsonObjectMapper.parseJson(is.readLine(), RandomCommandResponse.class);
 
-        if (!res.getError().isEmpty()) {
+        if (res.getFullname() == null && !res.getError().isEmpty()) {
             throw new EmptyStoreException();
         }
-        
         return Student.fromJson(res.getFullname());
     }
 
