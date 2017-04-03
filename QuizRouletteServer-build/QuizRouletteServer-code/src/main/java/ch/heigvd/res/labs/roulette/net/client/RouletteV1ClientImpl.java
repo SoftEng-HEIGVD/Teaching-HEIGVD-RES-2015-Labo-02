@@ -62,7 +62,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   @Override
   public boolean isConnected() {
-      return socket != null && socket.isConnected();
+      return socket.isConnected() && !socket.isClosed();
   }
 
   @Override
@@ -128,7 +128,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
       String response;
 
-      requestWriter.write(RouletteV1Protocol.CMD_INFO + System.lineSeparator()P);
+      requestWriter.write(RouletteV1Protocol.CMD_INFO + System.lineSeparator());
       requestWriter.flush();
 
       response = responseReader.readLine();
