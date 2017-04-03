@@ -29,11 +29,11 @@ public class LoadCommandResponse {
         this.status = status;
     }
 
-    public int getNumberOfStudents() {
+    public int getNumberOfNewStudents() {
         return numberOfNewStudents;
     }
 
-    public void setNumberOfStudents(int numberOfStudents) {
+    public void setNumberOfNewStudents(int numberOfNewStudents) {
         this.numberOfNewStudents = numberOfNewStudents;
     }
 
