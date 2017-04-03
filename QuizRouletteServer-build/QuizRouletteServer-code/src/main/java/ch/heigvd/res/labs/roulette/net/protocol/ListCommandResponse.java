@@ -10,6 +10,7 @@ import ch.heigvd.res.labs.roulette.data.Student;
  * command for the v2 implementation
  *
  * @author Valentin Finini
+ * @author Mika Pagani
  */
 public class ListCommandResponse {
 

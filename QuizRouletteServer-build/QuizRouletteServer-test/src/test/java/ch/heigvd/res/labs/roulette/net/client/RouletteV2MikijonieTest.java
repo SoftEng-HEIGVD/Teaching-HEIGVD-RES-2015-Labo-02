@@ -20,8 +20,8 @@ import org.junit.rules.ExpectedException;
  * implementation of the Roulette Protocol (version 2)
  *
  * @author Olivier Liechti
- * @author Mika Pagani
  * @author Valentin Finini
+ * @author Mika Pagani
  */
 public class RouletteV2MikijonieTest {
 
@@ -122,4 +122,3 @@ public class RouletteV2MikijonieTest {
     assertTrue(client.listStudents().contains(new Student("fabienne")));
   }
 }
-

@@ -15,8 +15,10 @@ import java.util.logging.Logger;
  *
  * @author Olivier Liechti
  * @author Valentin Finini
+ * @author Mika Pagani
  */
 public class RouletteV2ClientHandler implements IClientHandler {
+
 
   final static Logger LOG = Logger.getLogger(RouletteV1ClientHandler.class.getName());
 

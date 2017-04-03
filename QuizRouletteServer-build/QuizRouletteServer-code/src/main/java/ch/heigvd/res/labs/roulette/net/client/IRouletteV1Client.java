@@ -9,6 +9,7 @@ import java.util.List;
  *
  * @author Olivier Liechti
  * @author Valentin Finini
+ * @author Mika Pagani
  */
 public interface IRouletteV1Client {
 
