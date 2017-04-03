@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author Olivier Liechti
  */
-@Ignore
+
 public class RouletteV2QuentingigonTest {
 
   @Rule
