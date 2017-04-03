@@ -62,6 +62,9 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
      */
     @Override
     public void disconnect() throws IOException {
+        if(socket == null)
+            return;
+        
         outputWriter.println(RouletteV2Protocol.CMD_BYE);
         outputWriter.flush();
         //Wait and parse the response
@@ -121,7 +124,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
      */
     public int getNumberOfStudentsAdded() {
         if (loadCommandResponse != null) {
-            return loadCommandResponse.getNumberOfStudents();
+            return loadCommandResponse.getNumberOfNewStudents();
         } else { //If there is no loadCommandResponse, we didn't add any students
             return 0;
         }
