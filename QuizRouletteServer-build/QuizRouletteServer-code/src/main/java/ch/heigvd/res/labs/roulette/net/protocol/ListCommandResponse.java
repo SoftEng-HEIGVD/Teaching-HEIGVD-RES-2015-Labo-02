@@ -6,7 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by francoisquellec on 02.04.17.
+ * This class is used to serialize/deserialize the response sent by the server
+ * when processing the "LIST" command defined in the protocol specification. The
+ * JsonObjectMapper utility class can use this class.
+ *
+ * @author François Quellec,
+ *         Pierre-Samuel Rochat
  */
 public class ListCommandResponse {
     List<Student> students;
