@@ -15,6 +15,8 @@ import java.util.logging.Logger;
  * This class implements the Roulette protocol (version 2).
  *
  * @author Olivier Liechti
+ * @author Sydney Hauke
+ * @author Thuy-My Tran
  */
 public class RouletteV2ClientHandler implements IClientHandler {
   private final static Logger LOG = Logger.getLogger(RouletteV2ClientHandler.class.getName());

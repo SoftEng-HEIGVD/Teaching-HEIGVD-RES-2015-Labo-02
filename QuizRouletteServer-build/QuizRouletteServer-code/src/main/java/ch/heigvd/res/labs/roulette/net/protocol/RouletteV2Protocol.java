@@ -4,6 +4,8 @@ package ch.heigvd.res.labs.roulette.net.protocol;
  * This class defines constants for the Roulette Protocol (version 2)
  *
  * @author Olivier Liechti
+ * @author Sydney Hauke
+ * @author Thuy-My Tran
  */
 public class RouletteV2Protocol extends RouletteV1Protocol {
 

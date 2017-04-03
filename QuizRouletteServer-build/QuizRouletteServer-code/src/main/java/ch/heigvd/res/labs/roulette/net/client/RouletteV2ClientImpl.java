@@ -11,6 +11,8 @@ import java.util.List;
  * This class implements the client side of the protocol specification (version 2).
  *
  * @author Olivier Liechti
+ * @author Sydney Hauke
+ * @author Thuy-My Tran
  */
 public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRouletteV2Client {
 
