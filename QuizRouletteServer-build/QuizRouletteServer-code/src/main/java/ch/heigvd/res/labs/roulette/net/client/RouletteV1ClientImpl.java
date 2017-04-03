@@ -142,7 +142,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       String result = bufferedReader.readLine();
       RandomCommandResponse answer = JsonObjectMapper.parseJson(result, RandomCommandResponse.class);
 
-      if (!answer.getError().equals("")) {
+      if (answer.getError() != null) {
          throw new EmptyStoreException();
       }
 
