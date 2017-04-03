@@ -70,8 +70,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     * @throws IOException 
     */
    protected void serverClose() throws IOException{
-      bufferedReader.close();
-      printWriter.close();
       serverSocket.close();
 
       bufferedReader = null;
