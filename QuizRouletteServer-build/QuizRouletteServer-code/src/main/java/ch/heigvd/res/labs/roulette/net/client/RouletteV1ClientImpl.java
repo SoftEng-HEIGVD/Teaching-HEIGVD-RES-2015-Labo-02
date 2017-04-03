@@ -54,7 +54,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
      * @throws java.io.IOException
      */
     @Override
-    public void connect(String server, int port) throws IOException {
+    public synchronized void connect(String server, int port) throws IOException {
+        if(isConnected())
+            return;
+        
         //The socket, writer and reader are initialized
         socket = new Socket(server, port);
         outputWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
@@ -72,19 +75,22 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
      * @throws IOException
      */
     @Override
-    public void disconnect() throws IOException {
+    public synchronized void disconnect() throws IOException {
+        if(!isConnected())
+            return;
+        
         outputWriter.println(RouletteV1Protocol.CMD_BYE);
         outputWriter.flush();
 
         //Close everything 
-        outputWriter.close();
         inputReader.close();
+        outputWriter.close();
         socket.close();
 
         //Set to null everything, to keep a valid object state
-        socket = null;
         outputWriter = null;
         inputReader = null;
+        socket = null;
     }
 
     /**
@@ -107,6 +113,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     public void loadStudent(String fullname) throws IOException {
         //Ask the server to load the students
         outputWriter.println(RouletteV1Protocol.CMD_LOAD);
+        outputWriter.flush();
+        readLine(); //Info
 
         //The student is written to the output
         outputWriter.println(fullname);
@@ -114,7 +122,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         outputWriter.flush();
 
         //Ignore server's informations 
-        readLine(); //Info
         readLine(); //Load done
     }
 
@@ -129,6 +136,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     public void loadStudents(List<Student> students) throws IOException {
         //Ask the server to load the students
         outputWriter.println(RouletteV1Protocol.CMD_LOAD);
+        outputWriter.flush();
+        
+        readLine(); //Info
+        
         for (Student student : students) { //Write each of the students
             outputWriter.println(student.getFullname());
         }
@@ -136,7 +147,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         outputWriter.flush();
 
         //Ignore server's informations 
-        readLine(); //Info
         readLine(); //Load done        
     }
 
@@ -145,6 +155,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
      * command and converting the result from json into a Student instance
      *
      * @return an instance of Student randomly selected by the server
+     * @throws ch.heigvd.res.labs.roulette.data.EmptyStoreException
      * @throws IOException
      */
     @Override
@@ -157,12 +168,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         RandomCommandResponse response = JsonObjectMapper.parseJson(
                 readLine(), RandomCommandResponse.class);
 
-        if (response == null) {
-            return null;
-        }
-
         //If the error is not empty, an error has occured
-        if (!response.getError().isEmpty()) {
+        if (response.getError() != null && !response.getError().isEmpty()) {
             throw new EmptyStoreException();
         }
 

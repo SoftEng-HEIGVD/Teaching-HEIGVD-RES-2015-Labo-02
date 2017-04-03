@@ -62,7 +62,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
      */
     @Override
     public void disconnect() throws IOException {
-        if(socket == null)
+        if(!isConnected())
             return;
         
         outputWriter.println(RouletteV2Protocol.CMD_BYE);
@@ -70,8 +70,6 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
         //Wait and parse the response
         byeCommandResponse = JsonObjectMapper.parseJson(
                 readLine(), ByeCommandResponse.class);
-
-        System.out.println(lastStringResponse);
         
         //Close everything 
         outputWriter.close();
