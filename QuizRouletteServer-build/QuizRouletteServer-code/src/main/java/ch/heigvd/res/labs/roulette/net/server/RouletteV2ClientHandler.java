@@ -23,7 +23,7 @@ import java.util.logging.Level;
 /**
  * This class implements the Roulette protocol (version 2).
  *
- * @author Olivier Liechti
+ * @author Pombo Dias Miguel
  */
 public class RouletteV2ClientHandler implements IClientHandler {
 
@@ -32,7 +32,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
    public RouletteV2ClientHandler(IStudentsStore store) {
       this.store = store;
    }
-
+   
    @Override
    public void handleClientConnection(InputStream is, OutputStream os) throws IOException {
       BufferedReader reader = new BufferedReader(new InputStreamReader(is));

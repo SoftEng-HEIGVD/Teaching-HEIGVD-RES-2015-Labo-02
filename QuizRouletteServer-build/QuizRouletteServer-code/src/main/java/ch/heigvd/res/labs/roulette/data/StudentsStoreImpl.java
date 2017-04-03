@@ -51,6 +51,10 @@ public class StudentsStoreImpl implements IStudentsStore {
       return students.size();
    }
 
+   /**
+    * Updated to return the number of students added during the process
+    * @throws java.io.IOException
+    */
    @Override
    public int importData(BufferedReader reader) throws IOException {
       LOG.log(Level.INFO, "Importing data from input reader of type {0}", reader.getClass());
