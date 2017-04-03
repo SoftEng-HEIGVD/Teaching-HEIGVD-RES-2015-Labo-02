@@ -21,10 +21,10 @@ import java.util.logging.Logger;
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
-    private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+    static final protected Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
     private Socket socket;
-    private BufferedReader is;
-    private OutputStreamWriter os;
+    protected BufferedReader is;
+    protected OutputStreamWriter os;
 
     @Override
     public void connect(String server, int port) throws IOException {
@@ -40,14 +40,14 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     public void disconnect() throws IOException {
         if (isConnected()) {
             socket.close();
-            is.close();
-            os.close();
+//            is.close();
+//            os.close();
         }
     }
 
     @Override
     public boolean isConnected() {
-        return socket != null && socket.isConnected();
+        return socket != null && socket.isConnected() && !socket.isClosed();
     }
 
     @Override
@@ -68,6 +68,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     @Override
     public void loadStudents(List<Student> students) throws IOException {
         os.append(RouletteV1Protocol.CMD_LOAD + System.lineSeparator());
+        os.flush();
+        LOG.info(is.readLine());
         for (Student s : students) {
             os.append(s.getFullname() + System.lineSeparator());
         }
@@ -92,7 +94,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         Student student = JsonObjectMapper.parseJson(line, Student.class);
         return student;
     }
-    
+
     private InfoCommandResponse getInfos() throws IOException {
         if (!isConnected()) {
             throw new IOException("Not connected to the server");
