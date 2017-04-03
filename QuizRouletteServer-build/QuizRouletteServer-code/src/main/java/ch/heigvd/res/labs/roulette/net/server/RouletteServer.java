@@ -29,6 +29,8 @@ import java.util.logging.Logger;
  * need "isolated" servers).
  *
  * @author Olivier Liechti
+ * @author Valentin Finini
+ * @author Mika Pagani
  */
 public class RouletteServer {
 
@@ -143,7 +145,10 @@ public class RouletteServer {
    * @return the port on which client connection requests are accepted
    */
   public int getPort() {
-    return serverSocket.getLocalPort();
+    if(serverSocket != null)
+      return serverSocket.getLocalPort();
+    else
+      return listenPort;
   }
 
   /**

@@ -8,6 +8,8 @@ import java.util.List;
 /**
  *
  * @author Olivier Liechti
+ * @author Valentin Finini
+ * @author Mika Pagani
  */
 public interface IRouletteV1Client {
 
@@ -41,7 +43,7 @@ public interface IRouletteV1Client {
    * @param fullname the student's full name
    * @throws IOException
    */
-  public void loadStudent(String fullname) throws IOException;
+  public int loadStudent(String fullname) throws IOException;
 
   /**
    * Adds a list of students in the server database, by issuing the 'LOAD'
@@ -50,7 +52,7 @@ public interface IRouletteV1Client {
    * @param students
    * @throws IOException
    */
-  public void loadStudents(List<Student> students) throws IOException;
+  public int loadStudents(List<Student> students) throws IOException;
 
   /**
    * Asks the server to select a random student, by issuing the 'RANDOM' command
