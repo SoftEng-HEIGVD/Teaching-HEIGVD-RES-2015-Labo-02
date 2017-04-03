@@ -3,6 +3,7 @@ package ch.heigvd.res.labs.roulette.net.server;
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
+import ch.heigvd.res.labs.roulette.data.StudentsList;
 import ch.heigvd.res.labs.roulette.net.protocol.*;
 
 import java.io.*;
@@ -67,7 +68,9 @@ public class RouletteV2ClientHandler implements IClientHandler {
           writer.flush();
           break;
         case RouletteV2Protocol.CMD_LIST:
-          writer.println(JsonObjectMapper.toJson(store.listStudents()));
+            StudentsList studentsList = new StudentsList();
+            studentsList.addAll(store.listStudents());
+          writer.println(JsonObjectMapper.toJson(studentsList));
           writer.flush();
           break;
         case RouletteV2Protocol.CMD_CLEAR:

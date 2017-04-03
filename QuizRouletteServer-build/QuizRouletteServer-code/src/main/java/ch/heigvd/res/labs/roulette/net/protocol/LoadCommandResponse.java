@@ -14,4 +14,12 @@ public class LoadCommandResponse {
         this.status = status.toString();
         numberOfNewStudents = nbNewSt;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public int getNumberOfNewStudents() {
+        return numberOfNewStudents;
+    }
 }
