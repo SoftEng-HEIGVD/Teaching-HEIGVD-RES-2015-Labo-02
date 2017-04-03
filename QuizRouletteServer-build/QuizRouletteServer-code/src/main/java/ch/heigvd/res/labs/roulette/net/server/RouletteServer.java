@@ -144,9 +144,8 @@ public class RouletteServer {
    */
   public int getPort() {
     if (serverSocket == null) {
-      return RouletteV2Protocol.DEFAULT_PORT;
+      return listenPort;
     }
-
     return serverSocket.getLocalPort();
   }
 
