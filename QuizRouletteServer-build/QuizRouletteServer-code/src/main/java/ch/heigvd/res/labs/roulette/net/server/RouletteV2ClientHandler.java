@@ -86,6 +86,8 @@ public class RouletteV2ClientHandler implements IClientHandler {
           writer.flush();
           break;
         default:
+          /* We only count number of commands that are corrects */
+          --nbCommandsSession;
           writer.println("Huh? please use HELP if you don't know what commands are available.");
           writer.flush();
           break;
