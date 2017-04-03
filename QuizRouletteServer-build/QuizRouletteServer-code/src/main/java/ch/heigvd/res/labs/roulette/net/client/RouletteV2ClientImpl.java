@@ -101,13 +101,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
         LOG.log(Level.INFO, bufferedReader.readLine());
 
-        bufferedReader.close();
-        printWriter.close();
-        serverSocket.close();
-
-        bufferedReader = null;
-        printWriter = null;
-        serverSocket = null;
+        serverClose();
       }
    }
 }

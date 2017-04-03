@@ -61,14 +61,22 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
          printWriter.println(RouletteV1Protocol.CMD_BYE);
          printWriter.flush();
 
-         bufferedReader.close();
-         printWriter.close();
-         serverSocket.close();
-
-         bufferedReader = null;
-         printWriter = null;
-         serverSocket = null;
+         serverClose();
       }
+   }
+
+   /**
+    * 
+    * @throws IOException 
+    */
+   protected void serverClose() throws IOException{
+      bufferedReader.close();
+      printWriter.close();
+      serverSocket.close();
+
+      bufferedReader = null;
+      printWriter = null;
+      serverSocket = null;
    }
 
    /**
@@ -96,6 +104,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
    /**
     * load a list of students to the server
+    *
     * @param students list of students
     * @throws IOException
     */
@@ -119,9 +128,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
    /**
     * asks the server for a random student
+    *
     * @return a random student
     * @throws EmptyStoreException
-    * @throws IOException 
+    * @throws IOException
     */
    @Override
    public Student pickRandomStudent() throws EmptyStoreException, IOException {
@@ -141,8 +151,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
    /**
     * get the number of students currently in the server
+    *
     * @return the number of students
-    * @throws IOException 
+    * @throws IOException
     */
    @Override
    public int getNumberOfStudents() throws IOException {
@@ -151,8 +162,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
    /**
     * get the protocol version from the server
+    *
     * @return the version of the server
-    * @throws IOException 
+    * @throws IOException
     */
    @Override
    public String getProtocolVersion() throws IOException {
@@ -161,8 +173,9 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
    /**
     * gets the InfoCOmmandResponse by asking infos to the server
+    *
     * @return InfoCommandResponse
-    * @throws IOException 
+    * @throws IOException
     */
    private InfoCommandResponse getInfo() throws IOException {
       printWriter.println(RouletteV1Protocol.CMD_INFO);
@@ -171,5 +184,4 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
       return JsonObjectMapper.parseJson(result,
               InfoCommandResponse.class);
    }
-
 }
