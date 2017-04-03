@@ -16,8 +16,8 @@ public class InfoCommandResponse {
   }
 
   public InfoCommandResponse(String protocolVersion, int numberOfStudents) {
-    this.protocolVersion = protocolVersion;
-    this.numberOfStudents = numberOfStudents;
+      this.protocolVersion = protocolVersion;
+      this.numberOfStudents = numberOfStudents;
   }
 
   public String getProtocolVersion() {

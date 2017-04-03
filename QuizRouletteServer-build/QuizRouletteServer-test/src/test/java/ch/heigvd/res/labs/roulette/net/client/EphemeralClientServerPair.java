@@ -5,12 +5,15 @@ import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.junit.Ignore;
 import org.junit.rules.ExternalResource;
 
 /**
  *
  * @author Olivier Liechti
  */
+@Ignore
 public class EphemeralClientServerPair extends ExternalResource {
 
   RouletteServer server;
