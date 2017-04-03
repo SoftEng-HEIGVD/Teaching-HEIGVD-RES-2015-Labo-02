@@ -43,7 +43,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
             return;
         }
         in.readLine();
-        out.flush();
     }
 
     @Override
