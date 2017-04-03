@@ -30,8 +30,11 @@ public class RouletteV2maxcaduffTest {
     @Test
     @TestAuthor(githubId = "maxcaduff")
     public void theServerShouldListAndClearCorrectly() throws IOException {
+        int port = roulettePair.getServer().getPort();
+        IRouletteV2Client client = new RouletteV2ClientImpl();
+        client.connect("localhost", port);
 //        int port = roulettePair.getServer().getPort();
-        IRouletteV2Client client = (RouletteV2ClientImpl)roulettePair.getClient();
+//        IRouletteV2Client client = (RouletteV2ClientImpl)roulettePair.getClient();
 //        client.connect("localhost", port);
         client.loadStudent("Jaques");
         client.loadStudent("Georges");
@@ -51,8 +54,8 @@ public class RouletteV2maxcaduffTest {
         server.startServer();
         RouletteV2ClientImpl client = new RouletteV2ClientImpl();
         client.connect("localhost", RouletteV2Protocol.DEFAULT_PORT );
-
         assertTrue(client.isConnected());
+        server.stopServer();
     }
 
 
