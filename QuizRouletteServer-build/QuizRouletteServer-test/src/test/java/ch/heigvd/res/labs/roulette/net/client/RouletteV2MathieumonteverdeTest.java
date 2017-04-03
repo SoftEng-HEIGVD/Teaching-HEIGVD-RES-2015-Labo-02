@@ -28,7 +28,6 @@ import org.junit.rules.ExpectedException;
  * @author Mathieu Monteverde
  * @author Chaymae Mbarki
  */
-@Ignore
 public class RouletteV2MathieumonteverdeTest {
 
    @Rule
@@ -37,6 +36,7 @@ public class RouletteV2MathieumonteverdeTest {
    @Rule
    public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
    
+   @Ignore
    @Test
    @TestAuthor(githubId = "mathieumonteverde")
    public void theServerPortShouldBe2613() {
@@ -49,7 +49,7 @@ public class RouletteV2MathieumonteverdeTest {
    @TestAuthor(githubId = "mathieumonteverde")
    public void theServerShouldClearTheData() throws Exception {
       // Connect to the server
-      Socket socket = new Socket("localhost", 2613);
+      Socket socket = new Socket("localhost", roulettePair.getServer().getPort());
       PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"));
       BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
       
@@ -58,6 +58,7 @@ public class RouletteV2MathieumonteverdeTest {
       
       // Load some students
       out.println(RouletteV2Protocol.CMD_LOAD);
+      out.flush();
       // Read response
       in.readLine();
       
@@ -67,6 +68,7 @@ public class RouletteV2MathieumonteverdeTest {
       out.flush();
       
       out.println(RouletteV2Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+      out.flush();
       
       // Read Response
       in.readLine();
@@ -101,7 +103,8 @@ public class RouletteV2MathieumonteverdeTest {
    @Test
    @TestAuthor(githubId = "mathieumonteverde")
    public void theServerShouldListTheData() throws Exception {// Connect to the server
-      Socket socket = new Socket("localhost", 2613);
+      Socket socket = new Socket("localhost", roulettePair.getServer().getPort());
+      
       PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"));
       BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
       
@@ -110,6 +113,7 @@ public class RouletteV2MathieumonteverdeTest {
       
       // Load some students
       out.println(RouletteV2Protocol.CMD_LOAD);
+      out.flush();
       // Read response
       in.readLine();
       
@@ -119,6 +123,7 @@ public class RouletteV2MathieumonteverdeTest {
       
       out.println(RouletteV2Protocol.CMD_LOAD_ENDOFDATA_MARKER);
       
+      out.flush();
       // Read Response
       in.readLine();
       
