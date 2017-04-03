@@ -20,7 +20,6 @@ import org.junit.rules.ExpectedException;
  *
  * @author Ludovic Richard, Luana Martelli
  */
-@Ignore
 public class RouletteV2LuanaMartelliTest {
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -37,6 +36,7 @@ public class RouletteV2LuanaMartelliTest {
         client.connect("localhost", port);
         client.loadStudent("John Smith");
         client.clearDataStore();
+        int nb = client.getNumberOfStudents();
         assertEquals(client.getNumberOfStudents(), 0);
         client.disconnect();
     }

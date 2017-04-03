@@ -2,6 +2,7 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
+import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
 import ch.heigvd.schoolpulse.TestAuthor;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -38,7 +39,8 @@ public class RouletteV2GaussianBlursTest {
     @Test
     @TestAuthor(githubId = "gaussianblurs")
     public void theServerShouldListenToTheCorrectPort() {
-        assertEquals(RouletteV2Protocol.DEFAULT_PORT, roulettePair.getServer().getPort());
+        RouletteServer server = new RouletteServer(RouletteV2Protocol.DEFAULT_PORT, RouletteV2Protocol.VERSION);
+        assertEquals(RouletteV2Protocol.DEFAULT_PORT, server.getPort());
     }
 
     @Test
