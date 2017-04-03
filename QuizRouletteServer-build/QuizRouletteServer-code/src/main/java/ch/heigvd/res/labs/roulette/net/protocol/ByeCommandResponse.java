@@ -5,6 +5,7 @@ package ch.heigvd.res.labs.roulette.net.protocol;
  * command for the v2 implementation
  *
  * @author Valentin Finini
+ * @author Mika Pagani
  */
 public class ByeCommandResponse {
 

@@ -5,6 +5,7 @@ package ch.heigvd.res.labs.roulette.net.protocol;
  *
  * @author Olivier Liechti
  * @author Valentin Finini
+ * @author Mika Pagani
  */
 public class RouletteV2Protocol extends RouletteV1Protocol {
   public final static String VERSION = "2.0";

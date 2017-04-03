@@ -15,6 +15,7 @@ import java.util.logging.Logger;
  *
  * @author Olivier Liechti
  * @author Valentin Finini
+ * @author Mika Pagani
  */
 public class RouletteV2ClientHandler implements IClientHandler {
 

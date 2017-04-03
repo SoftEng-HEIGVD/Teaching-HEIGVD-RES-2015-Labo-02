@@ -30,6 +30,7 @@ import java.util.logging.Logger;
  *
  * @author Olivier Liechti
  * @author Valentin Finini
+ * @author Mika Pagani
  */
 public class RouletteServer {
 
