@@ -4,6 +4,7 @@ package ch.heigvd.res.labs.roulette.net.client;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.ListCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 
 import java.io.*;
@@ -88,6 +89,25 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
       System.out.println("Error at the end of process ");
     }
 
+  }
+
+  @Override
+  public void disconnect() throws IOException {
+    if (socket == null || !isConnected()) {
+      return;
+    }
+
+    writer.println(RouletteV1Protocol.CMD_BYE);
+    writer.flush();
+
+    reader.readLine();
+
+    /* Close connexion */
+    reader.close();
+    writer.close();
+    socket.close();
+
+    socket = null;
   }
 
 }

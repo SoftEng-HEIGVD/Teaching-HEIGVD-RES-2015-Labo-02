@@ -18,7 +18,6 @@ import org.junit.rules.ExpectedException;
  * 
  * @author Olivier Liechti
  */
-@Ignore
 public class RouletteV1WasadigiTest {
 
   @Rule

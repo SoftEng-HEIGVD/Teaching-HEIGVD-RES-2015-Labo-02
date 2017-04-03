@@ -28,7 +28,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
-  private Socket socket = new Socket();
+  protected Socket socket = new Socket();
   protected BufferedReader reader;
   protected PrintWriter writer;
 
@@ -41,7 +41,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
 
     /* Connexion to a server with a specific port */
     socket = new Socket(server, port);
-    reader = new BufferedReader( new InputStreamReader(socket.getInputStream(), "UTF-8"));
+    reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
     writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 
     /* We read the welcome message */
@@ -69,6 +69,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   public boolean isConnected() {
     return socket != null && socket.isConnected();
   }
+
 
   @Override
   public void loadStudent(String fullname) throws IOException {
@@ -169,17 +170,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     /* Gets answer from json class */
     InfoCommandResponse info = JsonObjectMapper.parseJson(reader.readLine(), InfoCommandResponse.class);
     return info.getProtocolVersion();
-  }
-
-  /* Usefull for the daughter's class */
-  public void write(String towrite) {
-    writer.println(towrite);
-    writer.flush();
-  }
-
-  /* Usefull for the daughter's class */
-  public String read() throws  IOException {
-    return reader.readLine();
   }
 
 }
