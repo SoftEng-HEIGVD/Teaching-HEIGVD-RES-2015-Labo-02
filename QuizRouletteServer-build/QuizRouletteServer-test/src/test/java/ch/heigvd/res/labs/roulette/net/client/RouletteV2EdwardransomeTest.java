@@ -20,7 +20,6 @@ import org.junit.rules.ExpectedException;
  * @author Edward Ransome
  * @author Michael Spierer
  */
-@Ignore
 public class RouletteV2EdwardransomeTest {
 
     @Rule
