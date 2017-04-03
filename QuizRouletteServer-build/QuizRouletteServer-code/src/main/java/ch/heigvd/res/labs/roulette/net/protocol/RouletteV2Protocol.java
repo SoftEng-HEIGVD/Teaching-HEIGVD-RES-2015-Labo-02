@@ -22,7 +22,6 @@ public class RouletteV2Protocol extends RouletteV1Protocol {
   public final static String CMD_LOAD_ENDOFDATA_MARKER = "ENDOFDATA";
 
   public final static String RESPONSE_LOAD_START = "Send your data [end with ENDOFDATA]";
-  public final static String RESPONSE_LOAD_DONE = "DATA LOADED";
 
   public static String RESPONSE_CLEAR_DONE = "DATASTORE CLEARED";
 
