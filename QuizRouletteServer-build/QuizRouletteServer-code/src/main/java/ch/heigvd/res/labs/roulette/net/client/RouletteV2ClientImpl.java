@@ -8,6 +8,7 @@ import ch.heigvd.res.labs.roulette.net.protocol.LoadCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -90,7 +91,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
      // Convert into an object
      ListCommandResponse response = JsonObjectMapper.parseJson(result, ListCommandResponse.class);
      // Return list of students
-     return Arrays.asList(response.getStudents());
+     return new ArrayList<Student>(Arrays.asList(response.getStudents()));
      
   }
   
