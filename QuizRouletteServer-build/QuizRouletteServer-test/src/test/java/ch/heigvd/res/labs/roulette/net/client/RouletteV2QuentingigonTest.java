@@ -82,5 +82,4 @@ public class RouletteV2QuentingigonTest {
   public void theServerShouldGiveTheCorrectVersionNumber() throws IOException {
     assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
   }
-
 }
