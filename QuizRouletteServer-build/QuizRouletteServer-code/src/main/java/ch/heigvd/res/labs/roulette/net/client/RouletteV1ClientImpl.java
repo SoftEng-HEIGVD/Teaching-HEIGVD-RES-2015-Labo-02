@@ -4,19 +4,10 @@ import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.net.protocol.*;
 import ch.heigvd.res.labs.roulette.data.Student;
-<<<<<<< HEAD
-import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
-import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
-
-import java.io.*;
-import java.net.Socket;
-=======
-
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.Charset;
->>>>>>> fb-lab02-v2-contrib
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -30,16 +21,9 @@ import java.util.logging.Logger;
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
-
-<<<<<<< HEAD
-  private Socket clientSocket = null;
-  private DataOutputStream outToServer = null;
-  private BufferedReader inFromServer = null;
-=======
   protected Socket clientSocket = null;
   protected PrintWriter outToServer = null;
   protected BufferedReader inFromServer = null;
->>>>>>> fb-lab02-v2-contrib
 
   @Override
   public void connect(String server, int port) throws IOException {
