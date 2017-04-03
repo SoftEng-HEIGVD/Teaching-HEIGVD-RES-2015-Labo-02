@@ -15,6 +15,9 @@ public class ByeCommandResponse {
         this.nbCommands = commands;
     }
 
+    public ByeCommandResponse() {
+    }
+
     public String getStatus() {
         return status;
     }

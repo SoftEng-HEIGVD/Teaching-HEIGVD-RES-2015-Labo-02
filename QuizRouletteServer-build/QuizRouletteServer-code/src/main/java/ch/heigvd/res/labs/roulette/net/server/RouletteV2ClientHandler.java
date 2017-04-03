@@ -61,6 +61,13 @@ public class RouletteV2ClientHandler implements IClientHandler {
                 case RouletteV2Protocol.CMD_LOAD:
                     writer.println(RouletteV2Protocol.RESPONSE_LOAD_START);
                     writer.flush();
+                    String status = RouletteV2Protocol.LOAD_SUCCESS;
+                    try {
+                        store.importData(reader);
+                    } catch (IOException e) {
+                        status = RouletteV2Protocol.LOAD_FAILURE;
+                    }
+
                     int old = store.getNumberOfStudents();
                     String status = RouletteV2Protocol.LOAD_SUCCESS;
                     try {
