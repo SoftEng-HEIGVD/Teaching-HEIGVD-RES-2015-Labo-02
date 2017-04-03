@@ -140,10 +140,15 @@ public class RouletteServer {
   /**
    * Getter for the TCP port number used by the server socket.
    *
-   * @return the port on which client connection requests are accepted
+   * @return the port on which client connection requests are accepted if the
+   * server socket is created or the wanted port otherwise.
    */
   public int getPort() {
-    return serverSocket.getLocalPort();
+    if(serverSocket == null) {
+      return listenPort;
+    } else {
+      return serverSocket.getLocalPort();
+    }
   }
 
   /**
