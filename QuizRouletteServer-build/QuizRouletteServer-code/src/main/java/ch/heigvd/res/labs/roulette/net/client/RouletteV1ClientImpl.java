@@ -90,8 +90,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
             out.flush();
         }
         out.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
-        in.readLine();
         out.flush();
+        in.readLine();
     }
 
     @Override
