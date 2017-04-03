@@ -1,12 +1,16 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
 import ch.heigvd.schoolpulse.TestAuthor;
-import java.io.IOException;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Rule;
+import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -29,7 +33,7 @@ public class RouletteV2maxcaduffTest {
 
     @Test
     @TestAuthor(githubId = "maxcaduff")
-    public void theServerShouldListAndClearCorrectly() throws IOException {
+    public void theServerShouldListAndClearCorrectly() throws IOException, EmptyStoreException {
         int port = roulettePair.getServer().getPort();
         IRouletteV2Client client = new RouletteV2ClientImpl();
         client.connect("localhost", port);

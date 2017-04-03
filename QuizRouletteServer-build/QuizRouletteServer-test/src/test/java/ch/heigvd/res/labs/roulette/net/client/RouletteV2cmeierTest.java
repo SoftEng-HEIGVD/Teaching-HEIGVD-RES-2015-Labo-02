@@ -1,17 +1,15 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
-import ch.heigvd.res.labs.roulette.QuizRouletteServer;
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
 import ch.heigvd.schoolpulse.TestAuthor;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,14 +43,14 @@ public class RouletteV2cmeierTest {
 
   @Test
   @TestAuthor(githubId = {"c-meier", "danpa32"})
-  public void theServerSouldHaveAnEmptyListOfStudentsAtStart() throws IOException {
+  public void theServerSouldHaveAnEmptyListOfStudentsAtStart() throws IOException, EmptyStoreException {
     IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     assertTrue(client.listStudents().isEmpty());
   }
 
   @Test
   @TestAuthor(githubId = {"c-meier", "danpa32"})
-  public void theServerShouldFetchTheListOfStudentsInTheStore() throws IOException {
+  public void theServerShouldFetchTheListOfStudentsInTheStore() throws IOException, EmptyStoreException {
     IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
 
     List<Student> listStudents = new ArrayList<>();

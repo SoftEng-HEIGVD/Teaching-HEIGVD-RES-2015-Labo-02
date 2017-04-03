@@ -120,7 +120,7 @@ public class RouletteV2LassalleLoanTest {
 
     @Test
     @TestAuthor(githubId = {"lassalleloan", "galahad1"})
-    public void theServerShouldSendTheListOfStudents() throws IOException {
+    public void theServerShouldSendTheListOfStudents() throws IOException, EmptyStoreException {
         IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
 
         List<Student> listStudentExpected = new ArrayList<>();

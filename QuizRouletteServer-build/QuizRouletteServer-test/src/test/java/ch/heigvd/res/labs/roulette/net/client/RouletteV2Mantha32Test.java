@@ -3,16 +3,17 @@ package ch.heigvd.res.labs.roulette.net.client;
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
-import ch.heigvd.res.labs.roulette.net.client.IRouletteV2Client;
 import ch.heigvd.schoolpulse.TestAuthor;
-import java.util.List;
-import java.util.ArrayList;
-import java.io.IOException;
-import org.junit.Test;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Julien  Baeriswyl    (julien.baeriswyl@heig-vd.ch,         julien-baeriswyl-heigvd)
@@ -36,8 +37,7 @@ public class RouletteV2Mantha32Test
 
     @Test
     @TestAuthor(githubId = "Mantha32")
-    public void clientNumberOfStudentsAndStudentsListShouldMatch () throws IOException
-    {
+    public void clientNumberOfStudentsAndStudentsListShouldMatch () throws IOException, EmptyStoreException {
         // BEGIN: TO REPLACE WHEN IRouletteV2Client WILL BE AVAILABLE THROUGH RESOURCES
         IRouletteV2Client client = new RouletteV2ClientImpl();
         client.connect("localhost", roulettePair.getServer().getPort());
@@ -59,8 +59,7 @@ public class RouletteV2Mantha32Test
 
     @Test
     @TestAuthor(githubId = "Mantha32")
-    public void clientShouldBeAbleToListAndClearStudents () throws IOException
-    {
+    public void clientShouldBeAbleToListAndClearStudents () throws IOException, EmptyStoreException {
         // BEGIN: TO REPLACE WHEN IRouletteV2Client WILL BE AVAILABLE THROUGH RESOURCES
         IRouletteV2Client client = new RouletteV2ClientImpl();
         client.connect("localhost", roulettePair.getServer().getPort());

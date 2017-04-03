@@ -3,15 +3,15 @@ package ch.heigvd.res.labs.roulette.net.client;
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.*;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -53,7 +53,7 @@ public class RouletteV2silverkameniTest {
 
   @Test
   @TestAuthor(githubId = {"zacharienguefack", "silverkameni"})
-  public void listStudentsShouldCountFile() throws IOException {
+  public void listStudentsShouldCountFile() throws IOException, EmptyStoreException {
     IRouletteV2Client client = new RouletteV2ClientImpl();
     client.connect("localhost", roulettePair.getServer().getPort());
     assertEquals(0, client.listStudents().size());
@@ -67,7 +67,7 @@ public class RouletteV2silverkameniTest {
 
   @Test
   @TestAuthor(githubId = {"zacharienguefack", "silverkameni"})
-  public void clearTheDataStoreShouldputTheListEmpty() throws IOException {
+  public void clearTheDataStoreShouldputTheListEmpty() throws IOException, EmptyStoreException {
     IRouletteV2Client client = new RouletteV2ClientImpl();
     client.connect("localhost", roulettePair.getServer().getPort());
     client.loadStudent("cedric lankeu");
@@ -77,7 +77,7 @@ public class RouletteV2silverkameniTest {
 
   @Test
   @TestAuthor(githubId = {"zacharienguefack", "silverkameni"})
-  public void StudentsListShouldBeEmptyAtStart() throws IOException {
+  public void StudentsListShouldBeEmptyAtStart() throws IOException, EmptyStoreException {
     IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     assertTrue(client.listStudents().isEmpty());
   }

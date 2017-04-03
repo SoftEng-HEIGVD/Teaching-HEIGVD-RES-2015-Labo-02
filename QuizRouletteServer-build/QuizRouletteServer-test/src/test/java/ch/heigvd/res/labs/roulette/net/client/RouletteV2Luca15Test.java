@@ -1,9 +1,9 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -67,7 +67,7 @@ public class RouletteV2Luca15Test {
 
     @Test
     @TestAuthor(githubId = "luca15")
-    public void theRouletteClientShouldGetListOfStudents() throws IOException {
+    public void theRouletteClientShouldGetListOfStudents() throws IOException, EmptyStoreException {
         IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
 
         List<Student> students = new ArrayList<>();

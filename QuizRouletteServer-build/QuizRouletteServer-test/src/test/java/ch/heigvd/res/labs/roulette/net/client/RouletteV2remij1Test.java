@@ -4,14 +4,14 @@ import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import java.io.IOException;
-import java.util.List;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -114,7 +114,7 @@ public class RouletteV2remij1Test {
 
     @Test
     @TestAuthor(githubId = {"remij1", "aurelielevy"})
-    public void theServerShouldListData() throws IOException {
+    public void theServerShouldListData() throws IOException, EmptyStoreException {
         IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
         assertEquals(0, client.getNumberOfStudents());
         client.loadStudent("sacha");

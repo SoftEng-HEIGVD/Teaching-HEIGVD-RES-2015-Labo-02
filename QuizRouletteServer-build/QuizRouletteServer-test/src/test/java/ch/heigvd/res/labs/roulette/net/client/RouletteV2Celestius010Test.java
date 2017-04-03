@@ -1,17 +1,19 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -65,7 +67,7 @@ public class RouletteV2Celestius010Test {
 
    @Test
    @TestAuthor(githubId = "bgianinetti")
-   public void theServerShouldReturnAListOfStudents() throws IOException {
+   public void theServerShouldReturnAListOfStudents() throws IOException, EmptyStoreException {
        IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
        List<Student> students = new ArrayList<Student>();
 

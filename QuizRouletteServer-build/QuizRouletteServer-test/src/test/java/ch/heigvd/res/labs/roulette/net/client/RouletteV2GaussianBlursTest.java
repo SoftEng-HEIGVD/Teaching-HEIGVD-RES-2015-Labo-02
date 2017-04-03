@@ -1,5 +1,6 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
@@ -11,7 +12,6 @@ import org.junit.rules.ExpectedException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Ignore;
 
 import static org.junit.Assert.assertEquals;
 
@@ -55,7 +55,7 @@ public class RouletteV2GaussianBlursTest {
 
     @Test
     @TestAuthor(githubId = "gaussianblurs")
-    public void theServerShouldListStudents() throws IOException {
+    public void theServerShouldListStudents() throws IOException, EmptyStoreException {
         IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
         List<Student> addStudents = new ArrayList<>();
         addStudents.add(new Student("Albert"));

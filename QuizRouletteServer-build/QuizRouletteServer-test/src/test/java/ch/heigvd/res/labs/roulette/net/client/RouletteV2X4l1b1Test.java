@@ -1,5 +1,6 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
@@ -55,7 +56,7 @@ public class RouletteV2X4l1b1Test {
 
     @Test
     @TestAuthor(githubId = {"yosra-harbaoui", "X4l1b1"})
-    public void theServerListSouldBeEmptyAtSetup() throws IOException {
+    public void theServerListSouldBeEmptyAtSetup() throws IOException, EmptyStoreException {
 
         IRouletteV2Client c2 = (IRouletteV2Client) roulettePair.getClient();
         assertTrue(c2.listStudents().isEmpty());

@@ -1,10 +1,10 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
 import ch.heigvd.schoolpulse.TestAuthor;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -61,7 +61,7 @@ public class RouletteV2McMoudiTest {
 
   @Test
   @TestAuthor(githubId = "McMoudi")
-  public void theClientCanLoadAndRetrieveAStudentList() throws IOException{
+  public void theClientCanLoadAndRetrieveAStudentList() throws IOException, EmptyStoreException {
     IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     List<Student> studentList = populate(client);
     assertEquals(client.listStudents(),studentList);
@@ -96,7 +96,7 @@ public class RouletteV2McMoudiTest {
 
   @Test
   @TestAuthor(githubId = "McMoudi")
-  public void theServerShouldReturnAnEmptyListWhenTestStart() throws IOException {
+  public void theServerShouldReturnAnEmptyListWhenTestStart() throws IOException, EmptyStoreException {
       IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
 
       assertTrue(client.listStudents().isEmpty());

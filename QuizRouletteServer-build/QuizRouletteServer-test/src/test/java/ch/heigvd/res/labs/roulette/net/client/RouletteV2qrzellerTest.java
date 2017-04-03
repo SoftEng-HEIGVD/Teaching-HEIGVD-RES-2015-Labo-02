@@ -1,9 +1,9 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -11,10 +11,6 @@ import org.junit.rules.ExpectedException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -45,7 +41,7 @@ public class RouletteV2qrzellerTest {
 
     @Test
     @TestAuthor(githubId = "qrzeller")
-    public void theServerShouldNotHaveStudentAndAfterClean() throws IOException {
+    public void theServerShouldNotHaveStudentAndAfterClean() throws IOException, EmptyStoreException {
 
         IRouletteV2Client client = (RouletteV2ClientImpl) roulettePair.getClient();
 
@@ -68,7 +64,7 @@ public class RouletteV2qrzellerTest {
 
     @Test
     @TestAuthor(githubId = "qrzeller")
-    public void weCouldGetTheListOfStudent() throws IOException {
+    public void weCouldGetTheListOfStudent() throws IOException, EmptyStoreException {
 
         IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
 

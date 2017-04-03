@@ -1,5 +1,6 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import org.junit.Rule;
@@ -44,7 +45,7 @@ public class RouletteV2DbnskyIamfonkyTest {
 
   @Test
   @TestAuthor(githubId = "dbnsky")
-  public void theServerShouldReturnSpecificStudentList () throws IOException {
+  public void theServerShouldReturnSpecificStudentList () throws IOException, EmptyStoreException {
     IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     List<Student> studentList = new ArrayList<>();
     studentList.add(new Student("Iamfonky"));

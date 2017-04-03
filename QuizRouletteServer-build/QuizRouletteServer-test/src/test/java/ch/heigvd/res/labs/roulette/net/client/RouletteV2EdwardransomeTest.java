@@ -1,17 +1,17 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import java.io.IOException;
-import java.util.List;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * This class contains automated tests to validate the behaviour of the RouletteV2
@@ -55,7 +55,7 @@ public class RouletteV2EdwardransomeTest {
     
      @Test
     @TestAuthor(githubId = {"edwardransome", "oceanos1"})
-    public void clearShouldMakeStudentListEmpty() throws IOException {
+    public void clearShouldMakeStudentListEmpty() throws IOException, EmptyStoreException {
         int port = roulettePair.getServer().getPort();
         IRouletteV2Client client = new RouletteV2ClientImpl();
         client.connect("localhost", port);
@@ -69,7 +69,7 @@ public class RouletteV2EdwardransomeTest {
 
     @Test
     @TestAuthor(githubId = {"edwardransome", "oceanos1"})
-    public void listShouldReturnAllStudents() throws IOException {
+    public void listShouldReturnAllStudents() throws IOException, EmptyStoreException {
         int port = roulettePair.getServer().getPort();
         IRouletteV2Client client = new RouletteV2ClientImpl();
         client.connect("localhost", port);
@@ -83,7 +83,7 @@ public class RouletteV2EdwardransomeTest {
     
     @Test
     @TestAuthor(githubId = {"edwardransome", "oceanos1"})
-    public void listShouldReturnEmptyListIfNoStudentsLoaded() throws IOException{
+    public void listShouldReturnEmptyListIfNoStudentsLoaded() throws IOException, EmptyStoreException {
         int port = roulettePair.getServer().getPort();
         IRouletteV2Client client = new RouletteV2ClientImpl();
         client.connect("localhost", port);

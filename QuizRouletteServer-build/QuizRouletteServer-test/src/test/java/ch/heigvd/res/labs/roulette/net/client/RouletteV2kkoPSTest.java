@@ -1,7 +1,9 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,7 +15,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
 
 /**
  * Tests for V2 protocol
@@ -47,7 +48,7 @@ public class RouletteV2kkoPSTest {
     @Ignore
     @Test
     @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
-    public void noMoreStudentsInServerAfterCallingMethodClearDataStore() throws IOException {
+    public void noMoreStudentsInServerAfterCallingMethodClearDataStore() throws IOException, EmptyStoreException {
         // other client to intercept the server answers
         IRouletteV2Client clientV2 = new RouletteV2ClientImpl();
         clientV2.loadStudent("cesar");

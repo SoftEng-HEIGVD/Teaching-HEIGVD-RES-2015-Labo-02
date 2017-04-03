@@ -1,18 +1,18 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
-import static org.junit.Assert.assertEquals;
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
+import ch.heigvd.res.labs.roulette.data.Student;
+import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
+import ch.heigvd.schoolpulse.TestAuthor;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import ch.heigvd.res.labs.roulette.data.Student;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
-import ch.heigvd.schoolpulse.TestAuthor;
+import static org.junit.Assert.assertEquals;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -74,7 +74,7 @@ public class RouletteV2TalpieTest {
 	  // List
 	  @Test
 	  @TestAuthor(githubId = "Talpie")
-	  public void theServerShouldGiveListStudents() throws IOException {
+	  public void theServerShouldGiveListStudents() throws IOException, EmptyStoreException {
 	    IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
 	    client.loadStudent("sacha");
 	    client.loadStudent("olivier");
@@ -84,6 +84,7 @@ public class RouletteV2TalpieTest {
 	    names.add("olivier");
 	    names.add("fabienne");
 	    List<Student> ls = client.listStudents();
+
 	    List<String> lsName = new ArrayList<>();
 	    for(Student s : ls)
 	    {
@@ -95,7 +96,7 @@ public class RouletteV2TalpieTest {
 	  
 	  @Test
 	  @TestAuthor(githubId = "Talpie")
-	  public void theServerShouldGiveEmptyListStudents() throws IOException {
+	  public void theServerShouldGiveEmptyListStudents() throws IOException, EmptyStoreException {
 	    IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
 	    List<Student> ls = client.listStudents();
 	    

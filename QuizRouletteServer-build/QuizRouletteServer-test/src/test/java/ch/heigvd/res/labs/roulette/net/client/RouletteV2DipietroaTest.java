@@ -2,16 +2,18 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
+import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import java.io.IOException;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import java.util.List;
+
+import java.io.IOException;
 import java.util.LinkedList;
-import ch.heigvd.res.labs.roulette.data.Student;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -147,7 +149,7 @@ public class RouletteV2DipietroaTest {
      */
     @Test
     @TestAuthor(githubId = {"Gallouche", "dipietroa"})
-    public void serverShouldSendAListOfAllStudents() throws IOException{
+    public void serverShouldSendAListOfAllStudents() throws IOException, EmptyStoreException {
         IRouletteV2Client client = new RouletteV2ClientImpl();
         final int port = roulettePair.getServer().getPort();
         client.connect("localhost", port);

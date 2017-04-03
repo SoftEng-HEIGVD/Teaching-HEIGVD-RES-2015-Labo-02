@@ -1,18 +1,16 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
-import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-
-import java.io.*;
-import java.net.Socket;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 
 /**
@@ -110,7 +108,7 @@ public class RouletteV2MikijonieTest {
 
   @Test
   @TestAuthor(githubId = "Farenjihn")
-  public void theServerShouldReturnAListOfStudents() throws IOException {
+  public void theServerShouldReturnAListOfStudents() throws IOException, EmptyStoreException {
     IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     client.loadStudent("sacha");
     client.loadStudent("olivier");

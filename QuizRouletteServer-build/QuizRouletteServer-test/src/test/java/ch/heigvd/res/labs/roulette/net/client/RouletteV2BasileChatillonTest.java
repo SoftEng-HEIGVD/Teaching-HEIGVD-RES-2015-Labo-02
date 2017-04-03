@@ -1,18 +1,20 @@
 
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -53,7 +55,7 @@ public class RouletteV2BasileChatillonTest {
     
     @Test
     @TestAuthor(githubId = {"BasileChatillon", "Rhod3"})
-    public void theServerShouldBeAbleToReturnAListOfHisData() throws IOException {
+    public void theServerShouldBeAbleToReturnAListOfHisData() throws IOException, EmptyStoreException {
         // creation of the list of student
         List<Student> tmp = new LinkedList<>();
         tmp.add(new Student("Basile Chatillon"));

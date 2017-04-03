@@ -1,5 +1,6 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
+import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
@@ -44,7 +45,7 @@ public class RouletteV2SydneyHaukeTest {
 
   @Test
   @TestAuthor(githubId = "sydneyhauke")
-  public void serverShouldListStudents() throws IOException {
+  public void serverShouldListStudents() throws IOException, EmptyStoreException {
     IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     List<Student> students = Arrays.asList(
       new Student("Sydney Hauke"),
@@ -66,7 +67,7 @@ public class RouletteV2SydneyHaukeTest {
 
   @Test
   @TestAuthor(githubId = "sydneyhauke")
-  public void serverShouldReturnCorrectNumberOfCommands() throws IOException {
+  public void serverShouldReturnCorrectNumberOfCommands() throws IOException, EmptyStoreException {
     IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
     client.clearDataStore();
     client.listStudents();

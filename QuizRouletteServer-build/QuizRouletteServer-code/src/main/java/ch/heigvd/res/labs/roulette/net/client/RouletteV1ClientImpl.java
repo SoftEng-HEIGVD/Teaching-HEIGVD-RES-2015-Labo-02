@@ -19,8 +19,8 @@ import java.util.logging.Logger;
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
-  private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
-  private Socket clientSocket;
+  protected static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+  protected Socket clientSocket;
   private BufferedReader in;
   private PrintWriter out;
 
@@ -36,8 +36,10 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   @Override
   public void connect(String server, int port) throws IOException {
     clientSocket = new Socket(server, port);
+
     in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+
     getServerResponse(); // Welcome msg from the server
   }
 
