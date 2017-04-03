@@ -143,8 +143,12 @@ public class RouletteServer {
    * @return the port on which client connection requests are accepted
    */
   public int getPort() {
+    if (serverSocket == null) {
+      return listenPort;
+    }
     return serverSocket.getLocalPort();
   }
+  
 
   /**
    * Requests a server shutdown. This will close the server socket and notify
