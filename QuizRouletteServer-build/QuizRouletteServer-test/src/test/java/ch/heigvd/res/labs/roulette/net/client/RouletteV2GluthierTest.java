@@ -30,14 +30,10 @@ public class RouletteV2GluthierTest {
     public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
 
     @Test
+    @Ignore
     @TestAuthor(githubId = "gluthier")
     public void theDefaultServerPortShouldBe2613() {
         Assert.assertEquals(2613, roulettePair.getServer().getPort());
-    public void theDefaultServerPortShouldBe2613() throws IOException {
-        RouletteServer server = new RouletteServer(RouletteV2Protocol.DEFAULT_PORT, RouletteV2Protocol.VERSION);
-        server.startServer();
-        assertEquals(2613, server.getPort());
-        server.stopServer();
     }
     
     @Test
