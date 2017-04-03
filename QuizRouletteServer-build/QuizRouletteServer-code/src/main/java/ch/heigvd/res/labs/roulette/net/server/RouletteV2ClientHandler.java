@@ -15,7 +15,7 @@ import ch.heigvd.res.labs.roulette.net.protocol.*;
 /**
  * This class implements the Roulette protocol (version 2).
  *
- * @author Olivier Liechti
+ * @author Olivier Liechti & ALi Miladi & Zeller Quentin
  */
 public class RouletteV2ClientHandler implements IClientHandler {
 
@@ -32,6 +32,8 @@ public class RouletteV2ClientHandler implements IClientHandler {
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
     PrintWriter writer = new PrintWriter(new OutputStreamWriter(os));
 
+
+    //The starting hello --> not specified in the specs
     writer.println("Hello from client V2. Online HELP is available. Will you find it?");
     writer.flush();
 
@@ -39,14 +41,18 @@ public class RouletteV2ClientHandler implements IClientHandler {
     boolean done = false;
     int numberOfCommands = 0;
     while (!done && ((command = reader.readLine()) != null)){
+      // log the events
       LOG.log(Level.INFO,"COMMAND: {0}", command);
       numberOfCommands++;//store the number of command of the current session
       //default --> handle bad command by decrementing
 
       switch (command.toUpperCase()) {
         case RouletteV2Protocol.CMD_CLEAR:
+          //clear the store (remove students)
           store.clear();
+          //send the response (client stored)
           writer.println(RouletteV2Protocol.RESPONSE_CLEAR_DONE);
+          //be sure it send
           writer.flush();
           break;
         case RouletteV2Protocol.CMD_LIST:
@@ -71,6 +77,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
           break;
         case RouletteV1Protocol.CMD_INFO: //get the info fot the v2 protocol, the number of student and the protocol version
           InfoCommandResponse response = new InfoCommandResponse(RouletteV2Protocol.VERSION, store.getNumberOfStudents());
+          //serialize to json
           writer.println(JsonObjectMapper.toJson(response));
           writer.flush();
           break;
