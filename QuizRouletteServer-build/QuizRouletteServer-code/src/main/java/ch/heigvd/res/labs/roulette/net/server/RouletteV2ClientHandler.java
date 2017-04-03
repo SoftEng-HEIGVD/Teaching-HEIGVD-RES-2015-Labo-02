@@ -69,12 +69,6 @@ public class RouletteV2ClientHandler implements IClientHandler {
                     }
 
                     int old = store.getNumberOfStudents();
-                    String status = RouletteV2Protocol.LOAD_SUCCESS;
-                    try {
-                        store.importData(reader);
-                    } catch (IOException e) {
-                        status = RouletteV2Protocol.LOAD_FAILURE;
-                    }
                     LoadCommandResponse loadResponse = new LoadCommandResponse(status, (store.getNumberOfStudents() - old));
                     writer.println(JsonObjectMapper.toJson(loadResponse));
                     break;
