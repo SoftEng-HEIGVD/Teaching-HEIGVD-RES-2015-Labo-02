@@ -57,6 +57,7 @@ public interface IRouletteV1Client {
    * and converting the result from json into a Student instance
    *
    * @return an instance of Student randomly selected by the server
+     * @throws ch.heigvd.res.labs.roulette.data.EmptyStoreException
    * @throws IOException
    */
   public Student pickRandomStudent() throws EmptyStoreException, IOException;
