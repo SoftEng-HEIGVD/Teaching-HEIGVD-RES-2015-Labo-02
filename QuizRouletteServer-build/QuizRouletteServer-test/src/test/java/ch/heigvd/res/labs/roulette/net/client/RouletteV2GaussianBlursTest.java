@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Arnold von Bauer Gauss
  */
-@Ignore
+// @Ignore
 public class RouletteV2GaussianBlursTest {
 
     @Rule
@@ -35,6 +35,7 @@ public class RouletteV2GaussianBlursTest {
         assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
     }
 
+    @Ignore
     @Test
     @TestAuthor(githubId = "gaussianblurs")
     public void theServerShouldListenToTheCorrectPort() {

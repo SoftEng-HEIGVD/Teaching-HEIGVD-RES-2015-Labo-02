@@ -19,7 +19,7 @@ import java.net.Socket;
  * @author Adrien Marco
  */
 
-@Ignore
+// @Ignore
 public class RouletteV2JulienBrechetTest {
 
   @Rule
