@@ -32,15 +32,15 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     protected Socket socket;
     protected PrintWriter outputWriter;
     protected BufferedReader inputReader;
-    
+
     //Used to keep a trace of the last line recieved from the server
     protected String lastStringResponse;
-    
+
     /* 
      * Using this instead of the readLine() method of inputReader is usefull to
      * to keep a trace of the last String received.
      */
-    protected String readLine() throws IOException{
+    protected String readLine() throws IOException {
         this.lastStringResponse = inputReader.readLine();
         return lastStringResponse;
     }
@@ -58,7 +58,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         //The socket, writer and reader are initialized
         socket = new Socket(server, port);
         outputWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-                        socket.getOutputStream(), Charset.forName("UTF-8"))));        
+                socket.getOutputStream(), Charset.forName("UTF-8"))));
         inputReader = new BufferedReader(new InputStreamReader(
                 socket.getInputStream(), Charset.forName("UTF-8")));
 
@@ -157,11 +157,15 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         RandomCommandResponse response = JsonObjectMapper.parseJson(
                 readLine(), RandomCommandResponse.class);
 
+        if (response == null) {
+            return null;
+        }
+
         //If the error is not empty, an error has occured
         if (!response.getError().isEmpty()) {
             throw new EmptyStoreException();
         }
-        
+
         return new Student(response.getFullname());
     }
 
