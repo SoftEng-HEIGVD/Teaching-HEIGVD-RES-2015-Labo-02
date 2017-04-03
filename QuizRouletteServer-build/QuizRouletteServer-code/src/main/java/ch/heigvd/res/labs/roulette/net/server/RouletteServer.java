@@ -83,6 +83,14 @@ public class RouletteServer {
   public RouletteServer(String protocolVersion) {
       this.listenPort = -1 ;
       this.protocolVersion = protocolVersion;
+      switch(protocolVersion) {
+          case RouletteV1Protocol.VERSION:
+            listenPort = RouletteV1Protocol.DEFAULT_PORT;
+            break;
+          case RouletteV2Protocol.VERSION:
+              listenPort = RouletteV2Protocol.DEFAULT_PORT;
+              break;
+      }
   }
 
   public void startServer() throws IOException {
@@ -148,7 +156,7 @@ public class RouletteServer {
       return listenPort;
     }
     return serverSocket.getLocalPort();
-  }
+}
 
   /**
    * Requests a server shutdown. This will close the server socket and notify
