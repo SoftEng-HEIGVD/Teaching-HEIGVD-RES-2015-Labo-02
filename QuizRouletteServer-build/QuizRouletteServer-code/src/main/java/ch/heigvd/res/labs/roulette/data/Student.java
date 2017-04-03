@@ -63,10 +63,7 @@ public class Student {
       return false;
     }
     final Student other = (Student) obj;
-    if (!Objects.equals(this.fullname, other.fullname)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(this.fullname, other.fullname);
   }
 
 }
