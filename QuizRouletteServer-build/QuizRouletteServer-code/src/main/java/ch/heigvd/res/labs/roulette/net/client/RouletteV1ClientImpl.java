@@ -60,12 +60,12 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
             clientSocket = new Socket(server, port);
             is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             os = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+            
+            // Skip the welcome message
+            is.readLine();
         } catch (IOException ex) {
             Logger.getLogger(RouletteV1ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        // Skip the welcome message
-        is.readLine();
     }
 
     @Override
@@ -128,7 +128,8 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         if (res.getFullname() == null && !res.getError().isEmpty()) {
             throw new EmptyStoreException();
         }
-        return Student.fromJson(res.getFullname());
+        
+        return new Student(res.getFullname());
     }
 
     @Override
