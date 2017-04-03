@@ -1,11 +1,10 @@
 package ch.heigvd.res.labs.roulette.net.server;
 
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
+import ch.heigvd.res.labs.roulette.net.protocol.*;
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.IStudentsStore;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
-import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
-import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
