@@ -21,9 +21,9 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
     @Override
     public void clearDataStore() throws IOException {
         sendRequestToServer(RouletteV2Protocol.CMD_CLEAR);
-        if(!getServerResponse().equals(RouletteV2Protocol.RESPONSE_CLEAR_DONE))
-            throw new IOException();
-
+        //if(!getServerResponse().equals(RouletteV2Protocol.RESPONSE_CLEAR_DONE))
+            //throw new IOException();
+        getServerResponse();
     }
 
     @Override

@@ -62,11 +62,17 @@ public class RouletteV2ClientHandler implements IClientHandler {
                     writer.flush();
                     break;
                 case RouletteV2Protocol.CMD_LOAD:
-                    writer.println(RouletteV1Protocol.RESPONSE_LOAD_START);
+                    writer.println(RouletteV2Protocol.RESPONSE_LOAD_START);
                     writer.flush();
+                    String status = RouletteV2Protocol.LOAD_SUCCESS;
+                    try {
+                        store.importData(reader);
+                    } catch (IOException e) {
+                        status = RouletteV2Protocol.LOAD_FAILED;
+                    }
+
                     int old = store.getNumberOfStudents();
-                    store.importData(reader);
-                    LoadCommandResponse loadResponse = new LoadCommandResponse("success", (store.getNumberOfStudents() - old));
+                    LoadCommandResponse loadResponse = new LoadCommandResponse(status, (store.getNumberOfStudents() - old));
                     writer.println(JsonObjectMapper.toJson(loadResponse));
                     writer.flush();
                     break;
