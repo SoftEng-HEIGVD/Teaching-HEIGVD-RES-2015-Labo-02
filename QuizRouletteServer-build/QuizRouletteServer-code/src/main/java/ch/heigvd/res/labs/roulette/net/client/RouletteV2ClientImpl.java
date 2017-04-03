@@ -7,6 +7,7 @@ import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -36,6 +37,29 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
         LOG.info("RECEIVED: " + response);
 
         return JsonObjectMapper.parseJson(response, StudentsList.class).getStudents();
+    }
+
+    @Override
+    public void disconnect() throws IOException {
+        if(isConnected()) {
+            writer.println(RouletteV2Protocol.CMD_BYE);
+            writer.flush();
+            LOG.info("RECEIVED: " + reader.readLine());
+        }
+
+        try {
+            reader.close();
+            writer.close();
+            socket.close();
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, null, e);
+        }
+
+        reader = null;
+        writer = null;
+        socket = null;
+
+        LOG.info("Disconnected from server.");
     }
 
 }

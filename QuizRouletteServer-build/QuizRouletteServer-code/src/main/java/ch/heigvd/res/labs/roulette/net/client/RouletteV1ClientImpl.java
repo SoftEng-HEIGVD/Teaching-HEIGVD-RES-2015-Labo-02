@@ -24,7 +24,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
     // Connection socket.
-    private Socket socket = null;
+    Socket socket = null;
 
     // Reader and writer.
     BufferedReader reader = null;
@@ -43,7 +43,12 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     }
 
     @Override
-    public void disconnect() {
+    public void disconnect() throws IOException {
+        if(isConnected()) {
+            writer.println(RouletteV1Protocol.CMD_BYE);
+            writer.flush();
+        }
+
         try {
             reader.close();
             writer.close();
