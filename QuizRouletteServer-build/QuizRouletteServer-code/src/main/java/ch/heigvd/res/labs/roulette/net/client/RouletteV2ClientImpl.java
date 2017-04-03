@@ -19,7 +19,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
     //Say we want the dtastore cleared
     w.println(RouletteV2Protocol.CMD_CLEAR);w.flush();
     //read the response
-    if(r.readLine().toUpperCase().equals(RouletteV2Protocol.RESPONSE_CLEAR_DONE)){
+    if(!r.readLine().toUpperCase().equals(RouletteV2Protocol.RESPONSE_CLEAR_DONE)){
       throw new IOException("Unknown response");
     }
 
