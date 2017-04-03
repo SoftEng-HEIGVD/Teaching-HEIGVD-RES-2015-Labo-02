@@ -16,9 +16,9 @@ package ch.heigvd.res.labs.roulette.net.protocol;
 public class ByeV2CommandResponse {
     private String status = "";
 
-    private String numberOfCommands = "";
+    private int numberOfCommands = 0;
 
-    public ByeV2CommandResponse(String status, String numberOfCommands){
+    public ByeV2CommandResponse(String status, int numberOfCommands){
         this.status = status;
         this.numberOfCommands = numberOfCommands;
     }
@@ -31,7 +31,7 @@ public class ByeV2CommandResponse {
     /*
      * Return the number of students
      */
-    public String getNumberOfCommands(){
+    public int getNumberOfCommands(){
         return numberOfCommands;
     }
 }

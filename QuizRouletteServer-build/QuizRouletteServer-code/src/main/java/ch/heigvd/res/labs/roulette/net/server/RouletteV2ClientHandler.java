@@ -104,7 +104,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
           break;
         case RouletteV2Protocol.CMD_BYE:
           //the object to be parseed by json: assume sucessfull, and send the number of commands
-          ByeV2CommandResponse byeResp = new ByeV2CommandResponse(RouletteV2Protocol.RESPONSE_SUCCESS_LOWERCASE,Integer.toString(numberOfCommands));
+          ByeV2CommandResponse byeResp = new ByeV2CommandResponse(RouletteV2Protocol.RESPONSE_SUCCESS_LOWERCASE,numberOfCommands);
           //send in json form
           writer.println(JsonObjectMapper.toJson(byeResp));writer.flush();
           done = true;
