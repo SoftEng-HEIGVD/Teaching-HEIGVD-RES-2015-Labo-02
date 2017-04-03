@@ -2,18 +2,15 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RandomCommandResponse;
-import ch.heigvd.res.labs.roulette.net.server.ClientWorker;
-import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
+import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 import java.util.logging.Level;
@@ -32,18 +29,43 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     private BufferedReader is = null;
     private PrintWriter os = null;
 
+    public Socket getClientSocket() {
+        return clientSocket;
+    }
+    
+    public Socket getSocket() {
+        return clientSocket;
+    }
+    
+    /**
+     * Return the IS
+     * @return 
+     * @throws IOException 
+     */
+    public BufferedReader getBufferedReader() throws IOException {
+        return is;
+    }
+    
+    /**
+     * Return the OS
+     * @return 
+     */
+    public PrintWriter getPrintWriter() {
+        return os;
+    }
+    
     @Override
     public void connect(String server, int port) throws IOException {
         try {
             clientSocket = new Socket(server, port);
             is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             os = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+            
+            // Skip the welcome message
+            is.readLine();
         } catch (IOException ex) {
             Logger.getLogger(RouletteV1ClientImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        // Skip the welcome message
-        is.readLine();
     }
 
     @Override
@@ -65,8 +87,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         if (clientSocket == null) {
             return false;
         }
-        
-        return clientSocket.isConnected();
+        return clientSocket.isConnected() && !clientSocket.isClosed();
     }
 
     @Override
@@ -104,11 +125,11 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         
         RandomCommandResponse res = JsonObjectMapper.parseJson(is.readLine(), RandomCommandResponse.class);
 
-        if (!res.getError().isEmpty()) {
+        if (res.getFullname() == null && !res.getError().isEmpty()) {
             throw new EmptyStoreException();
         }
         
-        return Student.fromJson(res.getFullname());
+        return new Student(res.getFullname());
     }
 
     @Override

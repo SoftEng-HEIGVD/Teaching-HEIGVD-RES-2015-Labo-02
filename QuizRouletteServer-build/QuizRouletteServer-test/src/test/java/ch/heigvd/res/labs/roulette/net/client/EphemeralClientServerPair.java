@@ -13,50 +13,46 @@ import org.junit.rules.ExternalResource;
  */
 public class EphemeralClientServerPair extends ExternalResource {
 
-    RouletteServer server;
-    IRouletteV1Client client;
-    String protocolVersion;
+  RouletteServer server;
+  IRouletteV1Client client;
+  String protocolVersion;
 
-    public EphemeralClientServerPair(String protocolVersion) {
-        this.protocolVersion = protocolVersion;
-    }
+  public EphemeralClientServerPair(String protocolVersion) {
+    this.protocolVersion = protocolVersion;
+  }
 
-    @Override
-    protected void before() throws Throwable {
-        System.out.println("ch.heigvd.res.labs.roulette.net.client.EphemeralClientServerPair.before()");
-        server = new RouletteServer(protocolVersion);
-        server.startServer();
-        if (RouletteV1Protocol.VERSION.equals(protocolVersion)) {
-            client = new RouletteV1ClientImpl();
-        } else {
-            client = new RouletteV2ClientImpl();
-        }
-        client.connect("localhost", server.getPort());
+  @Override
+  protected void before() throws Throwable {
+    server = new RouletteServer(protocolVersion);
+    server.startServer();
+    if (RouletteV1Protocol.VERSION.equals(protocolVersion)) {
+      client = new RouletteV1ClientImpl();
+    } else {
+      client = new RouletteV2ClientImpl();
     }
+    client.connect("localhost", server.getPort());
+  }
 
-    @Override
-    protected void after() {
-        System.out.println("ch.heigvd.res.labs.roulette.net.client.EphemeralClientServerPair.after()");
-        try {
-            client.disconnect();
-        } catch (IOException ex) {
-            Logger.getLogger(EphemeralClientServerPair.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            server.stopServer();
-        } catch (IOException ex) {
-            Logger.getLogger(EphemeralClientServerPair.class.getName()).log(Level.SEVERE, null, ex);
-        }
+  @Override
+  protected void after() {
+    try {
+      client.disconnect();
+    } catch (IOException ex) {
+      Logger.getLogger(EphemeralClientServerPair.class.getName()).log(Level.SEVERE, null, ex);
     }
+    try {
+      server.stopServer();
+    } catch (IOException ex) {
+      Logger.getLogger(EphemeralClientServerPair.class.getName()).log(Level.SEVERE, null, ex);
+    }
+  }
 
-    public RouletteServer getServer() {
-        System.out.println("ch.heigvd.res.labs.roulette.net.client.EphemeralClientServerPair.getServer()");
-        return server;
-    }
+  public RouletteServer getServer() {
+    return server;
+  }
 
-    public IRouletteV1Client getClient() {
-        System.out.println("ch.heigvd.res.labs.roulette.net.client.EphemeralClientServerPair.getClient()");
-        return client;
-    }
+  public IRouletteV1Client getClient() {
+    return client;
+  }
 
 }
