@@ -48,7 +48,6 @@ public class RouletteV2Celestius010Test {
     public void theServerShouldHaveZeroStudentsAtStart() throws IOException {
         int port = roulettePair.getServer().getPort();
         IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
-        client.connect("localhost", port);
         int numberOfStudents = client.getNumberOfStudents();
         assertEquals(0, numberOfStudents);
     }
