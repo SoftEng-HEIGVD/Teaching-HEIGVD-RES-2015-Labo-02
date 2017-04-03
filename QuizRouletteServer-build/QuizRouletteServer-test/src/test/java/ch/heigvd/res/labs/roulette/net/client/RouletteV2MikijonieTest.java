@@ -1,6 +1,5 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
-
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.Student;

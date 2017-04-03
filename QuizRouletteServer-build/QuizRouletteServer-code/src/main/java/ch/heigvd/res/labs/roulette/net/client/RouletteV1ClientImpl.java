@@ -14,104 +14,115 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * This class implements the client side of the protocol specification (version 1).
  *
  * @author Olivier Liechti
+ * @author Valentin Finini
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
-    private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
-    private Socket connection;
-    private BufferedReader serverResponseReader;
-    private PrintWriter clientServerRequester;
+  private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+  private Socket connection;
 
-    @Override
-    public void connect(String server, int port) throws IOException {
-        connection = new Socket(server, port);
+  private BufferedReader serverResponseReader;
+  private PrintWriter clientServerRequester;
 
-        serverResponseReader = new BufferedReader(
-            new InputStreamReader(connection.getInputStream())
-        );
+  @Override
+  public void connect(String server, int port) throws IOException {
+    connection = new Socket(server, port);
 
-        clientServerRequester = new PrintWriter(
-            new OutputStreamWriter(connection.getOutputStream())
-        );
+    serverResponseReader = new BufferedReader(
+      new InputStreamReader(connection.getInputStream())
+    );
 
-        //Flush server Hello
-        serverResponseReader.readLine();
+    clientServerRequester = new PrintWriter(
+      new OutputStreamWriter(connection.getOutputStream())
+    );
+
+    //Flush server Hello
+    serverResponseReader.readLine();
+  }
+
+  @Override
+  public void disconnect() throws IOException {
+    serverResponseReader.close();
+    clientServerRequester.close();
+    connection.close();
+  }
+
+  @Override
+  public boolean isConnected() {
+    if(connection != null)
+      return !connection.isClosed();
+    else
+      return false;
+  }
+
+  @Override
+  public int loadStudent(String fullname) throws IOException {
+    return loadStudents(Collections.singletonList(new Student(fullname)));
+  }
+
+  @Override
+  public int loadStudents(List<Student> students) throws IOException {
+    send(RouletteV1Protocol.CMD_LOAD);
+
+    //Flush server response
+    serverResponseReader.readLine();
+
+    for(Student student : students) {
+      send(student.getFullname());
     }
 
-    @Override
-    public void disconnect() throws IOException {
-        serverResponseReader.close();
-        clientServerRequester.close();
-        connection.close();
-    }
+    send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+    serverResponseReader.readLine();
 
-    @Override
-    public boolean isConnected() {
-        if(connection != null)
-            return connection.isConnected();
-        else
-            return false;
-    }
+    return 0;
+  }
 
-    @Override
-    public void loadStudent(String fullname) throws IOException {
-        loadStudents(Collections.singletonList(new Student(fullname)));
-    }
+  @Override
+  public Student pickRandomStudent() throws EmptyStoreException, IOException {
+    send(RouletteV1Protocol.CMD_RANDOM);
 
-    @Override
-    public void loadStudents(List<Student> students) throws IOException {
-        send(RouletteV1Protocol.CMD_LOAD);
+    RandomCommandResponse response = JsonObjectMapper.parseJson(serverResponseReader.readLine(), RandomCommandResponse.class);
 
-        //Flush server response
-        serverResponseReader.readLine();
+    if(response.getError() != null)
+      throw new EmptyStoreException();
 
-        for(Student student : students) {
-            send(student.getFullname());
-        }
+    return new Student(response.getFullname());
+  }
 
-        send(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
-        serverResponseReader.readLine();
-    }
+  @Override
+  public int getNumberOfStudents() throws IOException {
+    send(RouletteV1Protocol.CMD_INFO);
 
-    @Override
-    public Student pickRandomStudent() throws EmptyStoreException, IOException {
-        send(RouletteV1Protocol.CMD_RANDOM);
+    InfoCommandResponse response = JsonObjectMapper.parseJson(serverResponseReader.readLine(), InfoCommandResponse.class);
+    return response.getNumberOfStudents();
+  }
 
-        RandomCommandResponse response = JsonObjectMapper.parseJson(serverResponseReader.readLine(), RandomCommandResponse.class);
+  @Override
+  public String getProtocolVersion() throws IOException {
+    send(RouletteV1Protocol.CMD_INFO);
 
-        if(response.getError() != null)
-            throw new EmptyStoreException();
+    InfoCommandResponse response = JsonObjectMapper.parseJson(serverResponseReader.readLine(), InfoCommandResponse.class);
+    return response.getProtocolVersion();
+  }
 
-        return new Student(response.getFullname());
-    }
+  public void send(String command) throws IOException {
+    clientServerRequester.println(command);
 
-    @Override
-    public int getNumberOfStudents() throws IOException {
-        send(RouletteV1Protocol.CMD_INFO);
+    //Flush the stream so we're sending it
+    clientServerRequester.flush();
+  }
 
-        InfoCommandResponse response = JsonObjectMapper.parseJson(serverResponseReader.readLine(), InfoCommandResponse.class);
-        return response.getNumberOfStudents();
-    }
+  public PrintWriter getClientServerRequester() {
+    return clientServerRequester;
+  }
 
-    @Override
-    public String getProtocolVersion() throws IOException {
-        send(RouletteV1Protocol.CMD_INFO);
-
-        InfoCommandResponse response = JsonObjectMapper.parseJson(serverResponseReader.readLine(), InfoCommandResponse.class);
-        return response.getProtocolVersion();
-    }
-
-    private void send(String command) throws IOException {
-        clientServerRequester.println(command);
-
-        //Flush the stream so we're sending it
-        clientServerRequester.flush();
-    }
+  public BufferedReader getServerResponseReader() {
+    return serverResponseReader;
+  }
 }
