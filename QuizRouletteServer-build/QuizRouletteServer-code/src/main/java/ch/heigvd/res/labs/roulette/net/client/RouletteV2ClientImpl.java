@@ -123,6 +123,7 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 //    }
 
     /**
+     * the override of the end of the loadStudents method, in order to have modular code
      * don't forget to let the super class access this method -> protected
      * @throws IOException
      */
