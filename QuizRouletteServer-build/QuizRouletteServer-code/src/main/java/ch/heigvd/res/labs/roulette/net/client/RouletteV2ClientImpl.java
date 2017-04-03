@@ -17,15 +17,13 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
   @Override
   public void clearDataStore() throws IOException {
-      out.println(RouletteV2Protocol.CMD_CLEAR);
-      out.flush();
+      sendToServer(RouletteV2Protocol.CMD_CLEAR);
       in.readLine();
   }
 
   @Override
   public List<Student> listStudents() throws IOException {
-      out.println(RouletteV2Protocol.CMD_LIST);
-      out.flush();
+      sendToServer(RouletteV2Protocol.CMD_LIST);
       ListCommandResponse response = JsonObjectMapper.parseJson(in.readLine(), ListCommandResponse.class);
       return response.getStudentList();
   }
