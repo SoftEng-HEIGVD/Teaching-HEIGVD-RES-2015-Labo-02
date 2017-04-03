@@ -5,7 +5,7 @@ package ch.heigvd.res.labs.roulette.net.protocol;
  * when processing the "INFO" command defined in the protocol specification. The
  * JsonObjectMapper utility class can use this class.
  * 
- * @author Olivier Liechti
+ * @author Olivier Liechti, Guillaume Milani
  */
 public class InfoCommandResponse {
 
