@@ -17,54 +17,144 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class implements the client side of the protocol specification (version 1).
- * 
- * @author Olivier Liechti
+ * This class implements the client side of the protocol specification (version
+ * 1).
+ *
+ * @author Zundler Cyrill & Wertenbroek Rick
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
 
-  private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+    private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
-  @Override
-  public void connect(String server, int port) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    private Socket clientSocket = null;
+    protected BufferedReader reader = null;
+    protected PrintWriter writer = null;
 
-  @Override
-  public void disconnect() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public void connect(String server, int port) throws IOException {
 
-  @Override
-  public boolean isConnected() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+        if (isConnected()) {
+            throw new IOException("client already connected");
+        }
 
-  @Override
-  public void loadStudent(String fullname) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+        clientSocket = new Socket(server, port);
+        LOG.log(Level.INFO, "Client connected to" + server + " on port" + port);
+        reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
+        LOG.log(Level.INFO, "Client initialized reader");
+        writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"));
+        LOG.log(Level.INFO, "Client initialized writer");
 
-  @Override
-  public void loadStudents(List<Student> students) throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+        LOG.log(Level.INFO, "Connection success HELLO CMD : {0}", reader.readLine());
+    }
 
-  @Override
-  public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public void disconnect() throws IOException {
 
-  @Override
-  public int getNumberOfStudents() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+        if (isConnected()) {
+            writer.println(RouletteV1Protocol.CMD_BYE);
+            writer.flush();
+            clientSocket.close();
+            writer.close();
+            reader.close();
+            clientSocket = null;
+            writer = null;
+            reader = null;
+        } else {
+            throw new IOException("client not connected");
+        }
+    }
 
-  @Override
-  public String getProtocolVersion() throws IOException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+    @Override
+    public boolean isConnected() {
+        if (clientSocket == null) {
+            return false;
+        } else if (clientSocket.isConnected()) {
+            return true;
+        }
+        return false;
+    }
 
+    @Override
+    public void loadStudent(String fullname) throws IOException {
+        if (isConnected()) {
+            writer.println(RouletteV1Protocol.CMD_LOAD);
+            writer.flush();
+            LOG.log(Level.INFO, "Load Student Start Response : {0}", reader.readLine());
+            writer.println(fullname);
+            writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+            writer.flush();
+            LOG.log(Level.INFO, "Load Student End Response : {0}", reader.readLine());
+        } else {
+            throw new IOException("client not connected");
+        }
+    }
 
+    @Override
+    public void loadStudents(List<Student> students) throws IOException {
+        if (isConnected()) {
+            writer.println(RouletteV1Protocol.CMD_LOAD);
+            writer.flush();
 
+            LOG.log(Level.INFO, "Load Students Start Response : {0}", reader.readLine());
+
+            for (Student student : students) {
+                writer.println(student.getFullname());
+            }
+
+            writer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+            writer.flush();
+
+            LOG.log(Level.INFO, "Load Students End Response : {0}", reader.readLine());
+        } else {
+            throw new IOException("client not connected");
+        }
+    }
+
+    @Override
+    public Student pickRandomStudent() throws EmptyStoreException, IOException {
+        if (isConnected()) {
+            writer.println(RouletteV1Protocol.CMD_RANDOM);
+            writer.flush();
+
+            String json = reader.readLine();
+
+            RandomCommandResponse random = JsonObjectMapper.parseJson(json, RandomCommandResponse.class);
+
+            if (random.getError() != null) {
+                throw new EmptyStoreException();
+            }
+
+            return new Student(random.getFullname());
+        } else {
+            throw new IOException("client not connected");
+        }
+
+    }
+
+    @Override
+    public int getNumberOfStudents() throws IOException {
+        if (isConnected()) {
+            writer.println(RouletteV1Protocol.CMD_INFO);
+            writer.flush();
+            String json = reader.readLine();
+
+            LOG.log(Level.INFO, "Response string {0}", json);
+            return JsonObjectMapper.parseJson(json, InfoCommandResponse.class).getNumberOfStudents();
+        } else {
+            throw new IOException("client not connected");
+        }
+    }
+
+    @Override
+    public String getProtocolVersion() throws IOException {
+        if (isConnected()) {
+            writer.println(RouletteV1Protocol.CMD_INFO);
+            writer.flush();
+            String json = reader.readLine();
+
+            return JsonObjectMapper.parseJson(json, InfoCommandResponse.class).getProtocolVersion();
+        } else {
+            throw new IOException("client not connected");
+        }
+    }
 }
