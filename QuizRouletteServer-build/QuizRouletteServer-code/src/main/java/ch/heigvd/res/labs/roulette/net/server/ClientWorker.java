@@ -23,72 +23,72 @@ import java.util.logging.Logger;
  */
 public class ClientWorker implements Runnable {
 
-  static final Logger LOG = Logger.getLogger(ClientWorker.class.getName());
+    static final Logger LOG = Logger.getLogger(ClientWorker.class.getName());
 
-  private IClientHandler handler = null;
-  private Socket clientSocket = null;
-  private InputStream is = null;
-  private OutputStream os = null;
-  private boolean done = false;
-  private RouletteServer server = null;
+    private IClientHandler handler = null;
+    private Socket clientSocket = null;
+    private InputStream is = null;
+    private OutputStream os = null;
+    private boolean done = false;
+    private RouletteServer server = null;
 
-  public ClientWorker(Socket clientSocket, IClientHandler handler, RouletteServer server) throws IOException {
-    this.clientSocket = clientSocket;
-    this.handler = handler;
-    this.server = server;
-    is = clientSocket.getInputStream();
-    os = clientSocket.getOutputStream();
-  }
-
-  @Override
-  public void run() {
-    try {
-      handler.handleClientConnection(is, os);
-    } catch (IOException ex) {
-      LOG.log(Level.SEVERE, "Exception in client handler: {0}", ex.getMessage());
-    } finally {
-      done = true;
-      server.notifyClientWorkerDone(this);
-      try {
-        clientSocket.close();
-      } catch (IOException ex) {
-        LOG.log(Level.INFO, ex.getMessage());
-      }
-      try {
-        is.close();
-      } catch (IOException ex) {
-        LOG.log(Level.INFO, ex.getMessage());
-      }
-      try {
-        os.close();
-      } catch (IOException ex) {
-        LOG.log(Level.INFO, ex.getMessage());
-      }
-    }
-  }
-
-  public boolean isDone() {
-    return done;
-  }
-
-  public void notifyServerShutdown() {
-    try {
-      is.close();
-    } catch (IOException ex) {
-      LOG.log(Level.INFO, "Exception while closing input stream on the server: {0}", ex.getMessage());
+    public ClientWorker(Socket clientSocket, IClientHandler handler, RouletteServer server) throws IOException {
+        this.clientSocket = clientSocket;
+        this.handler = handler;
+        this.server = server;
+        is = clientSocket.getInputStream();
+        os = clientSocket.getOutputStream();
     }
 
-    try {
-      os.close();
-    } catch (IOException ex) {
-      LOG.log(Level.INFO, "Exception while closing output stream on the server: {0}", ex.getMessage());
+    @Override
+    public void run() {
+        try {
+            handler.handleClientConnection(is, os);
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, "Exception in client handler: {0}", ex.getMessage());
+        } finally {
+            done = true;
+            server.notifyClientWorkerDone(this);
+            try {
+                clientSocket.close();
+            } catch (IOException ex) {
+                LOG.log(Level.INFO, ex.getMessage());
+            }
+            try {
+                is.close();
+            } catch (IOException ex) {
+                LOG.log(Level.INFO, ex.getMessage());
+            }
+            try {
+                os.close();
+            } catch (IOException ex) {
+                LOG.log(Level.INFO, ex.getMessage());
+            }
+        }
     }
 
-    try {
-      clientSocket.close();
-    } catch (IOException ex) {
-      LOG.log(Level.INFO, "Exception while closing socket on the server: {0}", ex.getMessage());
+    public boolean isDone() {
+        return done;
     }
-  }
+
+    public void notifyServerShutdown() {
+        try {
+            is.close();
+        } catch (IOException ex) {
+            LOG.log(Level.INFO, "Exception while closing input stream on the server: {0}", ex.getMessage());
+        }
+
+        try {
+            os.close();
+        } catch (IOException ex) {
+            LOG.log(Level.INFO, "Exception while closing output stream on the server: {0}", ex.getMessage());
+        }
+
+        try {
+            clientSocket.close();
+        } catch (IOException ex) {
+            LOG.log(Level.INFO, "Exception while closing socket on the server: {0}", ex.getMessage());
+        }
+    }
 
 }
