@@ -23,5 +23,5 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
   public List<Student> listStudents() throws IOException {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
-  
+
 }
