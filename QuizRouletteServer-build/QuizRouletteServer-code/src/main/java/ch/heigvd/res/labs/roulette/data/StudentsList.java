@@ -29,4 +29,13 @@ public class StudentsList {
     setStudents(fromList);
   }
 
+  public String toString(){
+    String s = "";
+
+    for(Student student: students)
+      s += student.getFullname() + ", ";
+
+    return  s;
+  }
+
 }
