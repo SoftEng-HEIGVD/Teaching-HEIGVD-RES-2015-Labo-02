@@ -3,16 +3,16 @@ package ch.heigvd.res.labs.roulette.net.client;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -59,7 +59,7 @@ public class RouletteV2LuanaMartelliTest {
         newStudents.add(new Student("John Smith"));
         returnedList = client.listStudents();
 
-        for(Student s : newStudents){
+        for (Student s : newStudents) {
             assertTrue(returnedList.contains(s));
         }
         client.disconnect();

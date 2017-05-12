@@ -3,10 +3,13 @@ package ch.heigvd.res.labs.roulette.net.client;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
 import ch.heigvd.schoolpulse.TestAuthor;
-import java.io.IOException;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Rule;
+import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -39,7 +42,7 @@ public class RouletteV2maxcaduffTest {
         int numberOfStudents = client.getNumberOfStudents();
         assertEquals(3, numberOfStudents);
         String listOfStudents = client.listStudents().toString();
-        assertTrue( listOfStudents.contains("Jaques") && listOfStudents.contains("Georges") && listOfStudents.contains("Robert"));
+        assertTrue(listOfStudents.contains("Jaques") && listOfStudents.contains("Georges") && listOfStudents.contains("Robert"));
         client.clearDataStore();
         assertEquals(0, client.getNumberOfStudents());
     }
@@ -50,11 +53,10 @@ public class RouletteV2maxcaduffTest {
         RouletteServer server = new RouletteServer(RouletteV2Protocol.DEFAULT_PORT, RouletteV2Protocol.VERSION);
         server.startServer();
         RouletteV2ClientImpl client = new RouletteV2ClientImpl();
-        client.connect("localhost", RouletteV2Protocol.DEFAULT_PORT );
+        client.connect("localhost", RouletteV2Protocol.DEFAULT_PORT);
         assertTrue(client.isConnected());
         server.stopServer();
     }
-
 
 
 }

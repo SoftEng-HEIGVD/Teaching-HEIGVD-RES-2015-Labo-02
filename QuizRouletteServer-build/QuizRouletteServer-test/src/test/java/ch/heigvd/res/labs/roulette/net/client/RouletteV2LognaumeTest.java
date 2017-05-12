@@ -5,16 +5,18 @@ import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
 import ch.heigvd.schoolpulse.TestAuthor;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+
 import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -135,7 +137,7 @@ public class RouletteV2LognaumeTest {
         assertEquals(response, expectedResponse);
         server.stopServer();
     }
-    
+
     @Test
     @TestAuthor(githubId = "lognaume")
     public void theServerShouldGiveNumberOfCommandsWhenBye() throws IOException {
@@ -154,15 +156,15 @@ public class RouletteV2LognaumeTest {
         // Get response
         in.readLine();
 
-         // Send HELP command
+        // Send HELP command
         out.append(RouletteV2Protocol.CMD_HELP + System.lineSeparator());
         out.flush();
-        
+
         in.readLine();
-        
+
         out.append(RouletteV2Protocol.CMD_BYE + System.lineSeparator());
         out.flush();
-        
+
         String response = in.readLine();
         String expectedResponse = "{\"status\":\"success\",\"numberOfCommands\":3}";
 

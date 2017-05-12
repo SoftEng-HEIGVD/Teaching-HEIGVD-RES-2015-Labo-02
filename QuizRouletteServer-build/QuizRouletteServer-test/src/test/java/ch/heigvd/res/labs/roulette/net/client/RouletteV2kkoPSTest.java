@@ -2,6 +2,7 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,10 +14,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
 
 /**
  * Tests for V2 protocol
+ *
  * @author Camilo Pineda Serna
  * @author Antoine Nourazar
  */
@@ -32,6 +33,7 @@ public class RouletteV2kkoPSTest {
 
     /**
      * tests the correct version Number
+     *
      * @throws IOException
      */
     @Test
@@ -42,11 +44,12 @@ public class RouletteV2kkoPSTest {
 
     /**
      * creates a client, loads 2 students, checks if number of students is 2, then clears and check if number of students is 0
+     *
      * @throws IOException
      */
     @Ignore
     @Test
-    @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
+    @TestAuthor(githubId = {"kkoPS", "antoineNourZaf"})
     public void noMoreStudentsInServerAfterCallingMethodClearDataStore() throws IOException {
         // other client to intercept the server answers
         IRouletteV2Client clientV2 = new RouletteV2ClientImpl();
@@ -59,10 +62,11 @@ public class RouletteV2kkoPSTest {
 
     /**
      * creates a client, loads 2 students, checks if number of students is 2, then clears and check if number of students is 0
+     *
      * @throws IOException
      */
     @Test
-    @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
+    @TestAuthor(githubId = {"kkoPS", "antoineNourZaf"})
     public void theListCommandShouldReturnTheCorrectAnswer() throws IOException {
         // connexion via Socket
         Socket clientSocket = new Socket("localhost", roulettePair.getServer().getPort());
@@ -79,8 +83,7 @@ public class RouletteV2kkoPSTest {
         // loading
         toServer.println(RouletteV2Protocol.CMD_LOAD);
         toServer.flush();
-        if (! fromServer.readLine().equals(RouletteV2Protocol.RESPONSE_LOAD_START))
-        {
+        if (!fromServer.readLine().equals(RouletteV2Protocol.RESPONSE_LOAD_START)) {
             throw new IOException("error at LOAD command start : unexpected server Answer");
         }
         toServer.println("cesar");
@@ -106,10 +109,11 @@ public class RouletteV2kkoPSTest {
 
     /**
      * clears and checks the server's answer
+     *
      * @throws IOException
      */
     @Test
-    @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
+    @TestAuthor(githubId = {"kkoPS", "antoineNourZaf"})
     public void theClearCommandShouldReturnTheCorrectAnswer() throws IOException {
         // connexion via Socket
         Socket clientSocket = new Socket("localhost", roulettePair.getServer().getPort());
@@ -135,10 +139,11 @@ public class RouletteV2kkoPSTest {
 
     /**
      * connects and loads 2 students, then checks the answer's status and number of new students
+     *
      * @throws IOException
      */
     @Test
-    @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
+    @TestAuthor(githubId = {"kkoPS", "antoineNourZaf"})
     public void theLoadCommandShouldReturnTheCorrectStatusAndNumberOfNewStudents() throws IOException {
         // connexion via Socket
         Socket clientSocket = new Socket("localhost", roulettePair.getServer().getPort());
@@ -151,8 +156,7 @@ public class RouletteV2kkoPSTest {
         toServer.println(RouletteV2Protocol.CMD_LOAD);
         toServer.flush();
         // getting the response message with instructions
-        if (! fromServer.readLine().equals(RouletteV2Protocol.RESPONSE_LOAD_START))
-        {
+        if (!fromServer.readLine().equals(RouletteV2Protocol.RESPONSE_LOAD_START)) {
             throw new IOException("error at LOAD command start : unexpected server Answer");
         }
 
@@ -169,7 +173,6 @@ public class RouletteV2kkoPSTest {
         assertEquals("{\"status\":\"success\",\"numberOfNewStudents\":2}", serverResponse);
 
 
-
         // closing everything
         fromServer.close();
         toServer.close();
@@ -180,10 +183,11 @@ public class RouletteV2kkoPSTest {
      * clears students, adds 2 students in 1 Load command, lists the students, clears the students.
      * Finally closes the connexion with BYE and checks the number of commands sent int the session :
      * 2 clears, 1 load, 1 list and 1 bye : 5 commands
-      * @throws IOException
+     *
+     * @throws IOException
      */
     @Test
-    @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
+    @TestAuthor(githubId = {"kkoPS", "antoineNourZaf"})
     public void theByeCommandShouldReturnTheCorrectStatusAndNumberOfCommandsInTheSession() throws IOException {
         // connexion via Socket
         Socket clientSocket = new Socket("localhost", roulettePair.getServer().getPort());
@@ -200,8 +204,7 @@ public class RouletteV2kkoPSTest {
         // command no 2
         toServer.println(RouletteV2Protocol.CMD_LOAD);
         toServer.flush();
-        if (! fromServer.readLine().equals(RouletteV2Protocol.RESPONSE_LOAD_START))
-        {
+        if (!fromServer.readLine().equals(RouletteV2Protocol.RESPONSE_LOAD_START)) {
             throw new IOException("error at LOAD command start : unexpected server Answer");
         }
         toServer.println("Harry Cot");
@@ -231,7 +234,6 @@ public class RouletteV2kkoPSTest {
         assertEquals("{\"status\":\"success\",\"numberOfCommands\":5}", serverResponse);
 
 
-
         // closing everything
         fromServer.close();
         toServer.close();
@@ -246,7 +248,7 @@ public class RouletteV2kkoPSTest {
      * @throws IOException
      */
     @Test
-    @TestAuthor (githubId = {"kkoPS", "antoineNourZaf"})
+    @TestAuthor(githubId = {"kkoPS", "antoineNourZaf"})
     public void theInfoCommandShouldReturnTheCorrectProtocolVersionAndNumberOfStudents() throws IOException {
         // connexion via Socket
         Socket clientSocket = new Socket("localhost", roulettePair.getServer().getPort());
@@ -263,8 +265,7 @@ public class RouletteV2kkoPSTest {
         // loading 3 students
         toServer.println(RouletteV2Protocol.CMD_LOAD);
         toServer.flush();
-        if (! fromServer.readLine().equals(RouletteV2Protocol.RESPONSE_LOAD_START))
-        {
+        if (!fromServer.readLine().equals(RouletteV2Protocol.RESPONSE_LOAD_START)) {
             throw new IOException("error at LOAD command start : unexpected server Answer");
         }
         toServer.println("Provençal le Gaulois");
@@ -277,7 +278,6 @@ public class RouletteV2kkoPSTest {
         toServer.flush();
         // fetching server's response
         fromServer.readLine();
-
 
 
         // command Info

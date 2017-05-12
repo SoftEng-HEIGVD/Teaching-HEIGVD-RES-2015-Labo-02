@@ -2,16 +2,18 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
+import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import java.io.IOException;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import java.util.List;
+
+import java.io.IOException;
 import java.util.LinkedList;
-import ch.heigvd.res.labs.roulette.data.Student;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * This class contains automated tests to validate the client and the server
@@ -34,17 +36,18 @@ public class RouletteV2DipietroaTest {
      * Test si le serveur est ON
      */
     @Test
-    @TestAuthor(githubId = {"Gallouche","dipietroa"})
+    @TestAuthor(githubId = {"Gallouche", "dipietroa"})
     public void theTestRouletteClientShouldBeConnectedWhenATestStarts() throws IOException {
         assertTrue(roulettePair.getClient().isConnected());
     }
 
     /**
      * Test si un client peut se connecter au serveur.
+     *
      * @throws Exception
      */
     @Test
-    @TestAuthor(githubId = {"Gallouche","dipietroa"})
+    @TestAuthor(githubId = {"Gallouche", "dipietroa"})
     public void itShouldBePossibleForARouletteClientToConnectToARouletteServerV2() throws Exception {
         int port = roulettePair.getServer().getPort();
         IRouletteV2Client client = new RouletteV2ClientImpl();
@@ -55,20 +58,22 @@ public class RouletteV2DipietroaTest {
 
     /**
      * Test si le serveur est bien a la version 2.
+     *
      * @throws IOException
      */
     @Test
-    @TestAuthor(githubId = {"Gallouche","dipietroa"})
+    @TestAuthor(githubId = {"Gallouche", "dipietroa"})
     public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
         assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
     }
 
     /**
      * Test si le serveur a bien aucun etudiant dans la base de donnée au départ.
+     *
      * @throws IOException
      */
     @Test
-    @TestAuthor(githubId = {"Gallouche","dipietroa"})
+    @TestAuthor(githubId = {"Gallouche", "dipietroa"})
     public void theServerShouldHaveZeroStudentsAtStart() throws IOException {
         int port = roulettePair.getServer().getPort();
         IRouletteV2Client client = new RouletteV2ClientImpl();
@@ -79,20 +84,22 @@ public class RouletteV2DipietroaTest {
 
     /**
      * Test si le serveur a toujours aucun étudiant dans la base de donnée.
+     *
      * @throws IOException
      */
     @Test
-    @TestAuthor(githubId = {"Gallouche","dipietroa"})
+    @TestAuthor(githubId = {"Gallouche", "dipietroa"})
     public void theServerShouldStillHaveZeroStudentsAtStart() throws IOException {
         assertEquals(0, roulettePair.getClient().getNumberOfStudents());
     }
 
     /**
      * Test si le serveur retourne le bon nombre d'étudiant.
+     *
      * @throws IOException
      */
     @Test
-    @TestAuthor(githubId = {"Gallouche","dipietroa"})
+    @TestAuthor(githubId = {"Gallouche", "dipietroa"})
     public void theServerShouldCountStudents() throws IOException {
         IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
         assertEquals(0, client.getNumberOfStudents());
@@ -106,11 +113,12 @@ public class RouletteV2DipietroaTest {
 
     /**
      * Test si le serveur leve bien une exception si l'on fait un random alors que la base de donnée est vide.
+     *
      * @throws IOException
      * @throws EmptyStoreException
      */
     @Test
-    @TestAuthor(githubId = {"Gallouche","dipietroa"})
+    @TestAuthor(githubId = {"Gallouche", "dipietroa"})
     public void theServerShouldSendAnErrorResponseWhenRandomIsCalledAndThereIsNoStudent() throws IOException, EmptyStoreException {
         IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
         exception.expect(EmptyStoreException.class);
@@ -125,11 +133,12 @@ public class RouletteV2DipietroaTest {
     /**
      * Envoie un étudiant au serveur, test si le nombre d'étudiants est 1,
      * effectue un clear, test si le nombre d'étuidants est maintenant 0
-     * @throws IOException 
+     *
+     * @throws IOException
      */
     @Test
     @TestAuthor(githubId = {"Gallouche", "dipietroa"})
-    public void shouldHaveNoStudentAfterClear() throws IOException{
+    public void shouldHaveNoStudentAfterClear() throws IOException {
         IRouletteV2Client client = new RouletteV2ClientImpl();
         final int port = roulettePair.getServer().getPort();
         client.connect("localhost", port);
@@ -139,25 +148,26 @@ public class RouletteV2DipietroaTest {
         assertEquals(0, client.getNumberOfStudents());
         client.disconnect();
     }
-    
+
     /**
      * Test, après envoi d'une liste d'étudiants au serveur, si
      * listStudents() renvoie cette même liste
-     * @throws IOException 
+     *
+     * @throws IOException
      */
     @Test
     @TestAuthor(githubId = {"Gallouche", "dipietroa"})
-    public void serverShouldSendAListOfAllStudents() throws IOException{
+    public void serverShouldSendAListOfAllStudents() throws IOException {
         IRouletteV2Client client = new RouletteV2ClientImpl();
         final int port = roulettePair.getServer().getPort();
         client.connect("localhost", port);
         List<Student> expected = new LinkedList<>();
         expected.add(new Student("Di Pietro Adrian"));
         expected.add(new Student("Gallandat Théo"));
-        
+
         client.loadStudents(expected);
         List<Student> returned = client.listStudents();
-        
+
         //Les listes doivent être dans le même ordre pour que le test passe.
         //La liste renvoyée par le serveur devra respecter l'ordre d'insertion 
         //des étudiants.

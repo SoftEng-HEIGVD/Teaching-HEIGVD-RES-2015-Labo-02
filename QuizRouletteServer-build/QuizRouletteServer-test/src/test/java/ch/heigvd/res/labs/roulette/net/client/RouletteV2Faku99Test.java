@@ -3,7 +3,6 @@ package ch.heigvd.res.labs.roulette.net.client;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -31,19 +30,19 @@ public class RouletteV2Faku99Test {
     public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
 
     @Test
-    @TestAuthor(githubId = { "Daxidz", "faku99" })
+    @TestAuthor(githubId = {"Daxidz", "faku99"})
     public void serverShouldRunDuringTests() {
         assertTrue(roulettePair.getServer().isRunning());
     }
 
     @Test
-    @TestAuthor(githubId = { "Daxidz", "faku99" })
+    @TestAuthor(githubId = {"Daxidz", "faku99"})
     public void clientShoudBeConnectedDuringTests() {
         assertTrue(roulettePair.getClient().isConnected());
     }
 
     @Test
-    @TestAuthor(githubId = { "Daxidz", "faku99" })
+    @TestAuthor(githubId = {"Daxidz", "faku99"})
     public void itShouldBePossibleForAClientToConnectToV2Server() throws Exception {
         int port = roulettePair.getServer().getPort();
 
@@ -55,15 +54,15 @@ public class RouletteV2Faku99Test {
     }
 
     @Test
-    @TestAuthor(githubId = { "Daxidz", "faku99" })
+    @TestAuthor(githubId = {"Daxidz", "faku99"})
     public void serverShouldReturnCorrectVersionNumber() throws IOException {
         assertEquals(RouletteV2Protocol.VERSION, roulettePair.getClient().getProtocolVersion());
     }
 
     @Test
-    @TestAuthor(githubId = { "Daxidz", "faku99" })
+    @TestAuthor(githubId = {"Daxidz", "faku99"})
     public void serverShouldClearDatastore() throws IOException {
-        IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
+        IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
         client.loadStudent("David");
         client.loadStudent("Lucas");
         assertNotEquals(0, client.getNumberOfStudents());
@@ -72,13 +71,13 @@ public class RouletteV2Faku99Test {
     }
 
     @Test
-    @TestAuthor(githubId = { "Daxidz", "faku99" })
+    @TestAuthor(githubId = {"Daxidz", "faku99"})
     public void serverShouldListStudents() throws IOException {
         List<Student> students = new ArrayList<>();
         students.add(new Student("David TRUAN"));
         students.add(new Student("Lucas ELISEI"));
 
-        IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
+        IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
         client.loadStudents(students);
         assertTrue(client.listStudents().equals(students));
     }

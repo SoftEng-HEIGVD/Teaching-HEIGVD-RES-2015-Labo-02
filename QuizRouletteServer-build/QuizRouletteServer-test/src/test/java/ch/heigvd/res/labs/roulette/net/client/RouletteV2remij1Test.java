@@ -4,22 +4,22 @@ import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import java.io.IOException;
-import java.util.List;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
 /**
- *
  * These tests are partly based on the tests made for the V1 protocol
- *
+ * <p>
  * As these tests will be used by every student, we could not test things
  * that are not precisely written in the specification (for exemple, do we have
  * to use a "ByeCommandResponse" ?)
+ *
  * @author Remi, Aurelie
  */
 public class RouletteV2remij1Test {
@@ -123,16 +123,16 @@ public class RouletteV2remij1Test {
         assertEquals(2, client.getNumberOfStudents());
         client.loadStudent("fabienne");
         assertEquals(3, client.getNumberOfStudents());
-        
+
         List<Student> students = client.listStudents();
         assertEquals("sacha", students.get(0).getFullname());
         assertEquals("olivier", students.get(1).getFullname());
         assertEquals("fabienne", students.get(2).getFullname());
     }
-    
+
     @Test
     @TestAuthor(githubId = {"remij1", "aurelielevy"})
-    public void theDefaultPortShouldBe2613(){
+    public void theDefaultPortShouldBe2613() {
         assertEquals(RouletteV2Protocol.DEFAULT_PORT, 2613);
         
         /* Note : the port really used by the server could not be tests,

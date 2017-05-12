@@ -1,8 +1,8 @@
 package ch.heigvd.res.labs.roulette;
 
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.res.labs.roulette.net.server.RouletteServer;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +25,7 @@ public class QuizRouletteServer {
    */
   public static void main(String[] args) throws IOException {
     System.setProperty("java.util.logging.SimpleFormatter.format", "%5$s %n");
-    RouletteServer server = new RouletteServer(RouletteV2Protocol.DEFAULT_PORT, RouletteV2Protocol.VERSION);
+      RouletteServer server = new RouletteServer(RouletteV2Protocol.DEFAULT_PORT, RouletteV2Protocol.VERSION);
     try {
       server.startServer();
     } catch (IOException ex) {

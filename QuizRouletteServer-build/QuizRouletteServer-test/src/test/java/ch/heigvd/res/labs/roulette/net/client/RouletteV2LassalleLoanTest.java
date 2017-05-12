@@ -71,7 +71,7 @@ public class RouletteV2LassalleLoanTest {
     @Test
     @TestAuthor(githubId = {"lassalleloan", "galahad1"})
     public void theServerShouldCountStudents() throws IOException {
-        IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
+        IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
         assertEquals(0, client.getNumberOfStudents());
         client.loadStudent("sacha");
         assertEquals(1, client.getNumberOfStudents());
@@ -84,7 +84,7 @@ public class RouletteV2LassalleLoanTest {
     @Test
     @TestAuthor(githubId = {"lassalleloan", "galahad1"})
     public void theServerShouldSendAnErrorResponseWhenRandomIsCalledAndThereIsNoStudent() throws IOException, EmptyStoreException {
-        IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
+        IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
         exception.expect(EmptyStoreException.class);
         client.pickRandomStudent();
     }
@@ -92,7 +92,7 @@ public class RouletteV2LassalleLoanTest {
     @Test
     @TestAuthor(githubId = {"lassalleloan", "galahad1"})
     public void theServerShouldSendAnStudentRandomly() throws IOException, EmptyStoreException {
-        IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
+        IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
 
         List<Student> listStudents = new ArrayList<>();
         Collections.addAll(listStudents, new Student("Tano Iannetta"),
@@ -106,7 +106,7 @@ public class RouletteV2LassalleLoanTest {
     @Test
     @TestAuthor(githubId = {"lassalleloan", "galahad1"})
     public void theServerShouldReturnDataStoreCleared() throws IOException {
-        IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
+        IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
 
         List<Student> listStudents = new ArrayList<>();
         Collections.addAll(listStudents, new Student("Tano Iannetta"), new Student("Loan Lassalle"),
@@ -121,7 +121,7 @@ public class RouletteV2LassalleLoanTest {
     @Test
     @TestAuthor(githubId = {"lassalleloan", "galahad1"})
     public void theServerShouldSendTheListOfStudents() throws IOException {
-        IRouletteV2Client client = (IRouletteV2Client)roulettePair.getClient();
+        IRouletteV2Client client = (IRouletteV2Client) roulettePair.getClient();
 
         List<Student> listStudentExpected = new ArrayList<>();
         Collections.addAll(listStudentExpected, new Student("Tano Iannetta"),

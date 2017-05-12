@@ -7,7 +7,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,15 +26,12 @@ import static org.junit.Assert.assertEquals;
  */
 public class RouletteV2X4l1b1Test {
 
-    private PrintWriter writer = null;
-    private BufferedReader reader = null;
-
-
     @Rule
     public ExpectedException exception = ExpectedException.none();
-
     @Rule
     public EphemeralClientServerPair roulettePair = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
+    private PrintWriter writer = null;
+    private BufferedReader reader = null;
 
     @Test
     @TestAuthor(githubId = {"yosra-harbaoui", "X4l1b1"})
@@ -70,7 +69,7 @@ public class RouletteV2X4l1b1Test {
         c2.loadStudent("Yosra");
         c2.loadStudent("Arthur");
 
-        assertEquals(2  , c2.getNumberOfStudents());
+        assertEquals(2, c2.getNumberOfStudents());
     }
 
     @Test

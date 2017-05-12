@@ -1,8 +1,6 @@
 package ch.heigvd.res.labs.roulette.net.client;
 
-import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
 import org.junit.Rule;
@@ -14,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -70,7 +67,7 @@ public class RouletteV2Fanfou02Test {
         List<Student> answer;
         answer = client.listStudents();
 
-        for(int i = 0; i < students.size(); i++) {
+        for (int i = 0; i < students.size(); i++) {
             assertTrue(students.get(i).equals(answer.get(i)));
         }
 

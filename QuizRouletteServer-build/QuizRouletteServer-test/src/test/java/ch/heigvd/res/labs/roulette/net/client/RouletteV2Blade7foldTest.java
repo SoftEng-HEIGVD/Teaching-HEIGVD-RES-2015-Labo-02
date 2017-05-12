@@ -7,32 +7,29 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.data.StudentsList;
-import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 import ch.heigvd.schoolpulse.TestAuthor;
-import java.io.IOException;
-import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.rules.ExpectedException;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
- *
  * @author Nathan
  */
 public class RouletteV2Blade7foldTest {
-    
+
     @Rule
     public EphemeralClientServerPair roulettePair2 = new EphemeralClientServerPair(RouletteV2Protocol.VERSION);
-    
+
     /**
      * Test of clearDataStore method, of class RouletteV2ClientImpl.
+     *
      * @throws java.io.IOException
      */
     @Ignore
@@ -51,6 +48,7 @@ public class RouletteV2Blade7foldTest {
 
     /**
      * Test of listStudents method, of class RouletteV2ClientImpl.
+     *
      * @throws java.io.IOException
      */
     @Ignore
@@ -64,9 +62,10 @@ public class RouletteV2Blade7foldTest {
         List<Student> result = instance.listStudents();
         assertEquals(expResult, result);
     }
-    
+
     /**
      * Test the correct version of class RouletteV2ClientImpl.
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -74,10 +73,11 @@ public class RouletteV2Blade7foldTest {
     public void theServerShouldReturnTheCorrectVersionNumber() throws IOException {
         assertEquals(RouletteV2Protocol.VERSION, roulettePair2.getClient().getProtocolVersion());
     }
-    
+
     /**
-     * Test of info command method with number of students, 
+     * Test of info command method with number of students,
      * of class RouletteV2ClientImpl.
+     *
      * @throws java.io.IOException
      */
     @Ignore
